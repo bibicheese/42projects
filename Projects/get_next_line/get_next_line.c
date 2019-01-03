@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 19:02:50 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/03 15:26:24 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/03 16:00:11 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,12 @@ char	*ft_MallocNcat(char *s1, char *s2)
 	i = 0;
 	j = 0;
 	str = NULL;
-	if (str)
-		free(str);
 	if (!(s1))
 	{
 		str = ft_strdup(s2);
 		return (str);
 	}
-	str = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2)) + 1);
+	str = (char *)malloc(sizeof(char) * ((ft_strlen(s1) + ft_strlen(s2)) + 1));
 	while (s1[i])
 	{
 		str[i] = s1[i];
@@ -61,7 +59,38 @@ int		ft_strsearch(char *str, char c)
 	return (0);
 }
 
-int		CutStr(char *buff, char **str, char **stock)
+int     CutStr(char *buff, char **str, char **stock)
+{
+	char *tmp;
+	
+	// first we need to check if there is some stock and if it contains '\n'
+	if (ft_strsearch(*stock, '\n'))
+	{
+		*str = ft_strsub(*stock, 0, ft_strchr(*stock, '\n') - *stock);
+		tmp = *stock;
+		*stock = ft_strsub(*stock, ft_strchr(*stock , '\n') + 1, ft_strlen(*stock));
+		free(tmp);
+		if (buff)
+			*stock = ft_strjoin(*stock, buff);
+		return (0);
+	}
+	if (ft_strsearch(buff, '\n'))
+	{
+		tmp = ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff);
+		if (*stock != '\0')
+		{
+			*str = ft_strjoin(*stock, buff);
+			free(tmp);
+		}
+		else
+			*str = tmp;
+		*stock = ft_strsub(buff, ft_strsearch(buff, '\n'), ft_strlen(buff));
+		return (0);
+	}
+	return (1);
+}
+
+/*int		CutStr(char *buff, char **str, char **stock)
 {
 	int		i;
 
@@ -93,7 +122,7 @@ int		CutStr(char *buff, char **str, char **stock)
    	*stock = ft_MallocNcat(*stock, buff);
 	//printf("stock after = %s\n\n", *stock);
    	return 1;
-}
+	}*/
 
 int		get_next_line(const int fd, char **line)
 {
