@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/16 18:28:25 by jmondino          #+#    #+#             */
-/*   Updated: 2018/11/21 21:57:56 by jmondino         ###   ########.fr       */
+/*   Updated: 2018/12/20 15:56:32 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ char	*ft_strcat(char *s1, const char *s2)
 
 	j = 0;
 	i = 0;
+	if (!(s1))
+		return ((char *)s2);
 	while (s1[j])
 		j++;
 	while (s2[i])
