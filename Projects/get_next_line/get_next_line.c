@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 19:02:50 by jmondino          #+#    #+#             */
-/*   Updated: 2018/12/31 05:34:00 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/03 15:26:24 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int		CutStr(char *buff, char **str, char **stock)
 	int		i;
 
 	i = 0;
+	//printf("first stock = %s\n\n", *stock);
 	if (ft_strsearch(*stock, '\n'))
    	{
 	 	*str = ft_strsub(*stock, 0, ft_strchr(*stock, '\n') - *stock);
@@ -90,6 +91,7 @@ int		CutStr(char *buff, char **str, char **stock)
 		return (0);
 	}
    	*stock = ft_MallocNcat(*stock, buff);
+	//printf("stock after = %s\n\n", *stock);
    	return 1;
 }
 
@@ -99,58 +101,45 @@ int		get_next_line(const int fd, char **line)
 	char			buff[BUFF_SIZE + 1];
 	char			*str;
 	int				ret;
-	static int	   	bool;
+	int				i;
 
-   	while ((ret = read(fd, buff, BUFF_SIZE)))
+	printf("Intial stock : %s\n",stock);
+	if (fd < 0 || read(fd, buff, 0) == -1)
+		return (-1);
+	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
    	{
-   		if (CutStr(buff, &str, &stock) == 0)
-   		{
+		//printf("buf = %s\n", buff);
+		i = CutStr(buff, &str, &stock);
+		if (i == 0)
+		{
    			*line = str;
    			return 1;
-   		}
+		}
+		ft_bzero(buff, BUFF_SIZE + 1);
    	}
-	if (stock && ret == 0)
+	if (*stock != '\0')
    	{
-		bool = 1;
+		printf("''%s''\n", stock);
    	   	if (ft_strsearch(stock, '\n'))
    		{
+			//printf("It's fucked up\n");
 	   		str = ft_strsub(stock, 0, ft_strchr(stock, '\n') - stock);
 	   		stock = ft_strdup(ft_strchr(stock, '\n') + 1);
 	   		*line = str;
-	   		return 1;
 	   	}
-		*line = stock;
-   	}
+		else
+		{
+			//printf("Current stock : %s\n", stock);
+			*line = ft_strdup(stock);
+			free(stock);
+			*stock = '\0';
+			//printf("New stock : %s\n", stock);
+		}
+	printf("stock after = %s\n\n", stock);
+	if (*line)
+		return (1);
+	}
+	free(stock);
+	ft_bzero(stock, ft_strlen(stock));
 	return (0);
 }
-/*
-int		main(int ac, char **av)
-{
-	char	*line;
-	int		fd;
-	int		out;
-	int		p[2];
-
-	fd = 1;
-	out = dup(fd);
-	pipe(p);
-
-	dup2(p[1], fd);
-	write(fd, "aaa\nbbb\nccc\nddd\n", 16);
-	dup2(out, fd);
-	get_next_line(p[0], &line);
-		printf("line1 = [%s]\n", line);
-	get_next_line(p[0], &line);
-		printf("line2 = [%s]\n", line);
-	get_next_line(p[0], &line);
-		printf("line3 = [%s]\n", line);
-	get_next_line(p[0], &line);
-		printf("line4 = [%s]\n", line);
-	
-	int 	fd = open(av[1], O_RDONLY);
-	char	*line;
-
-	while (get_next_line(fd, &line))
-		printf("line = [%s]\n", line);
-	return 0;
-}*/
