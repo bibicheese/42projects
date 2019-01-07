@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 19:02:50 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/03 16:00:11 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/05 06:16:36 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,43 +59,11 @@ int		ft_strsearch(char *str, char c)
 	return (0);
 }
 
-int     CutStr(char *buff, char **str, char **stock)
-{
-	char *tmp;
-	
-	// first we need to check if there is some stock and if it contains '\n'
-	if (ft_strsearch(*stock, '\n'))
-	{
-		*str = ft_strsub(*stock, 0, ft_strchr(*stock, '\n') - *stock);
-		tmp = *stock;
-		*stock = ft_strsub(*stock, ft_strchr(*stock , '\n') + 1, ft_strlen(*stock));
-		free(tmp);
-		if (buff)
-			*stock = ft_strjoin(*stock, buff);
-		return (0);
-	}
-	if (ft_strsearch(buff, '\n'))
-	{
-		tmp = ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff);
-		if (*stock != '\0')
-		{
-			*str = ft_strjoin(*stock, buff);
-			free(tmp);
-		}
-		else
-			*str = tmp;
-		*stock = ft_strsub(buff, ft_strsearch(buff, '\n'), ft_strlen(buff));
-		return (0);
-	}
-	return (1);
-}
-
-/*int		CutStr(char *buff, char **str, char **stock)
+int		CutStr(char *buff, char **str, char **stock)
 {
 	int		i;
 
 	i = 0;
-	//printf("first stock = %s\n\n", *stock);
 	if (ft_strsearch(*stock, '\n'))
    	{
 	 	*str = ft_strsub(*stock, 0, ft_strchr(*stock, '\n') - *stock);
@@ -120,9 +88,8 @@ int     CutStr(char *buff, char **str, char **stock)
 		return (0);
 	}
    	*stock = ft_MallocNcat(*stock, buff);
-	//printf("stock after = %s\n\n", *stock);
    	return 1;
-	}*/
+}
 
 int		get_next_line(const int fd, char **line)
 {
@@ -132,43 +99,35 @@ int		get_next_line(const int fd, char **line)
 	int				ret;
 	int				i;
 
-	printf("Intial stock : %s\n",stock);
 	if (fd < 0 || read(fd, buff, 0) == -1)
 		return (-1);
 	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
    	{
-		//printf("buf = %s\n", buff);
 		i = CutStr(buff, &str, &stock);
 		if (i == 0)
 		{
    			*line = str;
+		  	free(str);
    			return 1;
 		}
-		ft_bzero(buff, BUFF_SIZE + 1);
    	}
 	if (*stock != '\0')
    	{
-		printf("''%s''\n", stock);
    	   	if (ft_strsearch(stock, '\n'))
    		{
-			//printf("It's fucked up\n");
 	   		str = ft_strsub(stock, 0, ft_strchr(stock, '\n') - stock);
 	   		stock = ft_strdup(ft_strchr(stock, '\n') + 1);
 	   		*line = str;
+			free(str);
 	   	}
 		else
 		{
-			//printf("Current stock : %s\n", stock);
 			*line = ft_strdup(stock);
+			stock = NULL;
 			free(stock);
-			*stock = '\0';
-			//printf("New stock : %s\n", stock);
 		}
-	printf("stock after = %s\n\n", stock);
 	if (*line)
 		return (1);
 	}
-	free(stock);
-	ft_bzero(stock, ft_strlen(stock));
 	return (0);
 }
