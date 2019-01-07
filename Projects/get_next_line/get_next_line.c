@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 19:02:50 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/05 06:16:36 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/07 11:11:01 by lucmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,15 +65,15 @@ int		CutStr(char *buff, char **str, char **stock)
 
 	i = 0;
 	if (ft_strsearch(*stock, '\n'))
-   	{
-	 	*str = ft_strsub(*stock, 0, ft_strchr(*stock, '\n') - *stock);
+	{
+		*str = ft_strsub(*stock, 0, ft_strchr(*stock, '\n') - *stock);
 		if (buff)
-	  	{
+		{
 			*stock = ft_strjoin(ft_strchr(*stock, '\n') + 1, buff);
 			return 0;
 		}
 		*stock = ft_strdup(ft_strchr(*stock, '\n') + 1);
-	   	return 0;
+		return 0;
 	}
 	if (ft_strsearch(buff, '\n'))
 	{
@@ -81,14 +81,14 @@ int		CutStr(char *buff, char **str, char **stock)
 		{
 			*str = ft_strjoin(*stock, ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff));
 			*stock = ft_strdup(ft_strchr(buff, '\n') + 1);
-		   	return 0;
+			return 0;
 		}
 		*str = ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff);
 		*stock = ft_MallocNcat(*stock, (ft_strchr(buff, '\n') + 1));
 		return (0);
 	}
-   	*stock = ft_MallocNcat(*stock, buff);
-   	return 1;
+	*stock = ft_MallocNcat(*stock, buff);
+	return 1;
 }
 
 int		get_next_line(const int fd, char **line)
@@ -102,32 +102,32 @@ int		get_next_line(const int fd, char **line)
 	if (fd < 0 || read(fd, buff, 0) == -1)
 		return (-1);
 	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
-   	{
+	{
 		i = CutStr(buff, &str, &stock);
 		if (i == 0)
 		{
-   			*line = str;
-		  	free(str);
-   			return 1;
-		}
-   	}
-	if (*stock != '\0')
-   	{
-   	   	if (ft_strsearch(stock, '\n'))
-   		{
-	   		str = ft_strsub(stock, 0, ft_strchr(stock, '\n') - stock);
-	   		stock = ft_strdup(ft_strchr(stock, '\n') + 1);
-	   		*line = str;
+			*line = str;
 			free(str);
-	   	}
+			return 1;
+		}
+	}
+	if (stock && *stock != '\0')
+	{
+		if (ft_strsearch(stock, '\n'))
+		{
+			str = ft_strsub(stock, 0, ft_strchr(stock, '\n') - stock);
+			stock = ft_strdup(ft_strchr(stock, '\n') + 1);
+			*line = str;
+			free(str);
+		}
 		else
 		{
 			*line = ft_strdup(stock);
 			stock = NULL;
 			free(stock);
 		}
-	if (*line)
-		return (1);
+		if (*line)
+			return (1);
 	}
 	return (0);
 }
