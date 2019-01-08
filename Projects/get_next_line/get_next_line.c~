@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 19:02:50 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/07 16:23:04 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/07 14:15:43 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,6 @@ int		ft_strsearch(char *str, char c)
 
 int		ft_cutstr(char *buff, char **str, char **stock)
 {
-	printf("stock ini = [%s]\n", *stock);
-	printf("buff = [%s]\n", buff);
 	if (ft_strsearch(*stock, '\n'))
 	{
 		*str = ft_strsub(*stock, 0, ft_strchr(*stock, '\n') - *stock);
@@ -103,7 +101,6 @@ int		get_next_line(const int fd, char **line)
 		if (ft_cutstr(buff, &str, &stock) == 0)
 		{
 			*line = ft_strdup(str);
-			printf("line = [%s]\n\n", *line);
 			return (1);
 		}
 		ft_bzero(buff, BUFF_SIZE);
