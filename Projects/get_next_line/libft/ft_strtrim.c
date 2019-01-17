@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 14:14:31 by jmondino          #+#    #+#             */
-/*   Updated: 2018/12/02 17:48:21 by jmondino         ###   ########.fr       */
+/*   Updated: 2018/12/05 15:39:11 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static size_t	ft_nospaces(char const *s)
 
 	i = 0;
 	count = 0;
-	while (TRIMSPACES(s[i]))
+	while (s[i] == ' ' || s[i] == '\n' || s[i] == '\t')
 		i++;
 	if (s[i] == '\0')
 		return (0);
@@ -28,7 +28,7 @@ static size_t	ft_nospaces(char const *s)
 		count++;
 		i++;
 	}
-	while (TRIMSPACES(s[i - 1]))
+	while (s[i - 1] == ' ' || s[i - 1] == '\n' || s[i - 1] == '\t')
 	{
 		count--;
 		i--;
@@ -48,11 +48,11 @@ char			*ft_strtrim(char const *s)
 			return (NULL);
 		i = 0;
 		j = 0;
-		while (TRIMSPACES(s[i]))
+		while (s[i] == ' ' || s[i] == '\n' || s[i] == '\t')
 			i++;
 		while (s[i])
 			str[j++] = s[i++];
-		while (TRIMSPACES(s[i - 1]))
+		while (s[i - 1] == ' ' || s[i - 1] == '\n' || s[i - 1] == '\t')
 		{
 			str[j] = '\0';
 			j--;

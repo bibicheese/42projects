@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 11:25:40 by jmondino          #+#    #+#             */
-/*   Updated: 2018/11/27 11:29:44 by jmondino         ###   ########.fr       */
+/*   Updated: 2018/12/03 20:17:48 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int		ft_strnequ(char const *s1, char const *s2, size_t n)
 	i = 0;
 	if (s1 && s2)
 	{
-		while (s1[i] && s2[i] && i < n)
+		while ((s1[i] || s2[i]) && i < n)
 		{
 			if (s1[i] != s2[i])
 				return (0);

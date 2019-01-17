@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/21 15:20:51 by jmondino          #+#    #+#             */
-/*   Updated: 2018/12/02 17:46:01 by jmondino         ###   ########.fr       */
+/*   Updated: 2018/12/03 14:03:28 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int		ft_atoi(const char *str)
 
 	nega = 1;
 	nb = 0;
-	while (ATOISPACES(*str))
+	while (*str == ' ' || *str == '\n' || *str == '\t' ||
+			*str == '\r' || *str == '\f' || *str == '\v')
 		str++;
 	if (*str == '-' || *str == '+')
 	{
