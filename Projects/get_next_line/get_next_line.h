@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/12/05 19:10:33 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/07 16:21:08 by jmondino         ###   ########.fr       */
+/*   Created: 2019/01/08 20:53:07 by jmondino          #+#    #+#             */
+/*   Updated: 2019/01/15 13:14:20 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include                 <stdio.h>
 # include <sys/wait.h>
 
-# define BUFF_SIZE 32
+# define BUFF_SIZE 1
 
 int		get_next_line(const int fd, char **line);
 
