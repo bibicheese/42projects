@@ -21,5 +21,6 @@ int		main(int ac, char **av)
 
 	while (get_next_line(fd, &line))
 		printf("line = [%s]\n", line);
-	return 0;
+	while(1);	
+return 0;
 }
