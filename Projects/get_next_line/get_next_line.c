@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 19:02:50 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/22 14:24:27 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/22 14:45:24 by lucmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static int		ft_cutstr(char *buff, char **line, char **stock)
 {
 	char	*tmp;
+	char	*ooo;
 
 	if (*stock == NULL)
 		*stock = ft_strdup("");
@@ -29,11 +30,12 @@ static int		ft_cutstr(char *buff, char **line, char **stock)
 	}
 	if (ft_iscinstr(buff, '\n'))
 	{
-		*line = (*stock == NULL) ? ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff) :
-			ft_strjoin(*stock, ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff));
+		ooo = ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff);
+		*line = (*stock == NULL) ? ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff) : ft_strjoin(*stock, ooo);
+		ft_memdel((void **)&ooo);
 		tmp = (*stock == NULL) ? ft_strjoin(*stock, (ft_strchr(buff, '\n') + 1)) :
 			ft_strdup(ft_strchr(buff, '\n') + 1);
-		free(*stock);
+		ft_memdel((void **)stock);
 		*stock = tmp;
 		return (0);
 	}	
@@ -47,6 +49,7 @@ static int		ft_cutstr(char *buff, char **line, char **stock)
 int				get_next_line(const int fd, char **line)
 {
 	char			*tmp;
+	char			*ooo;
 	static char		*stock;
 	char			buff[BUFF_SIZE + 1];
 	int				ret;
@@ -62,11 +65,11 @@ int				get_next_line(const int fd, char **line)
 	}
 	if (stock && *stock != '\0')
 	{
-  		*line = (ft_iscinstr(stock, '\n')) ? ft_strsub(stock, 0, ft_strchr(stock, '\n') - stock) :
-			ft_strdup(stock);
-		tmp = (ft_iscinstr(stock, '\n')) ? ft_strdup(ft_strchr(stock, '\n') + 1) :
-			NULL;
-		free(stock);
+		ooo = ft_strsub(stock, 0, ft_strchr(stock, '\n') - stock); 
+  		*line = (ft_iscinstr(stock, '\n')) ? ft_strdup(ooo) : ft_strdup(stock);
+		ft_memdel((void **)&ooo);
+		tmp = (ft_iscinstr(stock, '\n')) ? ft_strdup(ft_strchr(stock, '\n') + 1) : NULL;
+		ft_memdel((void **)&stock);
 		stock = tmp;
    		return (1);
 	}
