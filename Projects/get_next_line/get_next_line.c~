@@ -6,50 +6,41 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 19:02:50 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/22 15:21:16 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/22 14:45:24 by lucmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static int		ft_checkstock(char *buff, char **line, char **stock)
-{
-	char	*tmp;
-
-   	*line = ft_strsub(*stock, 0, ft_strchr(*stock, '\n') - *stock);
-   	tmp = (buff == NULL) ? ft_strdup(ft_strchr(*stock, '\n') + 1) :
-   	   ft_strjoin(ft_strchr(*stock, '\n') + 1, buff);
-  	ft_memdel((void **)stock);
-   	*stock = tmp;
-   	return (0);
-}
-
-static int		ft_checkbuff(char *buff, char **line, char **stock)
-{
-	char	*tmp;
-
-	tmp = ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff);
-   	*line = (*stock == NULL) ? ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff) : 
-   		ft_strjoin(*stock, tmp);
-   	ft_memdel((void **)&tmp);
-   	tmp = (*stock == NULL) ? ft_strjoin(*stock, (ft_strchr(buff, '\n') + 1)) :
-   		ft_strdup(ft_strchr(buff, '\n') + 1);
-   	ft_memdel((void **)stock);
-   	*stock = tmp;
-   	return (0);
-}
-
 static int		ft_cutstr(char *buff, char **line, char **stock)
 {
 	char	*tmp;
+	char	*ooo;
 
 	if (*stock == NULL)
 		*stock = ft_strdup("");
    	if (ft_iscinstr(*stock, '\n'))
-		return (ft_checkstock(buff, line, stock));
+	{
+		*line = ft_strsub(*stock, 0, ft_strchr(*stock, '\n') - *stock);
+		tmp = (buff == NULL) ? ft_strdup(ft_strchr(*stock, '\n') + 1) :
+		   ft_strjoin(ft_strchr(*stock, '\n') + 1, buff);
+		free(*stock);
+		*stock = tmp;
+		return (0);
+	}
 	if (ft_iscinstr(buff, '\n'))
-		return (ft_checkbuff(buff, line, stock));
+	{
+		ooo = ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff);
+		*line = (*stock == NULL) ? ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff) : ft_strjoin(*stock, ooo);
+		ft_memdel((void **)&ooo);
+		tmp = (*stock == NULL) ? ft_strjoin(*stock, (ft_strchr(buff, '\n') + 1)) :
+			ft_strdup(ft_strchr(buff, '\n') + 1);
+		ft_memdel((void **)stock);
+		*stock = tmp;
+		return (0);
+	}	
 	tmp = ft_strjoin(*stock, buff);
+	//tmp = *stock = NULL ? ft_strdup(buff) : ft_strjoin(*stock, buff);
 	ft_memdel((void **)stock);
    	*stock = tmp;
 	return (1);
@@ -58,6 +49,7 @@ static int		ft_cutstr(char *buff, char **line, char **stock)
 int				get_next_line(const int fd, char **line)
 {
 	char			*tmp;
+	char			*ooo;
 	static char		*stock;
 	char			buff[BUFF_SIZE + 1];
 	int				ret;
@@ -73,10 +65,9 @@ int				get_next_line(const int fd, char **line)
 	}
 	if (stock && *stock != '\0')
 	{
-		tmp = ft_strsub(stock, 0, ft_strchr(stock, '\n') - stock); 
-  		*line = (ft_iscinstr(stock, '\n')) ? ft_strdup(tmp) :
-			ft_strdup(stock);
-		ft_memdel((void **)&tmp);
+		ooo = ft_strsub(stock, 0, ft_strchr(stock, '\n') - stock); 
+  		*line = (ft_iscinstr(stock, '\n')) ? ft_strdup(ooo) : ft_strdup(stock);
+		ft_memdel((void **)&ooo);
 		tmp = (ft_iscinstr(stock, '\n')) ? ft_strdup(ft_strchr(stock, '\n') + 1) : NULL;
 		ft_memdel((void **)&stock);
 		stock = tmp;
