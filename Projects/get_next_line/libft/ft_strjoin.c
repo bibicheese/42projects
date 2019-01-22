@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 12:03:36 by jmondino          #+#    #+#             */
-/*   Updated: 2018/11/30 21:34:59 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/21 19:41:18 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	len;
 	size_t	i;
 
-	if (s1 && s2)
+   	if (s1 && s2)
 	{
 		len = (ft_strlen(s1) + ft_strlen(s2));
 		if (!(str = (char *)malloc(sizeof(char) * (len) + 1)))
@@ -37,5 +37,5 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		str[i] = '\0';
 		return (str);
 	}
-	return (NULL);
+   	return (NULL);
 }

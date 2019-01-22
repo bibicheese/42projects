@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/07 14:16:03 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/07 14:18:38 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/21 16:12:35 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,6 @@ int		main(int ac, char **av)
 
 	while (get_next_line(fd, &line))
 		printf("line = [%s]\n", line);
-	while(1);	
-return 0;
+	while(1);
+	return 0;
 }
