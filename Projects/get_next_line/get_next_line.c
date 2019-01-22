@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 19:02:50 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/22 15:48:39 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/22 17:24:27 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int		ft_cutstr(char *buff, char **line, char **stock)
 	char	*tmp;
 
 	if (*stock == NULL)
-		*stock = ft_strdup("");
+		*stock = ft_strnew(1);
 	if (ft_iscinstr(*stock, '\n'))
 		return (ft_checkstock(buff, line, stock));
 	if (ft_iscinstr(buff, '\n'))

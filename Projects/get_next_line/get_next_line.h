@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/08 20:53:07 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/21 15:52:06 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/22 16:12:12 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,9 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <unistd.h>
-# include                 <stdio.h>
 # include <sys/wait.h>
 
-# define BUFF_SIZE 9999
+# define BUFF_SIZE 1
 
 int		get_next_line(const int fd, char **line);
 
