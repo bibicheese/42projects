@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/12 18:40:56 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/20 14:43:17 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/23 08:56:26 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,6 @@ t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 
 char				*ft_strrev(char *str);
 int					ft_iscinstr(char *str, int c);
+char				*ft_strfchr(char *str, int c);
 
 #endif

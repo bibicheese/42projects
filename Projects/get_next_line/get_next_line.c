@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 19:02:50 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/22 17:24:27 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/01/23 09:28:13 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int		ft_checkstock(char *buff, char **line, char **stock)
 {
 	char	*tmp;
 
-	*line = ft_strsub(*stock, 0, ft_strchr(*stock, '\n') - *stock);
+	*line = ft_strfchr(*stock, '\n');
 	tmp = (buff == NULL) ? ft_strdup(ft_strchr(*stock, '\n') + 1) :
 		ft_strjoin(ft_strchr(*stock, '\n') + 1, buff);
 	ft_memdel((void **)stock);
@@ -28,11 +28,11 @@ static int		ft_checkbuff(char *buff, char **line, char **stock)
 {
 	char	*tmp;
 
-	tmp = ft_strsub(buff, 0, ft_strchr(buff, '\n') - buff);
+	tmp = ft_strfchr(buff, '\n');
 	*line = (*stock == NULL) ? ft_strdup(tmp) :
 		ft_strjoin(*stock, tmp);
 	ft_memdel((void **)&tmp);
-	tmp = (*stock == NULL) ? ft_strjoin(*stock, (ft_strchr(buff, '\n') + 1)) :
+	tmp = (*stock == NULL) ? ft_strjoin(*stock, ft_strchr(buff, '\n') + 1) :
 		ft_strdup(ft_strchr(buff, '\n') + 1);
 	ft_memdel((void **)stock);
 	*stock = tmp;
@@ -44,7 +44,7 @@ static int		ft_cutstr(char *buff, char **line, char **stock)
 	char	*tmp;
 
 	if (*stock == NULL)
-		*stock = ft_strnew(1);
+		*stock = ft_strdup("");
 	if (ft_iscinstr(*stock, '\n'))
 		return (ft_checkstock(buff, line, stock));
 	if (ft_iscinstr(buff, '\n'))
@@ -59,7 +59,7 @@ static void		ft_afterread(char **line, char **stock)
 {
 	char	*tmp;
 
-	tmp = ft_strsub(*stock, 0, ft_strchr(*stock, '\n') - *stock);
+	tmp = ft_strfchr(*stock, '\n');
 	*line = (ft_iscinstr(*stock, '\n')) ? ft_strdup(tmp) :
 		ft_strdup(*stock);
 	ft_memdel((void **)&tmp);
