@@ -1,30 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strfchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/01/07 14:16:03 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/22 14:46:23 by lucmarti         ###   ########.fr       */
+/*   Created: 2019/01/23 08:45:57 by jmondino          #+#    #+#             */
+/*   Updated: 2019/01/23 09:26:08 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "libft.h"
 
-int		main(int ac, char **av)
+char	*ft_strfchr(char *s, int c)
 {
-	int fd;
-	char *line;
+	char	*str;
+	int		i;
 
-	fd = open(av[1], O_RDONLY);
-
-	while (get_next_line(fd, &line))
+	if (s)
 	{
-		printf("line = [%s]\n", line);
-		ft_memdel((void **)&line);
+		i = 0;
+		while (s[i] && s[i] != c)
+			i++;
+		if (!(str = (char *)malloc(sizeof(char) * (i + 1))))
+			return (NULL);
+		i = 0;
+		while (s[i] && s[i] != c)
+		{
+			str[i] = s[i];
+			i++;
+		}
+		str[i] = '\0';
+		return (str);
 	}
-	ft_memdel((void **)&line);
-	while (1);
-	return 0;
+	return (NULL);
 }

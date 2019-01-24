@@ -1,32 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strbchr.c                                       :+:      :+:    :+:   */
+/*   ft_iscinstr.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/01/17 11:06:29 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/17 11:16:50 by jmondino         ###   ########.fr       */
+/*   Created: 2019/01/20 14:42:07 by jmondino          #+#    #+#             */
+/*   Updated: 2019/01/20 14:42:32 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
-char	*ft_strbchr(char *s, int c)
+int		ft_iscinstr(char *str, char c)
 {
 	int		i;
 
 	i = 0;
-	while(s[i])
+	if (str)
 	{
-		if (c == s[i])
+		while (str[i])
 		{
-			s[i + 1] = '\0';
-			return (s);
+			if (str[i] == c)
+				return (1);
+			i++;
 		}
-		i++;
 	}
-	if (c == '\0')
-		return (s);
-	return NULL;
+	return (0);
 }
