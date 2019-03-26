@@ -1,0 +1,29 @@
+#!/bin/bash
+
+FILES=$(ls | grep .c)
+if [ -z "$FILES" ]
+then
+	echo "C files are missing"
+	exit
+fi
+read -p "Name exe : " EXE
+Make=$(ls | grep Makefile)
+if [ -z $Make ]
+then
+	vim -f +":Stdheader" +"wq" Makefile
+else
+	rm -f Makefile
+   	vim -f +":Stdheader" +"wq" Makefile
+fi
+echo "\nNAME = $EXE" >> $Make
+echo "\nSRC = \c" >> $Make
+while read -r FILES
+do
+	echo "$FILES \c" >> $Make
+done <<< "$FILES"
+
+echo '\n\nOBJ = $(SRC:.c=.o)' >> $Make
+echo "\nFLAGS = -Wextra -Wall -Werror" >> $Make
+echo '\nall:$(NAME)\n' >> $Make
+echo '$(NAME): $(OBJ)' >> $Make
+echo '\tgcc $(FLAGS) -o $(NAME) $(OBJ)\n' >> $Make

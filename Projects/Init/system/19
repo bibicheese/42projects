@@ -1,0 +1,7 @@
+ce service ce nomme Daemon
+
+alsa-utils    console-setup.sh  exim4              lightdm          pppd-dns        speech-dispatcher
+anacron       cron              hddtemp            lm-sensors       procps          ssh
+atd           cups              hwclock.sh         minissdpd        rsyslog         sudo
+avahi-daemon  cups-browsed      keyboard-setup.sh  network-manager  saned           udev
+bluetooth     dbus              kmod               networking       screen-cleanup  x11-common

@@ -1,1 +1,1 @@
-ifconfig en1 | grep ether
+ifconfig en1 | grep ether | cut -d " " -f 2

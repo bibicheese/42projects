@@ -1,1 +1,1 @@
-ping slash16.org | head -1 | awk '{print $3}'
+nslookup slash16.org

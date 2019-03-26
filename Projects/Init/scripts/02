@@ -1,0 +1,7 @@
+#!/bin/bash
+
+read -p "choose user" USER
+sudo passwd -l $USER
+sudo pkill -u $USER
+sudo crontab -r -u $USER
+sudo userdel -r $USER

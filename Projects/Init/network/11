@@ -1,2 +1,2 @@
 Grace au resultat de la commande precedente on trouve : NAT-1
-Qui est le routeur (NAT = Network Adress Translation) qui fait le lien en entre notre reseau local et les autres reseaux.
+Qui est le dernier routeur (car il est encore dans la plage 10.X.X.X) qui fait le lien en entre notre reseau local et l'exterieur.

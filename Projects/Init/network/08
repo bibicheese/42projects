@@ -1,5 +1,4 @@
-D'abord ping le nom de domaine (slash16.org) pour obtenir l'adresse IP 
-Puis utiliser la commande 'whois' suivit de l'adresse IP pour voir ou est herberge cette adresse.
+Grace a la commande 'whois' suivit du nom de domaine
 
-En l'occurence : Amazon Technologies Inc. AT-88-Z (NET-143-204-0-0-1) 143.204.0.0 - 143.204.255.255
-   			   	 Amazon.com, Inc. AMAZO-CF (NET-143-204-0-0-2) 143.204.0.0 - 143.204.255.255
+Pour Slash16 : 	Amazon Technologies Inc. AT-88-Z (NET-143-204-0-0-1) 143.204.0.0 - 143.204.255.255
+		Amazon.com, Inc. AMAZO-CF (NET-143-204-0-0-2) 143.204.0.0 - 143.204.255.255

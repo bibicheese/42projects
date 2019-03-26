@@ -1,0 +1,4 @@
+On peut se connecter sur un utlisateur grace a la commande : su "username" 
+puis en rentrant le mdp
+
+en ssh il suffit de remplacer le premier champ ssh : username@ip , pour choisir l'utilisateur sur lequel se connecter
