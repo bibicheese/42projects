@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/08 09:39:12 by jmondino          #+#    #+#             */
-/*   Updated: 2019/02/20 13:48:36 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/02/20 16:48:48 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ int		downgrade_ttrm(t_trm *tet, int v_line)
 }
 
 /*
- * Augmenter l'index des points des ttrm en fonction de la nouvelle v_line
- */
+** Augmenter l'index des points des ttrm en fonction de la nouvelle v_line
+*/
 
 void	upgrade_ttrm(t_trm *tet, int v_line)
 {
@@ -65,9 +65,9 @@ void	upgrade_ttrm(t_trm *tet, int v_line)
 }
 
 /*
- * Checks pour verifier que les tetriminos restent corrects, via division et
- * modulo de v_line. Partie complexe du code.
- */
+** Checks pour verifier que les tetriminos restent corrects, via division et
+** modulo de v_line. Partie complexe du code.
+*/
 
 void	first_upgrade(t_trm *tet, int v_line)
 {
@@ -82,10 +82,10 @@ void	first_upgrade(t_trm *tet, int v_line)
 }
 
 /*
- * Determine si les ttrm ont toujours la meme forme, en comparant les 
- * lignes de depart avec les lignes obtenues en ajoutant tet.j
- * Retourne 1 si les lignes sont respectees, 0 sinon.
- */
+** Determine si les ttrm ont toujours la meme forme, en comparant les
+** lignes de depart avec les lignes obtenues en ajoutant tet.j
+** Retourne 1 si les lignes sont respectees, 0 sinon.
+*/
 
 int		check_upgrade(char *str, t_trm tet, int v_line)
 {
@@ -105,9 +105,9 @@ int		check_upgrade(char *str, t_trm tet, int v_line)
 }
 
 /*
- * La meme chose mais pour diminuer les ttrms a la creation. Check pour verifier
- * qu'on peut sans mal faire un v_line de plus petite taille.
- */
+** La meme chose mais pour diminuer les ttrms a la creation. Check pour verifier
+** qu'on peut sans mal faire un v_line de plus petite taille.
+*/
 
 int		check_downgrade(t_trm tet)
 {
@@ -120,4 +120,3 @@ int		check_downgrade(t_trm tet)
 		return (0);
 	return (1);
 }
-

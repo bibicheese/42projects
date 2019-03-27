@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/28 15:49:24 by jmondino          #+#    #+#             */
-/*   Updated: 2019/02/19 15:16:13 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/02/20 18:20:34 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ char	*ft_stockalltetris(char *line)
 void	ft_error(int ac)
 {
 	if (ac != 2)
-		ft_putstr("usage: ./fillit input_file");
+		ft_putstr("usage: ./fillit input_file\n");
 	else
 		ft_putstr("error\n");
 	exit(1);

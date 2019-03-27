@@ -6,7 +6,7 @@
 /*   By: adequidt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/11 14:57:49 by adequidt          #+#    #+#             */
-/*   Updated: 2019/02/20 13:52:36 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/02/20 18:19:57 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,14 @@ void	print_str(char *str, int v_line)
 		ft_putchar('\n');
 		j = 0;
 	}
-	ft_putchar('\n');
+	ft_memdel((void **)&str);
 	exit(1);
 }
 
 /*
- *	Fusion entre str et les tetriminos, avec un dernier check pour s'assurer que
- *	le x4 ne sort pas de la string.
- */
+**	Fusion entre str et les tetriminos, avec un dernier check pour s'assurer que
+**	le x4 ne sort pas de la string.
+*/
 
 int		strmerge(char *str, t_trm tet, int v_line)
 {
@@ -69,5 +69,5 @@ int		strmerge(char *str, t_trm tet, int v_line)
 		str[tet.j + tet.x4] = tet.letter;
 		return (1);
 	}
-		return (0);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: adequidt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/25 16:41:14 by adequidt          #+#    #+#             */
-/*   Updated: 2019/02/20 14:09:00 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/02/20 16:58:41 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*str_trim(char *str, int v_line)
 		while (i < v_line)
 		{
 			if (str[i] != '.')
-				return(str);
+				return (str);
 			i++;
 		}
 		str += 4;
@@ -47,13 +47,14 @@ char	*str_move(char *str, int v_line)
 		if (str[i] != '.')
 			tab[++j] = i;
 	}
-	if (tab[0] / v_line == (tab[0] - 1) / v_line && 
+	if (tab[0] / v_line == (tab[0] - 1) / v_line &&
 		tab[1] / v_line == (tab[1] - 1) / v_line &&
 		tab[2] / v_line == (tab[2] - 1) / v_line &&
 		tab[3] / v_line == (tab[3] - 1) / v_line && tab[0] > 0)
-		return(str_move(str + 1, v_line));
+		return (str_move(str + 1, v_line));
 	return (str);
 }
+
 t_trm	create(char *str, int number)
 {
 	t_trm	new_ttrm;
@@ -87,7 +88,7 @@ t_trm	*ttrm_edit(char *str, int v_line, int i)
 	t_trm		*tet;
 
 	if (!(tet = malloc(sizeof(t_trm) * 27)))
-		return(0);
+		return (0);
 	while (*str)
 	{
 		tmp[0] = ft_memalloc(16);
@@ -101,8 +102,8 @@ t_trm	*ttrm_edit(char *str, int v_line, int i)
 	}
 	tet[0].v_line = v_line;
 	if (v_line < 4)
-		if(!(downgrade_ttrm(tet, tet[0].v_line)))
-			(&tet[0]) -> v_line = 4;
+		if (!(downgrade_ttrm(tet, tet[0].v_line)))
+			(tet[0]).v_line = 4;
 	if (v_line > 4)
 		first_upgrade(tet, v_line);
 	return (tet);

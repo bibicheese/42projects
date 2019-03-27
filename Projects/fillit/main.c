@@ -6,15 +6,15 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/23 19:01:19 by jmondino          #+#    #+#             */
-/*   Updated: 2019/02/20 14:08:45 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/02/26 15:45:22 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
 /*
- * Main mise a jour pour prendre automatiquement la v_line la plus petite
- */
+** Main mise a jour pour prendre automatiquement la v_line la plus petite
+*/
 
 int		main(int ac, char **av)
 {
@@ -23,9 +23,10 @@ int		main(int ac, char **av)
 	char	*tetris;
 	t_trm	*tet;
 
-	fd = open(av[1], O_RDONLY);
 	if (ac != 2)
 		ft_error(ac);
+	if ((fd = open(av[1], O_RDONLY)) < 0)
+		ft_error(2);
 	ft_read(fd, &tetris);
 	v_line = min_v_line(tetris);
 	tet = ttrm_edit(tetris, v_line, 0);

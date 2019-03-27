@@ -6,14 +6,15 @@
 /*   By: adequidt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/11 17:59:50 by adequidt          #+#    #+#             */
-/*   Updated: 2019/02/19 16:48:13 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/02/20 16:46:12 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
 /*
-**	Calcul du carre potentiel le plus petit (pour gagner du temps sur le backtracking)
+**	Calcul du carre potentiel le plus petit
+**	(pour gagner du temps sur le backtracking)
 */
 
 int		min_v_line(char *str)
@@ -51,7 +52,7 @@ int		count_one(char *str)
 	j[0] = count_line(str, i);
 	j[1] = count_col(str, i);
 	if (j[0] == 2 && j[1] == 2)
-	  return (check_except(str, i));
+		return (check_except(str, i));
 	if (j[0] >= j[1])
 		return (j[0]);
 	return (j[1]);

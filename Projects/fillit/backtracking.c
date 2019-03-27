@@ -6,17 +6,17 @@
 /*   By: adequidt <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/15 16:45:46 by adequidt          #+#    #+#             */
-/*   Updated: 2019/02/20 13:54:26 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/02/20 16:55:32 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
 /*
- * Le coeur du backtracking
- * Grosse leak avec la perte du pointeur str, a corriger
- * La fonction se rappelle jusqu'a ce qu'on ait atteint le dernier ttrm.
- */
+** Le coeur du backtracking
+** Grosse leak avec la perte du pointeur str, a corriger
+** La fonction se rappelle jusqu'a ce qu'on ait atteint le dernier ttrm.
+*/
 
 int		backtrack(t_trm *tet, char *str, int i)
 {
@@ -28,13 +28,13 @@ int		backtrack(t_trm *tet, char *str, int i)
 		{
 			if (i == 0)
 			{
-				(&tet[0]) -> v_line += 1;
+				(tet[0]).v_line++;
 				upgrade_ttrm(tet, tet[0].v_line);
 				ft_memdel((void **)&str);
 			}
 			else
 				(tet[--i]).j++;
-		}	
+		}
 		else
 		{
 			i++;
@@ -45,9 +45,9 @@ int		backtrack(t_trm *tet, char *str, int i)
 }
 
 /*
- * Une fonction qui se contente de placer et d'effacer les ttrm, 
- * pour ne pas alourdir la fonction backtrack
- */
+** Une fonction qui se contente de placer et d'effacer les ttrm,
+** pour ne pas alourdir la fonction backtrack
+*/
 
 int		place_ttrm(t_trm *tet, char *str, int i)
 {
@@ -55,14 +55,14 @@ int		place_ttrm(t_trm *tet, char *str, int i)
 		return (1);
 	if (i > 0)
 		erase_ttrm(tet[i - 1], str);
-	return(0);
+	return (0);
 }
 
 /*
- * La fonction au coeur du placement des ttrm. 
- * Renvoie 1 si le ttrm a ete place, et 0 si apres avoir teste toutes les
- * positions cela s'est revele impossible, en remettant alors tet.j a 0.
- */
+** La fonction au coeur du placement des ttrm.
+** Renvoie 1 si le ttrm a ete place, et 0 si apres avoir teste toutes les
+** positions cela s'est revele impossible, en remettant alors tet.j a 0.
+*/
 
 int		ttrm_try(char *str, t_trm *tet, int i)
 {
@@ -73,15 +73,15 @@ int		ttrm_try(char *str, t_trm *tet, int i)
 		return (1);
 	else
 	{
-		(&tet[i])->j += 1;
+		(tet[i]).j++;
 		if ((tet[i].j + tet[i].x4) < ft_strlen(str))
-			return(ttrm_try(str, tet, i));
+			return (ttrm_try(str, tet, i));
 	}
 	tet[i].j = 0;
 	return (0);
 }
 
-void    erase_ttrm(t_trm tet, char *str)
+void	erase_ttrm(t_trm tet, char *str)
 {
 	str[tet.x1 + tet.j] = '.';
 	str[tet.x2 + tet.j] = '.';
