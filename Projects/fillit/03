@@ -1,0 +1,36 @@
+#!/bin/bash
+
+FILES=$(ls | grep .c)
+if [ -z "$FILES" ]
+then
+	echo "C files are missing"
+	exit
+fi
+read -p "Name exe : " EXE
+Mak=$(ls | grep "^Makefile$")
+if [ -z "$Mak" ]
+then
+	vim -f +":Stdheader" +"wq" Makefile
+else
+	rm -f Makefile
+   	vim -f +":Stdheader" +"wq" Makefile
+fi
+Mak=$(ls | grep "^Makefile$")
+echo "NAME = $EXE" >> "$Mak"
+echo "\nSRC = \c" >> "$Mak"
+while read -r FILES
+do
+	echo "$FILES \c" >> "$Mak"
+done <<< "$FILES"
+echo '\n\nOBJ = $(SRC:.c=.o)' >> "$Mak"
+echo "\nFLAGS = -Wextra -Wall -Werror" >> "$Mak"
+echo '\nifndef VERBOSE\n.SILENT:\nendif' >> "$Mak"
+echo '\nall:$(NAME)\n' >> "$Mak"
+echo '$(NAME): $(OBJ)' >> "$Mak"
+echo '\tgcc $(FLAGS) -o $(NAME) $(OBJ)' >> "$Mak"
+echo '\techo "\\033[32m$(NAME) compiled.\\033[0m"' >> "$Mak"
+echo '\nclean:\n\t/bin/rm -f $(OBJ)' >> "$Mak"
+echo '\techo "\\033[32mAll .o have been erased.\\033[0m"' >> "$Mak"
+echo '\nfclean: clean\n\t/bin/rm -f $(NAME)' >> "$Mak"
+echo '\techo "\\033[32m$(NAME) erased.\\033[0m"' >> "$Mak"
+echo '\nre: fclean all' >> "$Mak"
