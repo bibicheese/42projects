@@ -37,7 +37,7 @@ $IPT -A OUTPUT -p udp --dport 53 -j ACCEPT
 #Authorize lo
 $IPT -A INPUT -i lo -j ACCEPT
 
-#Authorize secure pings
+#Authorize pings
 $IPT -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
 $IPT -A INPUT -p icmp --icmp-type time-exceeded -j ACCEPT
 $IPT -A INPUT -p icmp --icmp-type destination-unreachable -j ACCEPT
