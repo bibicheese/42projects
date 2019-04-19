@@ -1,9 +1,9 @@
 #!/bin/bash
 
-OG=$(cat /root/.shasum)
+OG=$(cat /root/.shasumcron)
 CHECK=$(shasum -a 256 /etc/crontab | awk '{print$1}')
 CRONCP=/root/.croncp
-MAIL=/etc/mail.txt
+MAIL=/root/mail.txt
 ROOT=m.ondino@hotmail.fr
 
 if [ -f $MAIL ]
@@ -24,8 +24,6 @@ else
         echo "\nNEW ONE : \n" >> $MAIL
         cat /etc/crontab >>$MAIL
         sendmail -t < $MAIL &
-		shasum -a 256 /etc/crontab | awk '{print$1}' > /root/.shasum
+		shasum -a 256 /etc/crontab | awk '{print$1}' > /root/.shasumcron
         cp /etc/crontab /root/.croncp
 fi
-
-#crontab -e (root) 0 0 * * * sh /root/checkcron.sh
