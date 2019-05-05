@@ -17,18 +17,12 @@ $IPT -P FORWARD DROP
 $IPT -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 $IPT -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-#ssh unlimited
+#Authorize ssh
 $IPT -A INPUT -p tcp --dport 2323 -j ACCEPT
-
-#ssh limited
-#$IPT -A INPUT -p tcp --dport 2323 -m state --state NEW -m recent --set --name SSH
-#$IPT -A INPUT -p tcp --dport 2323 -m state --state NEW -m recent --update --second 60 --hitcount 2 --rttl --name SSH -j DROP
-#$IPT -A INPUT -p tcp --dport 2323 -j ACCEPT
 
 #Authorize HTTP HTTPS
 $IPT -A OUTPUT -p tcp -m multiport --dport 80,443 -j ACCEPT
 $IPT -A INPUT -p tcp -m multiport --dport 80,443 -j ACCEPT
-
 
 #Authorize DNS
 $IPT -A OUTPUT -p tcp --dport 53 -j ACCEPT
