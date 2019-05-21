@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 16:51:04 by jmondino          #+#    #+#             */
-/*   Updated: 2019/05/21 17:01:17 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/05/21 23:24:10 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void	ft_manyac(DIR *pDir, struct dirent *pDirent, int ac, char **av)
 char	**ft_createtab(t_list *lst, int i)
 {
 	char	**tab;
-	char	*tmp;
 	t_list	*temp;
 	int		j;
 
@@ -66,13 +65,24 @@ char	**ft_createtab(t_list *lst, int i)
 			temp = temp->next;
 		}
 	}
+	tab[j] = NULL;
+	ft_tritab(tab);
+	return tab;
+}
+
+void	ft_tritab(char **tab)
+{
+	int		j;
+	int		i;
+	char	*tmp;
+
 	j = 0;
 	while (tab[j])
 	{
 		i = j + 1;
 		while (tab[i])
 		{
-			if (tab[i] < tab[j])
+			if (ft_strcmp(tab[i], tab[j]) < 0)
 			{
 				tmp = tab[i];
 				tab[i] = tab[j];
@@ -82,7 +92,6 @@ char	**ft_createtab(t_list *lst, int i)
 		}
 		j++;
 	}
-	return tab;
 }
 
 void	ft_parse(DIR *pDir, struct dirent *pDirent)
@@ -108,6 +117,7 @@ void	ft_parse(DIR *pDir, struct dirent *pDirent)
 	}
 	tab = ft_createtab(lst, i);
 	ft_afftab(tab);
+	ft_memdel((void **)tab);
 }
 
 void	ft_afftab(char **tab)
