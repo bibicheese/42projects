@@ -1,28 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls.h                                            :+:      :+:    :+:   */
+/*   ft_strncpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/20 16:58:28 by jmondino          #+#    #+#             */
-/*   Updated: 2019/05/21 16:02:59 by jmondino         ###   ########.fr       */
+/*   Created: 2018/11/16 10:57:20 by jmondino          #+#    #+#             */
+/*   Updated: 2018/11/16 11:22:49 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_LS_H
-#define FT_LS_H
+#include "libft.h"
 
-#include <stdio.h>
-#include <dirent.h>
-#include <stdlib.h>
-#include "libft/libft.h"
+char	*ft_strncpy(char *dst, const char *src, size_t len)
+{
+	unsigned int	i;
 
-void	ft_oneac(DIR *pDir, struct dirent *pDirent);
-void	ft_manyac(DIR *pDir, struct dirent *pDirent, int ac, char **av);
-void	ft_parse(DIR *pDir, struct dirent *pDirent);
-void	ft_afftab(char **tab);
-char	**ft_creatab(t_list *lst, int i);
-
-
-#endif
+	i = 0;
+	while (src[i] && i < len)
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	while (i < len)
+	{
+		dst[i] = '\0';
+		i++;
+	}
+	return (dst);
+}

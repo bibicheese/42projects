@@ -13,7 +13,7 @@ endif
 all:$(NAME)
 
 $(NAME): $(OBJ)
-	gcc $(FLAGS) -o $(NAME) $(OBJ)
+	gcc $(FLAGS) -o $(NAME) $(OBJ) libft/libft.a
 	echo "\033[32m$(NAME) compiled.\033[0m"
 
 clean:

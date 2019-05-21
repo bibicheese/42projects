@@ -1,28 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls.h                                            :+:      :+:    :+:   */
+/*   ft_putchar.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/20 16:58:28 by jmondino          #+#    #+#             */
-/*   Updated: 2019/05/21 16:02:59 by jmondino         ###   ########.fr       */
+/*   Created: 2018/11/26 06:16:56 by jmondino          #+#    #+#             */
+/*   Updated: 2018/11/30 21:31:33 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_LS_H
-#define FT_LS_H
+#include "libft.h"
 
-#include <stdio.h>
-#include <dirent.h>
-#include <stdlib.h>
-#include "libft/libft.h"
-
-void	ft_oneac(DIR *pDir, struct dirent *pDirent);
-void	ft_manyac(DIR *pDir, struct dirent *pDirent, int ac, char **av);
-void	ft_parse(DIR *pDir, struct dirent *pDirent);
-void	ft_afftab(char **tab);
-char	**ft_creatab(t_list *lst, int i);
-
-
-#endif
+void	ft_putchar(char c)
+{
+	write(1, &c, 1);
+}

@@ -1,28 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls.h                                            :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/20 16:58:28 by jmondino          #+#    #+#             */
-/*   Updated: 2019/05/21 16:02:59 by jmondino         ###   ########.fr       */
+/*   Created: 2018/11/21 19:30:07 by jmondino          #+#    #+#             */
+/*   Updated: 2018/11/30 21:16:01 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_LS_H
-#define FT_LS_H
+#include "libft.h"
 
-#include <stdio.h>
-#include <dirent.h>
-#include <stdlib.h>
-#include "libft/libft.h"
+void	*ft_memmove(void *dst, const void *src, size_t len)
+{
+	size_t	i;
+	char	*dest;
+	char	*sorc;
 
-void	ft_oneac(DIR *pDir, struct dirent *pDirent);
-void	ft_manyac(DIR *pDir, struct dirent *pDirent, int ac, char **av);
-void	ft_parse(DIR *pDir, struct dirent *pDirent);
-void	ft_afftab(char **tab);
-char	**ft_creatab(t_list *lst, int i);
-
-
-#endif
+	dest = (char *)dst;
+	sorc = (char *)src;
+	if ((char *)src == (char *)dst)
+		return (dst);
+	if ((char *)src < (char *)dst)
+	{
+		i = len - 1;
+		while (len > 0)
+		{
+			dest[i] = sorc[i];
+			len--;
+			i--;
+		}
+		return (dest);
+	}
+	ft_memcpy(dst, src, len);
+	return (dst);
+}

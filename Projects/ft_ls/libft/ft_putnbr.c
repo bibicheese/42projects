@@ -1,28 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls.h                                            :+:      :+:    :+:   */
+/*   ft_putnbr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/20 16:58:28 by jmondino          #+#    #+#             */
-/*   Updated: 2019/05/21 16:02:59 by jmondino         ###   ########.fr       */
+/*   Created: 2018/11/26 16:56:26 by jmondino          #+#    #+#             */
+/*   Updated: 2018/12/03 13:53:45 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_LS_H
-#define FT_LS_H
+#include "libft.h"
 
-#include <stdio.h>
-#include <dirent.h>
-#include <stdlib.h>
-#include "libft/libft.h"
-
-void	ft_oneac(DIR *pDir, struct dirent *pDirent);
-void	ft_manyac(DIR *pDir, struct dirent *pDirent, int ac, char **av);
-void	ft_parse(DIR *pDir, struct dirent *pDirent);
-void	ft_afftab(char **tab);
-char	**ft_creatab(t_list *lst, int i);
-
-
-#endif
+void	ft_putnbr(int n)
+{
+	if (n == -2147483648)
+	{
+		ft_putstr("-2147483648");
+		return ;
+	}
+	if (n < 0)
+	{
+		ft_putchar('-');
+		n = -n;
+	}
+	if (n > 9)
+		ft_putnbr(n / 10);
+	ft_putchar(n % 10 + '0');
+}

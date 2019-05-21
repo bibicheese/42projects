@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls.h                                            :+:      :+:    :+:   */
+/*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/20 16:58:28 by jmondino          #+#    #+#             */
-/*   Updated: 2019/05/21 16:02:59 by jmondino         ###   ########.fr       */
+/*   Created: 2018/11/17 22:47:38 by jmondino          #+#    #+#             */
+/*   Updated: 2018/11/21 21:57:14 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_LS_H
-#define FT_LS_H
+#include "libft.h"
 
-#include <stdio.h>
-#include <dirent.h>
-#include <stdlib.h>
-#include "libft/libft.h"
+size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
+{
+	size_t	i;
 
-void	ft_oneac(DIR *pDir, struct dirent *pDirent);
-void	ft_manyac(DIR *pDir, struct dirent *pDirent, int ac, char **av);
-void	ft_parse(DIR *pDir, struct dirent *pDirent);
-void	ft_afftab(char **tab);
-char	**ft_creatab(t_list *lst, int i);
-
-
-#endif
+	i = 0;
+	if (dstsize <= ft_strlen(dst))
+		return (ft_strlen(src) + dstsize);
+	while (dst[i] && i < (dstsize - 1))
+		i++;
+	while (*src && i < (dstsize - 1))
+	{
+		dst[i] = *src;
+		i++;
+		src++;
+	}
+	dst[i] = '\0';
+	return (ft_strlen(src) + ft_strlen(dst));
+}
