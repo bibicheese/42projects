@@ -6,40 +6,40 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 16:51:04 by jmondino          #+#    #+#             */
-/*   Updated: 2019/05/22 20:23:45 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/05/23 17:40:55 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void	ft_oneac(DIR *pDir, struct dirent *pDirent)
+void	ft_pathless(DIR *pDir, struct dirent *pDirent, t_shit *pShit)
 {
-	pDir = opendir("./");			//Dossier actuel
-  	ft_parse(pDir, pDirent);		//tri ascii et fichier caché
+	pDir = opendir("./");			
+  	ft_parse(pDir, pDirent, pShit);	
    	closedir (pDir);
 	printf("\n");
 }
 
-void	ft_manyac(DIR *pDir, struct dirent *pDirent, int ac, char **av)
+void	ft_manypaths(DIR *pDir, struct dirent *pDirent, t_shit *pShit)
 {
 	int		i;
+	int		j;
 
-	i = 1;
-    while (i != ac)
+	i = pShit->index;
+	j = i + 1;
+    while (++i != pShit->ac)
     {
-        pDir = opendir (av[i]);
-        if (pDir == NULL)
+		if (j - (pShit->ac - 1) != 0)
+			printf("%s:\n", pShit->av[i]);
+        if ((pDir = opendir (pShit->av[i])) == NULL)
         {
-            printf ("Cannot open directory '%s'\n", av[i]);
+            printf ("ft_ls: %s: No such file or directory\n", pShit->av[i]);
             exit(1);
         }
-        if (ac > 2)
-            printf("%s:\n", av[i]);
-        ft_parse(pDir, pDirent);		//tri ascii et fichier caché
+		ft_parse(pDir, pDirent, pShit);
         closedir (pDir);
-        i ++;
         printf("\n");
-        if (i != ac)
+        if (i + 1 != pShit->ac)
             printf("\n");
 	}
 }
@@ -53,23 +53,17 @@ char	**ft_createtab(t_list *lst, int i)
 	tab = (char **)malloc(sizeof(char *) * i + 1);
 	while (lst)
 	{
-		if (lst->content[0] == '.')
-			lst = lst->next;
-		else
-		{
-			tab[j] = (char *)malloc(sizeof(char) * ft_strlen(lst->content));
-			tab[j] = lst->content;
-			printf("tab[%d] = %s\n", j, tab[j]);
-			j++;
-			lst = lst->next;
-		}
+		tab[j] = (char *)malloc(sizeof(char) * ft_strlen(lst->content));
+		tab[j] = lst->content;
+		j++;
+		lst = lst->next;
 	}
 	tab[j] = NULL;
-	ft_tritab(tab);
+	ft_asciiorder(tab);
 	return tab;
 }
 
-void	ft_tritab(char **tab)
+void	ft_asciiorder(char **tab)
 {
 	int		j;
 	int		i;
@@ -93,15 +87,19 @@ void	ft_tritab(char **tab)
 	}
 }
 
-void	ft_parse(DIR *pDir, struct dirent *pDirent)
+void	ft_parse(DIR *pDir, struct dirent *pDirent, t_shit *pShit)
 {
-	t_list	*lst;
-	char	**tab;
-	int		i;
+	t_list		*lst;
+	char		**tab;
+	int			i;
+	int			hidden;
 
 	i = 0;
+	hidden = checkoption(pShit->option, 'a');
 	while ((pDirent = readdir(pDir)))
 	{
+		if (hidden == 0 && pDirent->d_name[0] == '.')
+			continue;
 		if (!(lst))
 			lst = ft_lstnew(pDirent->d_name, ft_strlen(pDirent->d_name)); 
 		else
@@ -109,6 +107,8 @@ void	ft_parse(DIR *pDir, struct dirent *pDirent)
 		i++;
 	}
 	tab = ft_createtab(lst, i);
+	if (checkoption(pShit->option, 'r'))
+		ft_revtab(tab);
 	ft_afftab(tab);
 	ft_memdel((void **)tab);
 }
