@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 16:51:04 by jmondino          #+#    #+#             */
-/*   Updated: 2019/05/21 23:24:10 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/05/22 20:23:45 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,22 +47,21 @@ void	ft_manyac(DIR *pDir, struct dirent *pDirent, int ac, char **av)
 char	**ft_createtab(t_list *lst, int i)
 {
 	char	**tab;
-	t_list	*temp;
 	int		j;
 
 	j = 0;
 	tab = (char **)malloc(sizeof(char *) * i + 1);
-	temp = lst;
-	while (temp)
+	while (lst)
 	{
-		if (temp->content[0] == '.')
-			temp = temp->next;
+		if (lst->content[0] == '.')
+			lst = lst->next;
 		else
 		{
-			tab[j] = (char *)malloc(sizeof(char) * ft_strlen(temp->content));
-			tab[j] = temp->content;
+			tab[j] = (char *)malloc(sizeof(char) * ft_strlen(lst->content));
+			tab[j] = lst->content;
+			printf("tab[%d] = %s\n", j, tab[j]);
 			j++;
-			temp = temp->next;
+			lst = lst->next;
 		}
 	}
 	tab[j] = NULL;
@@ -97,7 +96,6 @@ void	ft_tritab(char **tab)
 void	ft_parse(DIR *pDir, struct dirent *pDirent)
 {
 	t_list	*lst;
-	t_list	*tmp;
 	char	**tab;
 	int		i;
 
@@ -108,11 +106,6 @@ void	ft_parse(DIR *pDir, struct dirent *pDirent)
 			lst = ft_lstnew(pDirent->d_name, ft_strlen(pDirent->d_name)); 
 		else
 			ft_lstadd(&lst, ft_lstnew(pDirent->d_name, ft_strlen(pDirent->d_name)));
-	}
-	tmp = lst;
-	while (tmp)
-	{
-		tmp = tmp->next;
 		i++;
 	}
 	tab = ft_createtab(lst, i);
