@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 12:03:36 by jmondino          #+#    #+#             */
-/*   Updated: 2019/01/22 16:11:43 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/05/28 15:50:42 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	len;
 	size_t	i;
 
+	if (s1 == NULL)
+		return (ft_strdup(s2));
 	if (s1 && s2)
 	{
 		len = (ft_strlen(s1) + ft_strlen(s2));
