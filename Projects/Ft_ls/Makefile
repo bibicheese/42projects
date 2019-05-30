@@ -1,6 +1,6 @@
 NAME = ft_ls
 
-SRC = main.c shit.c parse.c
+SRC = main.c shit.c parse.c display.c recursive.c
 
 OBJ = $(SRC:.c=.o)
 

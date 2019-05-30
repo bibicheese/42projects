@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/23 14:09:09 by jmondino          #+#    #+#             */
-/*   Updated: 2019/05/29 20:34:00 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/05/30 16:59:53 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,12 @@ void	ft_parseargs(char **av, t_shit *pShit)
 		if (av[i][0] == '-' && bool == 0)
 			tmp = ft_strjoin(tmp, ft_checkflags(av[i]));
 		else
-		{
-			newav[j] = av[i];
-			j++;
-		}
+			newav[j++] = av[i];
 	}
 	newav[j] = NULL;
 	if (newav[0])
 		ft_asciiorder(newav);
-	pShit->flags = tmp;
-	pShit->files = ft_isfile(newav, j);
-	pShit->dirs = ft_isdir(newav, j);
+	ft_fillpShit(tmp, newav, j, pShit);
 }
 
 char	**ft_isdir(char **newav, int index)
@@ -143,71 +138,3 @@ char	*ft_checkflags(char *str)
 	tmp = str + 1;
 	return (tmp);
 }
-
-
-
-/*
-int		checkoption(char *option, char c)
-{
-	int		i;
-
-	if (option == NULL)
-		return (0);
-	i = 0;
-	while (option[i])
-	{
-		if (option[i] == c)
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-void	ft_revtab(char **tab)
-{
-	int		i;
-	int		j;
-	char	*tmp;
-
-	i = 0;
-	j = 0;
-	while (tab[j])
-		j++;
-	j--;
-	while (i < j)
-	{
-		tmp = tab[i];
-		tab[i] = tab[j];
-		tab[j] = tmp;
-		i++;
-		j--;
-	}
-}
-
-t_entries  *ft_newlst(char *content, char type)
-{
-    t_entries  *lst;
-
-    if (!(lst = (t_entries *)malloc(sizeof(t_entries))))
-        return (NULL);
-    if (content)
-    {
-        lst->name = ft_strdup((const char *)content);
-        lst->type = type;
-    }
-    else
-    {
-        lst->name = NULL;
-        lst->type = '\0';
-    }
-    lst->next = NULL;
-    return (lst);
-}
-
-
-void    ft_addlst(t_entries **alist, t_entries *new)
-{
-    new->next = *alist;
-    *alist = new;
-}
-*/
