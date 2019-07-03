@@ -3,32 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nkellum <nkellum@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/03 15:10:14 by nkellum           #+#    #+#             */
-/*   Updated: 2019/05/30 17:10:06 by jmondino         ###   ########.fr       */
+/*   Created: 2019/07/02 10:31:36 by jmondino          #+#    #+#             */
+/*   Updated: 2019/07/03 15:07:24 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int 	main(int ac, char **av)
+int		main(int ac, char **av)
 {
-  	struct dirent 	*pDirent;
-   	DIR 			*pDir;
-	t_shit			*pShit;
-	int				i;
+	t_args		*pargs;
 
-	if (!(pShit = initstru(ac, av)))
+	(void)ac;
+	if (!(pargs = initstru(av)))
 		return (0);
-	ft_parseargs(av, pShit);
-	/*if (pShit->files[0])
-	  ft_affiles(pShit);*/
-	i = 0;
-	while (pShit->dirs[i])
-	{
-		list_dir_recursive(pShit->dirs[i]);
-		i++;
-	}
+	ft_parseargs(av, pargs);
+	if (ft_iscinstr(pargs->flags, 'd'))
+		ft_display_d(pargs);
+	else
+		ft_display(pargs);
+	free_pargs(pargs);
+	free(pargs);
 	return (0);
 }
