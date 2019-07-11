@@ -1,10 +1,31 @@
 #!/bin/bash
 
-FILES=$(ls | grep .c)
-if [ -z "$FILES" ]
+for i in $*
+do
+	if [ ! -d $i ]
+   	then
+	  	echo "\033[31m$i: not a directory.\033[0m"
+	   	exit
+	fi
+done
+read -p "Include a lib ? [y/n] : " YN
+while [ "$YN" != "y" ]
+do
+	if [ "$YN" = "n" ]
+   	then
+		break
+	else
+	read -p "Include a lib ? [y/n] : " YN
+	fi
+done
+if [ "$YN" = "y" ]
 then
-	echo "C files are missing"
-	exit
+   	read -p "Lib to include : " LIB
+	if [ ! -e $LIB ]
+	then
+		echo "$LIB: Cannot find"
+		exit
+	fi
 fi
 read -p "Name exe : " EXE
 Mak=$(ls | grep "^Makefile$")
@@ -18,19 +39,52 @@ fi
 Mak=$(ls | grep "^Makefile$")
 echo "NAME = $EXE" >> "$Mak"
 echo "\nSRC = \c" >> "$Mak"
-while read -r FILES
+for i in $*
 do
-	echo "$FILES \c" >> "$Mak"
-done <<< "$FILES"
-echo '\n\nOBJ = $(SRC:.c=.o)' >> "$Mak"
-echo "\nFLAGS = -Wextra -Wall -Werror" >> "$Mak"
+   	cd $i
+   	FILES=$(ls *.c 2> /dev/null)
+   	if [ -z "$FILES" ]
+	then
+		echo "\033[31m$i: no .c files.\033[0m"
+		cd ..
+		rm -rf "$Mak"
+		exit
+	fi
+	cd ..
+	for k in $FILES
+   	do
+	   	echo "$k \c" >> "$Mak"
+   	done
+done
+if [ $# -eq 0 ]
+then
+	FILES=$(ls *.c 2> /dev/null)
+	if [ -z "$FILES" ]
+	then
+		echo "\033[31m.: no .c files.\033[0m"
+		rm -rf "$Mak"
+		exit
+	fi
+	for i in $FILES
+	do
+		echo "$FILES \c" >> "$Mak"
+	done
+fi
+echo "\n\nFLAGS = -Wextra -Wall -Werror" >> "$Mak"
 echo '\nifndef VERBOSE\n.SILENT:\nendif' >> "$Mak"
 echo '\nall:$(NAME)\n' >> "$Mak"
-echo '$(NAME): $(OBJ)' >> "$Mak"
-echo '\tgcc $(FLAGS) -o $(NAME) $(OBJ)' >> "$Mak"
+echo '$(NAME): $(SRC)' >> "$Mak"
+if [ -z $LIB ]
+then
+	echo "\tgcc \$(FLAGS) -o \$(NAME) \$(SRC)" >> "$Mak"
+elif [ -n $LIB ]
+then
+	echo "\tmake -C $LIB" >> "$Mak"
+	echo "\tgcc \$(FLAGS) -o \$(NAME) \$(SRC) $LIB/$LIB.a" >> "$Mak"
+fi
 echo '\techo "\\033[32m$(NAME) compiled.\\033[0m"' >> "$Mak"
-echo '\nclean:\n\t/bin/rm -f $(OBJ)' >> "$Mak"
-echo '\techo "\\033[32mAll .o have been erased.\\033[0m"' >> "$Mak"
-echo '\nfclean: clean\n\t/bin/rm -f $(NAME)' >> "$Mak"
-echo '\techo "\\033[32m$(NAME) erased.\\033[0m"' >> "$Mak"
+echo "\nclean:\n\tmake -C $LIB clean" >> "$Mak"
+echo '\techo "\\033[32mObjects files deleted.\\033[0m"' >> "$Mak"
+echo "\nfclean: clean\n\tmake -C $LIB flcean" >> "$Mak"
+echo "\trm -f $EXE" >> "$Mak"
 echo '\nre: fclean all' >> "$Mak"
