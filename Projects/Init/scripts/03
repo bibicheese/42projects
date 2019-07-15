@@ -53,7 +53,7 @@ do
 	cd ..
 	for k in $FILES
    	do
-	   	echo "$k \c" >> "$Mak"
+	   	echo "$i/$k \c" >> "$Mak"
    	done
 done
 if [ $# -eq 0 ]
@@ -85,6 +85,6 @@ fi
 echo '\techo "\\033[32m$(NAME) compiled.\\033[0m"' >> "$Mak"
 echo "\nclean:\n\tmake -C $LIB clean" >> "$Mak"
 echo '\techo "\\033[32mObjects files deleted.\\033[0m"' >> "$Mak"
-echo "\nfclean: clean\n\tmake -C $LIB flcean" >> "$Mak"
+echo "\nfclean: clean\n\tmake -C $LIB fclean" >> "$Mak"
 echo "\trm -f $EXE" >> "$Mak"
 echo '\nre: fclean all' >> "$Mak"

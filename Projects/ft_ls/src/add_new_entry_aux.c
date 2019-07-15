@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   add_new_entry_aux.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/02 16:19:18 by jmondino          #+#    #+#             */
-/*   Updated: 2019/07/02 16:24:37 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/07/10 12:44:14 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,14 @@ int			get_day(char *date)
 		return (ft_atoi(date + i));
 	}
 	return (0);
+}
+
+void		p_denied(t_args *pargs, char *path, char *name)
+{
+	if (pargs->subdir != 0 || pargs->dirs[1] || pargs->files[0]
+		|| pargs->error != 0)
+		ft_printf("%s:\n", path);
+	ft_putstr_fd("ft_ls: ", 2);
+	ft_putstr_fd(name, 2);
+	ft_putstr_fd(": Permission denied\n", 2);
 }
