@@ -5,15 +5,15 @@
 #                                                     +:+ +:+         +:+      #
 #    By: jmondino <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/09/10 13:35:04 by jmondino          #+#    #+#              #
-#    Updated: 2019/09/10 13:36:44 by jmondino         ###   ########.fr        #
+#    Created: 2019/09/12 19:08:32 by jmondino          #+#    #+#              #
+#    Updated: 2019/09/12 19:08:32 by jmondino         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME = minishell
 
-SRC = src/launch.c src/main.c 
+SRC = src/builtin.c src/command.c src/init.c src/launch.c src/main.c 
 
 FLAGS = -Wextra -Wall -Werror
 
