@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsplit.c                                      :+:      :+:    :+:   */
+/*   ft_strsplit_slashend.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 16:14:29 by jmondino          #+#    #+#             */
-/*   Updated: 2018/11/30 21:27:11 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/16 13:44:41 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,27 +58,28 @@ static size_t		ft_words(char const *s, char c)
 	return (count);
 }
 
-char				**ft_strsplit(char const *s, char c)
+char				**ft_strsplit_slashend(char const *s, char c)
 {
 	char	**tab;
 	char	*str;
 	size_t	i;
 	size_t	j;
 
-	if (!(tab = (char **)malloc(sizeof(char *) * (ft_words(s, c)) + 1)))
+	if (!(tab = (char **)malloc(sizeof(char *) * (ft_words(s, c) + 1))))
 		return (NULL);
 	str = (char *)s;
 	i = 0;
 	while (i < ft_words(s, c))
 	{
-		if (!(tab[i] = (char *)malloc(sizeof(char) * (ft_len(str, c)) + 1)))
+		if (!(tab[i] = (char *)malloc(sizeof(char) * (ft_len(str, c) + 2))))
 			return (NULL);
 		j = 0;
 		while (*str == c)
 			str++;
 		while (*str != c && *str)
 			tab[i][j++] = *str++;
-		tab[i][j] = '\0';
+		tab[i][j] = '/';
+		tab[i][j + 1] = '\0';
 		i++;
 	}
 	tab[i] = NULL;

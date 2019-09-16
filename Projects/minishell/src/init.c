@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 15:06:18 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/12 18:09:25 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/16 14:26:04 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,6 @@ char	**paths(char **env)
             break;
         i++;
     }
-	paths = ft_strsplit(env[i] + 5, ':');
+	paths = ft_strsplit_slashend(env[i] + 5, ':');
 	return (paths);
 }

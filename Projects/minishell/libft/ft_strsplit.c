@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 16:14:29 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/12 17:09:06 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/16 14:48:30 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,21 +65,20 @@ char				**ft_strsplit(char const *s, char c)
 	size_t	i;
 	size_t	j;
 
-	if (!(tab = (char **)malloc(sizeof(char *) * (ft_words(s, c)) + 1)))
+	if (!(tab = (char **)malloc(sizeof(char *) * (ft_words(s, c) + 1))))
 		return (NULL);
 	str = (char *)s;
 	i = 0;
 	while (i < ft_words(s, c))
 	{
-		if (!(tab[i] = (char *)malloc(sizeof(char) * (ft_len(str, c)) + 2)))
+		if (!(tab[i] = (char *)malloc(sizeof(char) * (ft_len(str, c) + 1))))
 			return (NULL);
 		j = 0;
 		while (*str == c)
 			str++;
 		while (*str != c && *str)
 			tab[i][j++] = *str++;
-		tab[i][j] = '/';
-		tab[i][j + 1] = '\0';
+		tab[i][j] = '\0';
 		i++;
 	}
 	tab[i] = NULL;

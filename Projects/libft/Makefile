@@ -6,7 +6,7 @@
 #    By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/21 22:22:11 by jmondino          #+#    #+#              #
-#    Updated: 2019/01/24 16:58:04 by jmondino         ###   ########.fr        #
+#    Updated: 2019/09/16 13:27:56 by jmondino         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -19,7 +19,7 @@ OBJ = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME):
-	gcc -Wextra -Wall -Werror -c $(SRC)
+	gcc -Wextra -Wall -Werror -g -c $(SRC)
 	ar rc $(NAME) $(OBJ)
 	ranlib $(NAME)
 

@@ -6,16 +6,16 @@
 #    By: jmondino <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/09/12 19:08:32 by jmondino          #+#    #+#              #
-#    Updated: 2019/09/12 19:08:32 by jmondino         ###   ########.fr        #
+#    Updated: 2019/09/16 16:52:48 by jmondino         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME = minishell
 
-SRC = src/builtin.c src/command.c src/init.c src/launch.c src/main.c 
+SRC = src/builtin.c src/command.c src/init.c src/launch.c src/main.c
 
-FLAGS = -Wextra -Wall -Werror
+FLAGS = -Wextra -Wall -Werror -g
 
 ifndef VERBOSE
 .SILENT:

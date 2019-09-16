@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/12 18:40:56 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/10 14:09:17 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/16 14:44:03 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ char				*ft_strrev(char *str);
 int					ft_iscinstr(char *str, int c);
 char				*ft_strfchr(char *str, int c);
 int					get_next_line(const int fd, char **line);
-char				**ft_split_whitespaces(char *str);
+char				**ft_strsplit_slashend(char const *s, char c);
+
 
 #endif
