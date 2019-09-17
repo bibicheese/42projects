@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/11 11:24:22 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/16 17:00:03 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/17 15:35:07 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int			builtin(char **args, t_shell *shell);
 int			cmd_exist(char *cmd);
 void		echo(char **args);
 void		env(t_shell *shell);
-
+void		ft_setenv(t_shell *shell,char **args);
+void		ft_unsetenv(char **args, t_shell *shell);
 
 #endif

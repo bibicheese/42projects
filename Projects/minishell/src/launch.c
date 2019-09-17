@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/10 13:12:55 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/16 13:22:53 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/17 11:34:46 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,24 +59,4 @@ void	prompt(t_shell *shell)
 	write(1, " % ", 3);
 	write(1, "\033[0m", 5);
 	shell->error = 0;
-}
-
-char	**array_cpy(char **src)
-{
-	char	**dst;
-	int		i;
-
-	i = 0;
-	while (src[i])
-		i++;
-	if (!(dst = malloc(sizeof(char *) * (i + 1))))
-		return (NULL);
-	i = 0;
-	while (src[i])
-	{
-		dst[i] = ft_strdup(src[i]);
-		i++;
-	}
-	dst[i] = 0;
-	return (dst);
 }

@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 18:54:25 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/16 16:59:41 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/17 16:36:26 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,16 @@
 int		builtin(char **args, t_shell *shell)
 {
 	if (!ft_strcmp(args[0], "exit"))
-		exit(0);
+	{
+		if (args[1] && args[2])
+		{
+			ft_putstr_fd("exit: too many arguments\n", 2);
+			shell->error = 1;
+			return (1);
+		}
+		else
+			args[1] ? exit(ft_atoi(args[1])) : exit(0);
+	}
 	if (!ft_strcmp(args[0], "cd"))
 		printf("go for cd\n");
 	else if (!ft_strcmp(args[0], "echo"))
@@ -23,9 +32,9 @@ int		builtin(char **args, t_shell *shell)
 	else if (!ft_strcmp(args[0], "env"))
 		env(shell);
 	else if (!ft_strcmp(args[0], "setenv"))
-		printf("go for setenv\n");
+		ft_setenv(shell, args);
 	else if (!ft_strcmp(args[0], "unsetenv"))
-		printf("go for unsetenv\n");
+		ft_unsetenv(args, shell);
 	else
 		return (0);
 	return (1);
@@ -49,15 +58,18 @@ void    echo(char **args)
     ft_putchar('\n');
 }
 
-void	env(t_shell *shell)
+void    env(t_shell *shell)
 {
-	int		i;
+    int     i;
 
-	i = 0;
-	while (shell->env[i])
-	{
-		ft_putstr(shell->env[i]);
-		ft_putstr("\n");
-		i++;
-	}
+    i = 0;
+    if (shell->env)
+    {
+		while (shell->env[i])
+		{
+			ft_putstr(shell->env[i]);
+			ft_putstr("\n");
+            i++;
+		}
+    }
 }
