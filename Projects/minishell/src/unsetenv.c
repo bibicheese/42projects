@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/17 15:15:33 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/19 20:27:35 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/19 21:47:06 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void     erase(char *arg, t_shell *shell)
     char    **newenv;
 	char	**var;
 
-    i = 0;
+	i = 0;
 	j = 0;
 	while (shell->env[i])
 		i++;
@@ -58,6 +58,8 @@ static int		parsing(char *arg, t_shell *shell)
 	char	**var;
 
 	i = 0;
+	if (!shell->env)
+		return (0);
 	while (shell->env[i])
 	{
 		var = ft_strsplit(shell->env[i], "=");
@@ -78,7 +80,7 @@ void	ft_unsetenv(char **args, t_shell *shell)
         ft_putstr("usage: unsetenv VARNAME\n");
     else
     {
-        if (parsing(args[1], shell) && shell->env)
+        if (parsing(args[1], shell))
 			erase(args[1], shell);
         else
 		{
