@@ -6,7 +6,7 @@
 /*   By: jmondino <jmondino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/11 11:16:20 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/16 16:56:08 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/19 21:35:30 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@ int		main(void)
 		{
 			if (ft_strcmp(line, ""))
 			{
-				args = ft_strsplit(line, ' ');
+				args = ft_strsplit(line, " \t");
+				args = expansion(args, shell);
 				if (!builtin(args, shell))
 					launch(args, shell);
-				ft_memdel((void **)&line);
-				ft_memdel((void **)args);
+				ft_memdel((void **) &line);
+				ft_memdel((void **) args);
 			}
 			prompt(shell);
 		}

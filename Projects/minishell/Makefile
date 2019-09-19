@@ -6,14 +6,14 @@
 #    By: jmondino <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/09/12 19:08:32 by jmondino          #+#    #+#              #
-#    Updated: 2019/09/17 15:31:35 by jmondino         ###   ########.fr        #
+#    Updated: 2019/09/19 16:50:44 by jmondino         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME = minishell
 
-SRC = src/builtin.c src/command.c src/init.c src/launch.c src/main.c src/setenv.c src/unsetenv.c
+SRC = src/builtin.c src/command.c src/init.c src/launch.c src/main.c src/setenv.c src/unsetenv.c src/expansion.c src/init_aux.c src/cd.c src/cd_aux.c
 
 FLAGS = -Wextra -Wall -Werror -g
 

@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 15:06:18 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/17 17:34:38 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/19 18:46:42 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,23 @@ t_shell     *init_shell(void)
 {
     t_shell         *shell;
     extern char     **environ;
+	char			cwd[1024];
 
     if ((shell = malloc(sizeof(t_shell))) == NULL)
         return (0);
 	shell->error = 0;
+	shell->oldpwd = ft_strdup(getcwd(cwd, 1024));
 	if (environ[0])
 	{
 		shell->env = array_cpy(environ);
 		shell->paths = paths(shell->env);
+		shell->lenv = lenv(shell->env);
+		shell->renv = renv(shell->env);
 	}
 	else
 	{
+		shell->lenv = NULL;
+		shell->renv = NULL;
 		shell->env = NULL;
 		shell->paths = NULL;
 	}

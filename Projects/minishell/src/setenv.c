@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/17 11:13:11 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/17 17:31:11 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/19 21:33:41 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static char		**fill(char *arg, t_shell *shell, char *value)
 	i = -1;
 	while (shell->env[++i])
 	{
-		if (ft_strstr(shell->env[i], value))
+		if (!ft_strcmp(shell->lenv[i], value))
 		{
 			add = 0;
 			newenv[i] = ft_strdup(arg);
@@ -66,6 +66,7 @@ static void		fill_newenv(char *arg, t_shell *shell)
 		return ;
 	shell->env[0] = ft_strdup(arg);
 	shell->env[1] = NULL;
+	shell->lenv = lenv(shell->env);
 }
 
 static void		fill_env(char *arg, t_shell *shell)
@@ -73,7 +74,7 @@ static void		fill_env(char *arg, t_shell *shell)
 	char	**newenv;
 	char	**value;
 	
-	value = ft_strsplit(arg, '=');
+	value = ft_strsplit(arg, "=");
 	newenv = fill(arg, shell, value[0]);
 	ft_memdel((void **) value);
 	ft_memdel((void **) shell->env);
@@ -81,6 +82,10 @@ static void		fill_env(char *arg, t_shell *shell)
 	ft_memdel((void **) newenv);
 	ft_memdel((void **) shell->paths);
     shell->paths = paths(shell->env);
+	ft_memdel((void **) shell->lenv);
+	ft_memdel((void **) shell->renv);
+	shell->lenv = lenv(shell->env);
+	shell->renv = renv(shell->env);
 }
 
 void	ft_setenv(t_shell *shell, char **args)

@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/17 15:15:33 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/17 17:40:33 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/19 20:27:35 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@ static void		memdel_fill_struct(t_shell *shell, char **newenv)
 	ft_memdel((void **) newenv);
 	ft_memdel((void **) shell->paths);
 	shell->paths = paths(shell->env);
+	ft_memdel((void **) shell->renv);
+	ft_memdel((void **) shell->lenv);
+	shell->renv = renv(shell->env);
+	shell->lenv = lenv(shell->env);
 }
 
 static void     erase(char *arg, t_shell *shell)
@@ -37,7 +41,7 @@ static void     erase(char *arg, t_shell *shell)
 	i = 0;
 	while (shell->env[i])
 	{
-		var = ft_strsplit(shell->env[i], '=');
+		var = ft_strsplit(shell->env[i], "=");
 		if (!ft_strcmp(var[0], arg))
 			i++;
 		else
@@ -56,7 +60,7 @@ static int		parsing(char *arg, t_shell *shell)
 	i = 0;
 	while (shell->env[i])
 	{
-		var = ft_strsplit(shell->env[i], '=');
+		var = ft_strsplit(shell->env[i], "=");
 		if (!ft_strcmp(var[0], arg))
 		{
 			ft_memdel((void **) var);

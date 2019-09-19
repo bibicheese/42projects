@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/10 13:12:55 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/17 11:34:46 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/19 19:22:32 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	launch(char **args, t_shell *shell)
 {
 	pid_t	pid;
 	char	*cmd;
-	
+
 	cmd = find_cmd(shell, args[0]);
 	if (!cmd_exist(cmd))
 	{
@@ -54,7 +54,8 @@ void	prompt(t_shell *shell)
 	shell->error > 0 ? write(1, "\033[1;31m", 7) : write(1, "\033[1;32m", 7);
 	write(1, "-->  ", 5);
 	write(1, "\033[1;36m", 7);
-	write(1, cwd + i, ft_strlen(cwd) - i);
+	ft_strcmp(cwd, "/") ? write(1, cwd + i, ft_strlen(cwd) - i) :
+		write(1, cwd, 1);
 	write(1, "\033[1;33m", 7);
 	write(1, " % ", 3);
 	write(1, "\033[0m", 5);
