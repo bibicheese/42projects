@@ -1,0 +1,78 @@
+@media only screen and (max-width: 400px) {
+
+}
+
+* {
+margin: 0;
+padding:0;
+box-sizing:border-box;
+}
+
+body {
+
+}
+
+.recent {
+background-color:#c8c6fa;
+width:100%;
+height:600px;
+}
+
+.montage {
+background-color:#d6e9fe;
+width:100%;
+height:600px;
+}
+
+.header {
+width:100%;
+height:91px;
+background-color:#b2d6ff;
+}
+
+.img {
+display:flex;
+flex-wrap:wrap;
+float:left;
+margin-top:-40px;
+}
+
+.nav {
+display:flex;
+flex-wrap:wrap;
+float:right;
+margin-right:80px;
+}
+
+.login {
+font-family: 'Lucida Console', Monaco, monospace;
+font-size:80%;
+width:110px;
+height:40px;
+background-color:#f5cf8e;
+border:solid 2px;
+border-color:white;
+text-align: center;
+border-radius: 50px;
+margin-top:20px;
+padding-top:8px;
+margin-right:2px;
+}
+
+.logup {
+font-family: 'Lucida Console', Monaco, monospace;
+font-size:80%;
+width:100px;
+height:40px;
+background-color:#f09a9d;
+border:solid 2px;
+border-color:white;
+text-align:center;
+margin-top:20px;
+border-radius: 50px;
+padding-top:8px;
+}
+
+.login:hover, .logup:hover {
+filter:brightness(0.9);
+}

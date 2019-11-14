@@ -1,0 +1,181 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #f2eee5;
+}
+
+.topnav .burger {
+  float: right;
+  display: block;
+  color: #333;
+  text-align: center;
+  padding: 25px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.fa-image {
+  font-size: 40px;
+  position: absolute;
+  margin-left: 30%;
+  margin-top: 15px;
+  color: black;
+}
+
+.fa-camera-retro {
+  position: absolute;
+  font-size: 40px;
+  margin-left: 20%;
+  margin-top: 15px;
+  color: black; 
+}
+
+.burger:hover, .icon:hover{
+  background-color: #c2e8ce;
+  color: black;
+}
+
+.topnav .icon {
+  display: none;
+}
+
+.img {
+  width: 200px;
+  height: auto;
+}
+
+@media screen and (max-width: 1600px), (min-width: 1600px) {
+
+.fa-image {
+  font-size: 40px;
+  position: absolute;
+  margin-left: 45%;
+  margin-top: 15px;
+  color: black;
+}
+
+.fa-camera-retro {
+  position: absolute;
+  font-size: 40px;
+  margin-left: 35%;
+  margin-top: 15px;
+  color: black; 
+}
+
+@media screen and (max-width: 1400px) {
+
+.fa-image {
+  font-size: 40px;
+  position: absolute;
+  margin-left: 40%;
+  margin-top: 15px;
+  color: black;
+}
+
+.fa-camera-retro {
+  position: absolute;
+  font-size: 40px;
+  margin-left: 25%;
+  margin-top: 15px;
+  color: black; 
+}
+
+}
+
+@media screen and (max-width: 900px) {
+
+.fa-image {
+  font-size: 40px;
+  position: absolute;
+  margin-left: 35%;
+  margin-top: 15px;
+  color: black;
+}
+
+.fa-camera-retro {
+  position: absolute;
+  font-size: 40px;
+  margin-left: 20%;
+  margin-top: 15px;
+  color: black; 
+}
+
+}
+
+@media screen and (max-width: 800px) {
+
+.topnav .burger:not(:first-child) {
+  display: none;
+}
+
+.topnav .icon {
+  float: right; 
+  display: block;
+  color: black;
+  padding: 28px 20px;
+}
+
+.topnav.responsive {
+  height: auto;
+}
+
+.topnav.responsive {
+  position: relative;
+}
+
+.topnav.responsive .icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.topnav.responsive .burger {
+  float: none;
+  display: block;
+  text-align: left;
+  padding: 16px 16px;
+}
+
+}
+
+@media screen and (max-width: 650px) {
+
+.fa-image {
+  font-size: 40px;
+  position: absolute;
+  margin-left: 32%;
+  margin-top: 15px;
+  color: black;
+}
+
+.fa-camera-retro {
+  position: absolute;
+  font-size: 40px;
+  margin-left: 17%;
+  margin-top: 15px;
+  color: black; 
+}
+
+@media screen and (max-width: 550px) {
+
+.fa-image {
+  font-size: 40px;
+  position: absolute;
+  margin-left: 27%;
+  margin-top: 15px;
+  color: black;
+}
+
+.fa-camera-retro {
+  position: absolute;
+  font-size: 40px;
+  margin-left: 12%;
+  margin-top: 15px;
+  color: black; 
+}
+
+}
