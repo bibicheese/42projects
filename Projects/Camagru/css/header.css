@@ -16,6 +16,7 @@ body {
   padding: 25px 16px;
   text-decoration: none;
   font-size: 17px;
+   transition: 0.3s;
 }
 
 .fa-image {
@@ -35,7 +36,7 @@ body {
 }
 
 .burger:hover, .icon:hover{
-  background-color: #c2e8ce;
+  background-color: #537791;
   color: black;
 }
 
@@ -48,13 +49,33 @@ body {
   height: auto;
 }
 
+.fa-image {
+  margin-top: 0px;
+  padding: 15px 16px;
+  transition: 0.3s;
+}
+
+.fa-camera-retro {
+  margin-top: 0px;
+  padding: 15px 16px;
+  transition: 0.3s;
+}
+
+.fa-camera-retro:hover {
+background-color: #537791;
+}
+
+.fa-image:hover {
+background-color: #537791;
+}
+
 @media screen and (max-width: 1600px), (min-width: 1600px) {
 
 .fa-image {
   font-size: 40px;
   position: absolute;
   margin-left: 45%;
-  margin-top: 15px;
+
   color: black;
 }
 
@@ -62,7 +83,6 @@ body {
   position: absolute;
   font-size: 40px;
   margin-left: 35%;
-  margin-top: 15px;
   color: black; 
 }
 
@@ -72,7 +92,7 @@ body {
   font-size: 40px;
   position: absolute;
   margin-left: 40%;
-  margin-top: 15px;
+
   color: black;
 }
 
@@ -80,7 +100,7 @@ body {
   position: absolute;
   font-size: 40px;
   margin-left: 25%;
-  margin-top: 15px;
+
   color: black; 
 }
 
@@ -92,7 +112,7 @@ body {
   font-size: 40px;
   position: absolute;
   margin-left: 35%;
-  margin-top: 15px;
+
   color: black;
 }
 
@@ -100,7 +120,7 @@ body {
   position: absolute;
   font-size: 40px;
   margin-left: 20%;
-  margin-top: 15px;
+
   color: black; 
 }
 
@@ -116,8 +136,9 @@ body {
   float: right; 
   display: block;
   color: black;
-  padding: 28px 20px;
+  padding: 25px 20px;
   font-size: 20px;
+   transition: 0.3s;
 }
 
 .topnav.responsive {
@@ -132,6 +153,7 @@ body {
   position: absolute;
   right: 0;
   top: 0;
+  transition: 0.3s;
 }
 
 .topnav.responsive .burger {
@@ -149,7 +171,7 @@ body {
   font-size: 40px;
   position: absolute;
   margin-left: 32%;
-  margin-top: 15px;
+
   color: black;
 }
 
@@ -157,7 +179,7 @@ body {
   position: absolute;
   font-size: 40px;
   margin-left: 17%;
-  margin-top: 15px;
+
   color: black; 
 }
 
@@ -167,7 +189,7 @@ body {
   font-size: 40px;
   position: absolute;
   margin-left: 27%;
-  margin-top: 15px;
+
   color: black;
 }
 
@@ -175,7 +197,7 @@ body {
   position: absolute;
   font-size: 40px;
   margin-left: 12%;
-  margin-top: 15px;
+
   color: black; 
 }
 
