@@ -2,6 +2,9 @@
 require "../db.php";
 session_start();
 
+$login_used = false;
+$mail_used = false;
+
 if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
 {
 	$birthDate = $_POST['birth_day']."/".$_POST['birth_month']."/".$_POST['birth_year'];
@@ -13,15 +16,43 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
 		$day = "0".$_POST['birth_day'];
 		$month = "0".$_POST['birth_month'];
 	}
-	//$birthDate = $day."/".$month."/".$_POST['birth_year'];
-	//$mail = $_POST['mail'];
+	$birthDate = $day."/".$month."/".$_POST['birth_year'];
+	$mail = $_POST['mail'];
 	$login = $_POST['login'];
-	//$passwd = $_POST['passwd'];
-	//$firstname = $_POST['firstname'];
-	//$lastname = $_POST['lastname'];
-	make_query("SELECT login FROM users WHERE login = $login");
-	//make_query("INSERT INTO users (firstname, lastname, email, password, login, birth, age) VALUES (\"$firstname\", \"$lastname\", \"$mail\", \"$passwd\", \"$login\", \"$birthDate\", \"$age\")");
-	//header("location: ../index.php");
+	$passwd = $_POST['passwd'];
+	$firstname = $_POST['firstname'];
+	$lastname = $_POST['lastname'];
+	$ret = make_query("SELECT * FROM users WHERE `login` = '$login'");
+	$ret2 = make_query("SELECT * FROM users WHERE `email` = '$mail'");
+	$ret = $ret->fetch(PDO::FETCH_ASSOC);
+	$ret2 = $ret2->fetch(PDO::FETCH_ASSOC);
+	if ($ret)
+		$login_used = true;
+	if ($ret2)
+		$mail_used = true;
+		if (!$login_used && !$mail_used)
+		{
+		$token = openssl_random_pseudo_bytes(20, $truc);
+		$token = bin2hex($token);
+		make_query("INSERT INTO users (firstname, lastname, email, password, login, birth, age, token) VALUES (\"$firstname\", \"$lastname\", \"$mail\", \"$passwd\", \"$login\", \"$birthDate\", \"$age\", \"$token\")");
+		$to  = $email;
+		$subject = 'Welcome to Camagru !';
+		$message = '<html>
+			 		      <head>
+			 		      </head>
+			 		      <body>
+			 		        <h1>Bienvenue sur Photogru ' .$firstname.' !</h1>
+									<br>
+									<p Pour activer votre compte, veuillez cliquer sur le lien ci dessous:</p>
+			 		        <a href="http://localhost:8080/camagru/index.php?activationToken='. $token .'"></a>
+			 		      </body>
+			 		     </html>';
+    $headers[] = 'To: <' . $email . '>';
+		$headers[] = 'From: Camagru <noreply@camagru.noreply.fr>';
+
+		mail($to, $subject, $message, implode("\r\n", $headers));
+		header("location: ../index.php");
+		}
 }
 
 ?>
@@ -50,9 +81,25 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
             <div class="elements">
                 <form action="" method="post">
                         <label for="login" class="text">Nom de compte*</label>
-                        <input type="text" id="login" class="champ" placeholder="Nom de compte" name="login" required>
-												<p class="error_login">Nom de compte non disponible</p>
-			<!--							<div class="each">
+                        <input type="text" id="login" class="champ" placeholder="Nom de compte" name="login" value="<?php if (isset($_POST['login'])) echo $_POST['login']?>" required>
+												<p class="error_login" id="error_login">Nom de compte non disponible</p>
+												<?php
+												if ($login_used) {
+													echo "<script>
+														document.getElementById(\"error_login\").style.display = \"block\";
+														document.getElementById(\"login\").style.backgroundColor = \"#e4442c\";
+														document.getElementById(\"login\").style.borderColor = \"#e4442c\";
+														document.getElementById(\"login\").style.color = \"white\";
+														document.getElementById(\"login\").onkeyup = function() {
+															document.getElementById(\"login\").style.backgroundColor = \"white\";
+															document.getElementById(\"login\").style.borderColor = \"#c7c3b4\";
+															document.getElementById(\"login\").style.color = \"black\";
+															document.getElementById(\"error_login\").style.display = \"none\";
+														}
+													</script>";
+												}
+												?>
+										<div class="each">
                         <label for="passwd" class="text">Mot de passe*</label>
                         <input type="password" id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" class="champ" placeholder="Mot de passe" name="passwd" required>
 											</div>
@@ -69,15 +116,32 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
                     </div>
                     <div class="each">
                         <label for="mail" class="text">E-mail*</label>
-                        <input type="email" id="mail" class="champ" placeholder="E-mail" name="mail" required>
-                    </div>
+												<input type="email" id="mail" class="champ mail" placeholder="E-mail" name="mail" value="<?php if (isset($_POST['mail'])) echo $_POST['mail']?>"required>
+												<p class="error_mail" id="error_mail">Mail non disponible</p>
+												<?php
+												if ($mail_used) {
+													echo "<script>
+														document.getElementById(\"error_mail\").style.display = \"block\";
+														document.getElementById(\"mail\").style.backgroundColor = \"#e4442c\";
+														document.getElementById(\"mail\").style.borderColor = \"#e4442c\";
+														document.getElementById(\"mail\").style.color = \"white\";
+														document.getElementById(\"mail\").onkeyup = function() {
+															document.getElementById(\"mail\").style.backgroundColor = \"white\";
+															document.getElementById(\"mail\").style.borderColor = \"#c7c3b4\";
+															document.getElementById(\"mail\").style.color = \"black\";
+															document.getElementById(\"error_mail\").style.display = \"none\";
+														}
+													</script>";
+												}
+												?>
+										</div>
                     <div class="each">
                         <label for="firstname" class="text">Prénom*</label>
-                        <input type="text" class="champ" placeholder="Prénom" name="firstname" required>
+                        <input type="text" class="champ" placeholder="Prénom" name="firstname" value="<?php if (isset($_POST['firstname'])) echo $_POST['firstname']?>"required>
                     </div>
                     <div class="each">
                         <label for="lastname" class="text">Nom*</label><br>
-                        <input type="text" class="champ" placeholder="Nom" name="lastname" required>
+                        <input type="text" class="champ" placeholder="Nom" name="lastname" value="<?php if (isset($_POST['lastname'])) echo $_POST['lastname']?>"required>
                     </div>
                     <div class="each">
                         <p class="text">Date de naissance*</p>
@@ -122,7 +186,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
                                 ?>
                             </select>
                         </div>
-                    </div> -->
+                    </div>
                     <div class="terminate">
                         <input class="button" type="submit" name="submit" value="Terminer l'inscription" required>
                     </div>

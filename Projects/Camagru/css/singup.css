@@ -2,12 +2,13 @@ body {
   padding: 0;
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #c1c0b9;
+  background-color: #181715;
+
 
 }
 
 .topnav {
-  background-color: #f2eee5;
+  background-color: #7c96b9;
   overflow: hidden;
 }
 
@@ -39,7 +40,12 @@ body {
 
 .error_login {
   display: none;
-  color: red;
+  color: #e4442c;
+}
+
+.error_mail {
+  display: none;
+  color: #e4442c;
 }
 
 .header {
@@ -133,7 +139,7 @@ body {
 }
 
 .invalid {
-  color: red;
+  color: #e4442c;
 }
 
 .invalid:before {
@@ -168,7 +174,7 @@ body {
   display: block;
   margin-right: auto;
   margin-left: auto;
-  width: 1100px;
+  width: 100%;
   height: auto;
 }
 

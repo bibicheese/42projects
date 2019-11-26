@@ -13,6 +13,7 @@ function create_table($conn) {
                       login VARCHAR(30) NOT NULL UNIQUE,
                       password VARCHAR(30) NOT NULL,
                       active INT NOT NULL DEFAULT 0,
+											token VARCHAR(50) DEFAULT NULL,
                       reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
 	}
 	catch(PDOException $e) {
@@ -22,7 +23,7 @@ function create_table($conn) {
 
 function make_query($query) {
 	global $conn;
-	$conn->query($query);
+	return $conn->query($query);
 }
 
 $host = "localhost";
