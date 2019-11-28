@@ -3,12 +3,8 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.modal {
-  text-align: center;
-
-}
-
 .topnav {
+  z-index: 10;
   overflow: hidden;
   background-color: #f2eee5;
 }
@@ -21,7 +17,7 @@ body {
   padding: 25px 16px;
   text-decoration: none;
   font-size: 17px;
-   transition: 0.3s;
+  transition: 0.3s;
 }
 
 .fa-image {
@@ -133,7 +129,7 @@ background-color: #537791;
 
 @media screen and (max-width: 800px) {
 
-.topnav .burger:not(:first-child) {
+.topnav .burger {
   display: none;
 }
 
@@ -143,15 +139,12 @@ background-color: #537791;
   color: black;
   padding: 25px 20px;
   font-size: 20px;
-   transition: 0.3s;
-}
-
-.topnav.responsive {
-  height: auto;
+  transition: 0.3s;
 }
 
 .topnav.responsive {
   position: relative;
+  height: auto;
 }
 
 .topnav.responsive .icon {
