@@ -11,11 +11,14 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
 	$birthDate = explode("/", $birthDate);
 	$age = (date("md", date("U", mktime(0, 0, 0, $birthDate[0], $birthDate[1], $birthDate[2]))) > date("md") ? ((date("Y") - $birthDate[2]) - 1) : (date("Y") - $birthDate[2]));
 
-	if ($_POST['birth_day'] < 10 || $_POST['birth_month'] < 10)
-	{
+	if ($_POST['birth_day'] < 10)
 		$day = "0".$_POST['birth_day'];
+	else
+		$day = $_POST['birth_day'];
+	if ($_POST['birth_month'] < 10)
 		$month = "0".$_POST['birth_month'];
-	}
+	else
+		$month = $_POST['birth_month'];
 	$birthDate = $day."/".$month."/".$_POST['birth_year'];
 	$mail = $_POST['mail'];
 	$login = $_POST['login'];
@@ -44,7 +47,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
 			 		        <h1>Bienvenue sur Photogru ' .$firstname.' !</h1>
 									<br>
 									<p Pour activer votre compte, veuillez cliquer sur le lien ci dessous:</p>
-			 		        <a href="http://localhost:8080/camagru/index.php?activationToken='. $token .'"></a>
+			 		        <a href="http://localhost:8080/camagru/index.php?token='. $token .'"></a>
 			 		      </body>
 			 		     </html>';
     $headers[] = 'To: <' . $email . '>';

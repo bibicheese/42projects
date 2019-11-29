@@ -3,6 +3,34 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.menu {
+  display: none;
+  float: right;
+  width: auto;
+  height: auto;
+  background-color: #f2eee5;
+}
+
+.account {
+  color: #333;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.log {
+  font-size: 18px;
+  padding: 20px;
+  transition: 0.3s;
+  color: #333;
+  background-color: #f2eee5;
+  border: none;
+}
+
+.log:hover {
+  background-color: #537791;
+  cursor: pointer;
+}
+
 .topnav {
   z-index: 10;
   overflow: hidden;
@@ -10,6 +38,7 @@ body {
 }
 
 .topnav .burger {
+  cursor: pointer;
   float: right;
   display: block;
   color: #333;
@@ -36,8 +65,7 @@ body {
   color: black;
 }
 
-.burger:hover, .icon:hover {
-  cursor: pointer;
+.burger:hover, .icon:hover{
   background-color: #537791;
   color: black;
 }
@@ -124,42 +152,6 @@ background-color: #537791;
   margin-left: 20%;
 
   color: black;
-}
-
-}
-
-@media screen and (max-width: 800px) {
-
-.topnav .burger {
-  display: none;
-}
-
-.topnav .icon {
-  float: right;
-  display: block;
-  color: black;
-  padding: 25px 20px;
-  font-size: 20px;
-  transition: 0.3s;
-}
-
-.topnav.responsive {
-  position: relative;
-  height: auto;
-}
-
-.topnav.responsive .icon {
-  position: absolute;
-  right: 0;
-  top: 0;
-  transition: 0.3s;
-}
-
-.topnav.responsive .burger {
-  float: none;
-  display: block;
-  text-align: left;
-  padding: 16px 16px;
 }
 
 }

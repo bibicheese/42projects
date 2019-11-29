@@ -4,6 +4,7 @@ require "php/db.php";
 
 $fake_login = false;
 $fake_passwd = false;
+$active = true;
 
 if (isset($_GET['token']))
 {
@@ -19,11 +20,13 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
   $ret = $ret->fetch(PDO::FETCH_ASSOC);
   if (!$ret)
     $fake_login = true;
-  if ($ret["password"] != $passwd)
+  else if ($ret["password"] != $passwd)
     $fake_passwd = true;
-  else {
+  else if ($ret['active'] != 1){
+    $active = false;
+  }
+  if (!$fake_passwd && !$fake_login && $active) {
     $_SESSION['login'] = $_POST['account'];
-    header("location: php/connected.php");
   }
 }
 
@@ -33,8 +36,6 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
 <head>
 
 <title>Photogru</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="css/header.css">
 <link rel="stylesheet" href="css/signin.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -57,8 +58,9 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
               echo "<div class=\"error_log\" id=\"error_log\">Le nom de compte est incorrect</div>";
             if ($fake_passwd && !$fake_login)
               echo "<div class=\"error_log\" id=\"error_log\">Le mot de passe est incorrect</div>";
-
-            if ($fake_login || $fake_passwd) {
+            if (!$active)
+              echo "<div class=\"error_log\" id=\"error_log\">Le compte n'est pas activé</div>";
+            if ($fake_login || $fake_passwd || !$active) {
               echo "<script>
                 document.getElementById('all').style.display = 'block';
                 document.getElementById('error_log').style.display = 'block';
@@ -83,20 +85,16 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
   </div>
 </div>
 
-<div class="topnav" id="myTopnav">
-  <a href="index.php"><img src="ressources/photo.gru.png" class="img"></a>
-  <a href="#" class="fa fa-camera-retro"></a>
-  <a href="#" class="fa fa-image"></a>
-  <a href="php/signup.php" class="burger">S'inscrire</a>
-  <a class="burger" id="login">S'identifier</a>
-  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-    <i class="fa fa-bars"></i>
-  </a>
-</div>
 
+<?php
 
+if ($_SESSION['login'] && $_SESSION['login'] != "")
+  include ("php/connected_header.php");
+else
+  include ("php/header.php");
 
+?>
 <script src="js/login.js"></script>
-<script src="js/header.js"></script>
+
 </body>
 </html>
