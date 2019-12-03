@@ -26,7 +26,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
     $active = false;
   }
   if (!$fake_passwd && !$fake_login && $active) {
-    $_SESSION['login'] = $_POST['account'];
+    $_SESSION['id'] = $ret['id'];
   }
 }
 
@@ -73,7 +73,8 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
         </div>
         <div class="each">
           <label for="passwd" class="text">Mot de passe</label><br>
-          <input type="password" class="champ" placeholder="Mot de passe" name="passwd" required>
+          <input type="password" class="champ" placeholder="Mot de passe" name="passwd" required><br><br>
+          <a href="php/recover_password.php?page=1" class="forget">Mot de passe oublié ?</a>
         </div>
           <div class="terminate">
             <input class="button" type="submit" name="submit" value="se connecter" required>
@@ -88,12 +89,18 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
 
 <?php
 
-if ($_SESSION['login'] && $_SESSION['login'] != "")
+if (isset($_SESSION['id']) && $_SESSION['id'] != "")
   include ("php/connected_header.php");
 else
   include ("php/header.php");
 
+if (isset($_GET['camera']) && $_GET['camera'] == 1)
+  include ('php/photo.php');
+else
+  include ('php/gallery.php');
 ?>
+
+
 <script src="js/login.js"></script>
 
 </body>

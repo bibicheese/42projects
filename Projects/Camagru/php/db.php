@@ -14,6 +14,7 @@ function create_table($conn) {
                       password VARCHAR(30) NOT NULL,
                       active INT NOT NULL DEFAULT 0,
 											token VARCHAR(50) DEFAULT NULL,
+											recover VARCHAR(30) DEFAULT NULL,
                       reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
 	}
 	catch(PDOException $e) {

@@ -1,30 +1,63 @@
 <?php
 session_start();
 require "db.php";
-$login = $_SESSION['login'];
+$id = $_SESSION['id'];
 
 $old_passwd = true;
 $confirm = true;
+$same_password = false;
+$same_login = false;
+$same_mail = false;
 
-$ret = make_query("SELECT * FROM users WHERE `login` = '$login'");
+$ret = make_query("SELECT * FROM users WHERE `id` = '$id'");
 $ret = $ret->fetch(PDO::FETCH_ASSOC);
+$current_login = $ret['login'];
 
-if (isset($_POST['submit']) && $_POST['submit'] == "valider")
+if (isset($_POST['submit_password']) && $_POST['submit_password'] == "valider")
 {
   if ($_POST['old_passwd'] != $ret['password']) {
     $old_passwd = false;
   }
   else if ($_POST['new_passwd'] != $_POST['confirm'])
     $confirm = false;
+  else if ($_POST['new_passwd'] == $ret['password'])
+    $same_password = true;
   else {
     $new_passwd = $_POST['new_passwd'];
     make_query("UPDATE users SET `password` = '$new_passwd' WHERE `login` = '$login'");
+    $_SESSION['login'] = "";
+    header("location: ../index.php");
   }
 }
+print_r($_POST);
+if (isset($_POST['submit_mail']) && $_POST['submit_mail'] == "valider")
+{
+  if ($_POST['new_mail'] == $ret['email'])
+    $same_mail = true;
+    else {
+      $old_mail = $ret['email'];
+      $new_mail = $_POST['new_mail'];
+      make_query("UPDATE users SET `email` = '$new_mail' WHERE `email` = '$old_mail'");
+      header("Location: ".$_SERVER['PHP_SELF']);
+    }
+}
+
+if (isset($_POST['submit_login']) && $_POST['submit_login'] != "")
+{
+  if ($_POST['new_login'] == $ret['login'])
+    $same_login = true;
+  else {
+    $old_login = $ret['login'];
+    $new_login = $_POST['new_login'];
+    make_query("UPDATE users SET `login` = '$new_login' WHERE `login` = '$old_login'");
+    header("Location: ".$_SERVER['PHP_SELF']);
+  }
+}
+
 if (isset($_POST['submit_delete']) && $_POST['submit_delete'] == "supprimer son compte")
 {
   make_query("DELETE FROM users WHERE `login` = '$login'");
-  $_SESSION['login'] = "";
+  $_SESSION['id'] = "";
   header("location: ../index.php");
 }
 ?>
@@ -50,7 +83,26 @@ if (isset($_POST['submit_delete']) && $_POST['submit_delete'] == "supprimer son 
 
 <div class="first">
   <strong class="text">Nom du compte :</strong>
-  <?php echo "<span class=\"show\">".$_SESSION['login']."</span>";?>
+  <?php echo "<span class=\"show\">".$current_login."</span>";?>
+  <i class="fa fa-edit" onclick="show_login_modify()"></i>
+</div>
+
+<div class="login_modify" id="login_modify">
+  <form method="post">
+      <label for="new_login" class="text_modify">Nouveau nom de compte</label><br>
+      <input type="text" class="champ" placeholder="Nouveau nom de compte" name="new_login" required>
+      <?php
+      if ($same_login) {
+        echo "<p class=\"error_msg\">Le nouveau login ne peut être égal à l'ancien.</p>";
+        echo "<script>
+            document.getElementById('login_modify').style.display = 'block';
+            </script>";
+          }
+        ?><br>
+        <div class="terminate">
+            <input class="button" type="submit" name="submit_login" value="valider" required>
+        </div>
+  </form>
 </div>
 
 <hr class="other_one">
@@ -89,6 +141,14 @@ if (isset($_POST['submit_delete']) && $_POST['submit_delete'] == "supprimer son 
       ?><br>
       <label for="new_passwd" class="text_modify">Nouveau mot de passe*</label><br>
       <input type="password" id="password" class="champ" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"placeholder="Nouveau mot de passe" name="new_passwd" required><br>
+      <?php
+        if ($same_password) {
+        echo "<p class=\"error_msg\">Le nouveau mot de passe ne peut être égal à l'ancien.</p>";
+        echo "<script>
+            document.getElementById('passwd_modify').style.display = 'block';
+            </script>";
+      }
+      ?>
       <div id="message">
         <h3>Le mot de passe doit au moins contenir :</h3>
         <p id="letter" class="invalid">Une <b>miniscule</b></p>
@@ -99,14 +159,34 @@ if (isset($_POST['submit_delete']) && $_POST['submit_delete'] == "supprimer son 
       <label for="confirm" class="text_modify">Confirmer le nouveau mot de passe*</label><br>
       <input type="password" id="confirm_password" class="champ" placeholder="Confirmer le nouveau mot de passe" name="confirm" required>
       <div class="terminate">
-          <input class="button" type="submit" name="submit" value="valider" required>
+          <input class="button" type="submit" name="submit_password" value="valider" required>
       </div>
+    </form>
     </div>
 
         <hr class="other_one">
       <div class="each">
         <strong class="text">E-mail :</strong>
         <?php echo "<span class=\"show\">".$ret['email']."</span>";?>
+        <i class="fa fa-edit" onclick="show_mail_modify()"></i>
+      </div>
+
+      <div class="mail_modify" id="mail_modify">
+        <form method="post">
+            <label for="new_mail" class="text_modify">Nouvelle adresse email</label><br>
+            <input type="text" class="champ" placeholder="Nouvelle adresse email" name="new_mail" required>
+            <?php
+            if ($same_mail) {
+              echo "<p class=\"error_msg\">Le nouvel email ne peut être égal à l'ancien.</p>";
+              echo "<script>
+                  document.getElementById('mail_modify').style.display = 'block';
+                  </script>";
+                }
+              ?><br>
+              <div class="terminate">
+                  <input class="button" type="submit" name="submit_mail" value="valider" required>
+              </div>
+        </form>
       </div>
 
       <hr class="other_one">

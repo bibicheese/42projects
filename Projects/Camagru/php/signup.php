@@ -38,23 +38,25 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
 		$token = openssl_random_pseudo_bytes(20, $truc);
 		$token = bin2hex($token);
 		make_query("INSERT INTO users (firstname, lastname, email, password, login, birth, age, token) VALUES (\"$firstname\", \"$lastname\", \"$mail\", \"$passwd\", \"$login\", \"$birthDate\", \"$age\", \"$token\")");
-		$to  = $email;
-		$subject = 'Welcome to Camagru !';
-		$message = '<html>
-			 		      <head>
-			 		      </head>
-			 		      <body>
-			 		        <h1>Bienvenue sur Photogru ' .$firstname.' !</h1>
-									<br>
-									<p Pour activer votre compte, veuillez cliquer sur le lien ci dessous:</p>
-			 		        <a href="http://localhost:8080/camagru/index.php?token='. $token .'"></a>
-			 		      </body>
-			 		     </html>';
-    $headers[] = 'To: <' . $email . '>';
-		$headers[] = 'From: Camagru <noreply@camagru.noreply.fr>';
+		$to  = $mail;
+		$subject = "Welcome to Camagru !";
+		$message = '
+		<html>
+		 <head>
+		 </head>
+		 <body>
+			 <h1>Bienvenue sur Photogru ' . $firstname . ' !</h1>
+			 <a href="http://localhost:8080/camagru/index.php?token='. $token .'"><p>Cliquez ici pour activer votre compte !</p></a>
+		 </body>
+		</html>
+		';
+	 	$headers[] = 'MIME-Version: 1.0';
+		$headers[] = 'Content-Type: text/html; charset=utf-8';
+    $headers[] = "To: < $mail >";
+		$headers[] = "From: Camagru <noreply@localhost>";
 
 		mail($to, $subject, $message, implode("\r\n", $headers));
-		header("location: ../index.php");
+ 		header("location: ../index.php");
 		}
 }
 

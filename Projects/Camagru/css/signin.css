@@ -82,6 +82,12 @@
   font-size: 15px;
 }
 
+.forget {
+  margin-left: 10px;
+  font-size: 12px;
+  color: gray;
+}
+
 .champ {
   margin-top: 5px;
   margin-left: 10px;

@@ -1,8 +1,8 @@
 <?php
 if (isset($_POST['logout'])) {
-  if ($_SESSION['login'] && $_SESSION['login'] != "")
+  if ($_SESSION['id'] && $_SESSION['id'] != "")
   {
-    $_SESSION['login'] = "";
+    $_SESSION['id'] = "";
     header("location: index.php");
   }
 }

@@ -1,0 +1,17 @@
+<?php
+
+
+
+?>
+
+<html>
+<head>
+
+
+</head>
+<body>
+
+  <h1>GALLERY</h1>
+
+</body>
+</html>
