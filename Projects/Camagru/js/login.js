@@ -10,3 +10,15 @@ $(window).click(function(e) {
     $("#error_log").css("display", "none");
   }
 });
+
+$(window).click(function(e) {
+  if (e.target.id == "img_big_container") {
+    $("#all2").css("display", "none");
+  }
+  else if (e.target.id == "all2") {
+    $("#all2").css("display", "none");
+  }
+  else if (e.target.id == "close2") {
+    $("#all2").css("display", "none");
+  }
+});

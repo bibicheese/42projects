@@ -39,7 +39,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
 		$token = bin2hex($token);
 		make_query("INSERT INTO users (firstname, lastname, email, password, login, birth, age, token) VALUES (\"$firstname\", \"$lastname\", \"$mail\", \"$passwd\", \"$login\", \"$birthDate\", \"$age\", \"$token\")");
 		$to  = $mail;
-		$subject = "Welcome to Camagru !";
+		$subject = "Bienvenue sur Photogru !";
 		$message = '
 		<html>
 		 <head>
@@ -56,7 +56,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
 		$headers[] = "From: Camagru <noreply@localhost>";
 
 		mail($to, $subject, $message, implode("\r\n", $headers));
- 		header("location: ../index.php");
+		header("location: ../index.php");
 		}
 }
 

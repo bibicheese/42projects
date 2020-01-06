@@ -25,30 +25,57 @@ if (isset($_POST['submit_password']) && $_POST['submit_password'] == "valider")
   else {
     $new_passwd = $_POST['new_passwd'];
     make_query("UPDATE users SET `password` = '$new_passwd' WHERE `login` = '$login'");
-    $_SESSION['login'] = "";
+    $_SESSION['id'] = "";
     header("location: ../index.php");
   }
 }
-print_r($_POST);
+
 if (isset($_POST['submit_mail']) && $_POST['submit_mail'] == "valider")
 {
-  if ($_POST['new_mail'] == $ret['email'])
+  $new_mail = $_POST['new_mail'];
+  $ret2 = make_query("SELECT * FROM users WHERE `email` = '$new_mail'");
+  $ret2 = $ret2->fetch(PDO::FETCH_ASSOC);
+  if ($_POST['new_mail'] == $ret['email'] || $ret2)
     $same_mail = true;
-    else {
-      $old_mail = $ret['email'];
-      $new_mail = $_POST['new_mail'];
-      make_query("UPDATE users SET `email` = '$new_mail' WHERE `email` = '$old_mail'");
-      header("Location: ".$_SERVER['PHP_SELF']);
-    }
+  else {
+    $old_mail = $ret['email'];
+    $token = openssl_random_pseudo_bytes(20, $truc);
+    $token = bin2hex($token);
+    make_query("UPDATE users SET `token` = '$token' WHERE `email` = '$old_mail'");
+    make_query("UPDATE users SET `active` = '0' WHERE `email` = '$old_mail'");
+    make_query("UPDATE users SET `email` = '$new_mail' WHERE `email` = '$old_mail'");
+    $to  = $new_mail;
+		$subject = "Changement d'adresse mail";
+		$message = '
+		<html>
+		 <head>
+		 </head>
+		 <body>
+			 <h1>Bienvenue sur Photogru ' . $firstname . ' !</h1>
+			 <a href="http://localhost:8080/camagru/index.php?token='. $token .'"><p>Cliquez ici pour confirmer votre nouvelle adresse mail !</p></a>
+		 </body>
+		</html>
+		';
+	 	$headers[] = 'MIME-Version: 1.0';
+		$headers[] = 'Content-Type: text/html; charset=utf-8';
+    $headers[] = "To: < $mail >";
+		$headers[] = "From: Camagru <noreply@localhost>";
+
+		mail($to, $subject, $message, implode("\r\n", $headers));
+    $_SESSION['id'] = "";
+    header("Location: ../index.php");
+  }
 }
 
 if (isset($_POST['submit_login']) && $_POST['submit_login'] != "")
 {
-  if ($_POST['new_login'] == $ret['login'])
+  $new_login = $_POST['new_login'];
+  $ret2 = make_query("SELECT * FROM users WHERE `login` = '$new_login'");
+  $ret2 = $ret2->fetch(PDO::FETCH_ASSOC);
+  if ($_POST['new_login'] == $ret['login'] || $ret2)
     $same_login = true;
   else {
     $old_login = $ret['login'];
-    $new_login = $_POST['new_login'];
     make_query("UPDATE users SET `login` = '$new_login' WHERE `login` = '$old_login'");
     header("Location: ".$_SERVER['PHP_SELF']);
   }
@@ -93,7 +120,7 @@ if (isset($_POST['submit_delete']) && $_POST['submit_delete'] == "supprimer son 
       <input type="text" class="champ" placeholder="Nouveau nom de compte" name="new_login" required>
       <?php
       if ($same_login) {
-        echo "<p class=\"error_msg\">Le nouveau login ne peut être égal à l'ancien.</p>";
+        echo "<p class=\"error_msg\">Nom de compte non disponible.</p>";
         echo "<script>
             document.getElementById('login_modify').style.display = 'block';
             </script>";
@@ -174,10 +201,10 @@ if (isset($_POST['submit_delete']) && $_POST['submit_delete'] == "supprimer son 
       <div class="mail_modify" id="mail_modify">
         <form method="post">
             <label for="new_mail" class="text_modify">Nouvelle adresse email</label><br>
-            <input type="text" class="champ" placeholder="Nouvelle adresse email" name="new_mail" required>
+            <input type="email" class="champ" placeholder="Nouvelle adresse email" name="new_mail" required>
             <?php
             if ($same_mail) {
-              echo "<p class=\"error_msg\">Le nouvel email ne peut être égal à l'ancien.</p>";
+              echo "<p class=\"error_msg\">email non disponible.</p>";
               echo "<script>
                   document.getElementById('mail_modify').style.display = 'block';
                   </script>";

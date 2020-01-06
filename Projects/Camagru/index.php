@@ -37,10 +37,17 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
 
 <title>Photogru</title>
 <link rel="stylesheet" href="css/signin.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 
 </head>
 <body>
+
+<div id="all2">
+  <div id="close2" class="close2">x</div>
+  <div id="img_big_container" class="img_big_container">
+    <img src="ressources/gallery/a3044771c942f918ac19e5ec9450df4e234ba046.png" id="big_img">
+  </div>
+</div>
 
 <div id="all">
   <div class="login_form">
@@ -85,7 +92,6 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
   </div>
   </div>
 </div>
-
 
 <?php
 
