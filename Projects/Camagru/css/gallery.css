@@ -176,9 +176,11 @@ input:focus {
 }
 
 .must_connected {
+  position: absolute;
   background-color: #e4442c;
   width: 100%;
   height: auto;
+  margin-top: -50px;
 }
 
 .error_msg {

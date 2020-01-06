@@ -80,9 +80,10 @@ function set_width() {
     set_width();
     $.ajax({
       method: 'POST',
-      url: '/camagru/php/photo.php',
-      data: {
-        'webcam_data': webcam_data
+      url: '/camagru/php/save_webcam.php',
+      data: 'webcam_data=' + webcam_data,
+      success: function(webcam_data) {
+        console.log(webcam_data);
       }
     });
   }

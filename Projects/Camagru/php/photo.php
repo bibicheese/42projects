@@ -2,26 +2,14 @@
 
 global $dossier;
 global $fichier;
-$id = $_SESSION['id'];
+if (isset($_SESSION['id']) && $_SESSION['id'] != "")
+  $id = $_SESSION['id'];
+else {
+  header("location: /camagru/index.php");
+}
 $dossier = "ressources/tmp/";
 $name = "img_tmp".$id.".png";
 $fichier = basename($name);
-
-$webcam_data = $_POST['webcam_data'];
-if ($webcam_data != "")
-{
-  list($type, $webam_data) = explode(';', $webcam_data);
-  list(, $webcam_data)     = explode(',', $webcam_data);
-  $webcam_data = base64_decode($webcam_data);
-  if (file_exists($dossier . $fichier))
-    unlink($dossier . $fichier);
-  file_put_contents($dossier . $fichier, $webcam_data);
-  echo "wsh le sang";
-}
-else {
-  echo "fdp";
-}
-
 
 if (isset($_POST['submit_photo']) && $_POST['submit_photo'] == "Envoyer")
 {
@@ -53,17 +41,22 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
       }
     }
     else {
+      $name = openssl_random_pseudo_bytes(20, $truc);
+      $name = bin2hex($name);
+      $gallery = "ressources/gallery/";
+      $link = $gallery . $name . ".png";
+
       $source = imagecreatefrompng($dossier . $fichier);
       $filtre = imagecreatefrompng("ressources/filtres/" . $filtre . ".png");
+      imagealphablending($filtre, false);
+      imagesavealpha($filtre, true);
+
       $height_source = imagesx($source);
       $width_source = imagesy($source);
-      imagecopymerge($source, $filtre, 0, 0, 0, 0, $width_source, $height_source, 100);
-      imagejpeg($source);
-      echo "on est là";
+      imagecopymerge($source, $filtre, 50, 0, $width_source, $height_source, $width_source, $height_source, 70);
+      imagepng($source, $link);
     }
   }
-  else
-    echo "Vous devez être connecté";
 }
 
 ?>

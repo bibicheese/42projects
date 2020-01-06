@@ -1,8 +1,3 @@
-<?php
-session_start();
-
-?>
-
 <html>
 <head>
 
@@ -64,7 +59,7 @@ if ($nb_pic > 0)
             {
               $login_curr = $user_db_curr['firstname'] . " " . $user_db_curr['lastname'];
               $publication = $picture_db['link'];
-              $to = $user_db['email'];
+              $to = $user_db_pic['email'];
               $subject = "Photogru: Notification !";
               $message = "
               <html>
@@ -92,7 +87,7 @@ if ($nb_pic > 0)
         </script>";
       }
     }
-    if ($_POST["comment$i"])
+    if (isset($_POST["comment$i"]))
     {
       if (isset($_SESSION['id']) && $_SESSION['id'] != "")
       {
@@ -110,8 +105,12 @@ if ($nb_pic > 0)
           {
             $login_curr = $user_db_curr['firstname'] . " " . $user_db_curr['lastname'];
             $publication = $picture_db['link'];
-            $to = $user_db['email'];
+            $img_data = file_get_contents($publication);
+            $img_data = base64_encode($img_data);
+            $to = $user_db_pic['email'];
             $subject = "Photogru: Notification !";
+            $img = "data:image/png;base64," . $img_data;
+            $addr = $_SERVER['REMOTE_ADDR'];
             $message = "
             <html>
              <head>
@@ -119,7 +118,6 @@ if ($nb_pic > 0)
              <body>
                <h1>$login_curr a commenté votre publication !</h1>
                <p>$com</p>
-               <img href=\"http://localhost:8080/camagru/$publication\">
              </body>
             </html>
             ";
@@ -177,11 +175,16 @@ if ($nb_pic > 0)
               <div class=\"like_place\">
                 <form method=\"post\">
                   <div class=\"tamere\">";
-                  $id = $_SESSION['id'];
-                  $ret = make_query("SELECT * FROM likes WHERE `userid` = '$id' AND `pictureid` = '$i'");
-                  $ret = $ret->fetch(PDO::FETCH_ASSOC);
-                  if ($ret)
-                    echo "<i class=\"fa fa-thumbs-up blue\"><input name=\"like$i\" type=\"submit\" value=\"J'aime\" class=\"like blue\"></i>";
+                  if (isset($_SESSION['id']))
+                  {
+                    $id = $_SESSION['id'];
+                    $ret = make_query("SELECT * FROM likes WHERE `userid` = '$id' AND `pictureid` = '$i'");
+                    $ret = $ret->fetch(PDO::FETCH_ASSOC);
+                    if ($ret)
+                      echo "<i class=\"fa fa-thumbs-up blue\"><input name=\"like$i\" type=\"submit\" value=\"J'aime\" class=\"like blue\"></i>";
+                    else
+                      echo "<i class=\"fa fa-thumbs-up\"><input name=\"like$i\" type=\"submit\" value=\"J'aime\" class=\"like\"></i>";
+                  }
                   else
                     echo "<i class=\"fa fa-thumbs-up\"><input name=\"like$i\" type=\"submit\" value=\"J'aime\" class=\"like\"></i>";
                   echo "
