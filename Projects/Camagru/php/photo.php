@@ -46,15 +46,24 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
       $gallery = "ressources/gallery/";
       $link = $gallery . $name . ".png";
 
-      $source = imagecreatefrompng($dossier . $fichier);
-      $filtre = imagecreatefrompng("ressources/filtres/" . $filtre . ".png");
-      imagealphablending($filtre, false);
-      imagesavealpha($filtre, true);
+      list($width_src, $height_src) = getimagesize($dossier . $fichier);
+      list($width_f, $height_f) = getimagesize("ressources/filtres/" . $filtre . ".png");
 
-      $height_source = imagesx($source);
-      $width_source = imagesy($source);
-      imagecopymerge($source, $filtre, 50, 0, $width_source, $height_source, $width_source, $height_source, 70);
+      if (!$source = imagecreatefromjpeg($dossier . $fichier))
+        $source = imagecreatefrompng($dossier . $fichier);
+      $filtre = imagecreatefrompng("ressources/filtres/" . $filtre . ".png");
+      $filtre_resize = imagecreatetruecolor($width_src, $height_src);
+      imagealphablending($filtre_resize, false);
+      imagesavealpha($filtre_resize, true);
+
+      imagecopyresampled($filtre_resize, $filtre, 0, 0, 0, 0, $width_src, $height_src, $width_f, $height_f);
+      imagecopyresampled($source, $filtre_resize, 0, 0, 0, 0, $width_src, $height_src, $width_src, $height_src);
       imagepng($source, $link);
+
+      if (file_exists($dossier.$fichier))
+        unlink($dossier.$fichier);
+      make_query("INSERT INTO pictures (link, userid) VALUES (\"$link\", \"$id\")");
+      echo "enregistrer avec succès";
     }
   }
 }
@@ -94,7 +103,7 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
       </p>
       <p>
         <input type="radio" name="filtre" value="trou_noir" onclick="send_data('trou_noir')">
-        <label for="trou_noir">Trou noir</label>
+        <label for="trou_noir">Espace</label>
       </p>
       <p>
         <input type="radio" name="filtre" value="foret" onclick="send_data('foret')">
