@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 15:02:40 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/19 20:49:29 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/23 15:07:24 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 char			**newpwd(char *oldpwd, char *pwd)
 {
 	char	**env;
-	
+
 	if (!(env = (char **)malloc(sizeof(char *) * 3)))
 		return (NULL);
 	env[0] = ft_strjoin("PWD=", pwd);
@@ -24,35 +24,42 @@ char			**newpwd(char *oldpwd, char *pwd)
 	return (env);
 }
 
-static char		**replaceoldpwd(t_shell *shell, char *oldpwd, char **env)
+static char		*old_or_current(char *str, char *pwd, char *oldpwd)
 {
-	char	**newenv;
-	int		i;
-	int		add;
+	if (!ft_strcmp(str, "OLDPWD"))
+		return (ft_strjoin("OLDPWD=", oldpwd));
+	else
+		return (ft_strjoin("PWD=", pwd));
+}
 
-	if (!(newenv = (char **)malloc(sizeof(char *)
-		 * (ft_arrlen(env) + 2))))
-        return (NULL);
+static int		no_pwd(t_shell *shell)
+{
+	int		check;
+	int		i;
+
 	i = -1;
-	add = 1;
-	while (env[++i])
+	check = 1;
+	while (shell->lenv[++i])
+	{
+		if (!ft_strcmp(shell->lenv[i], "PWD"))
+			check = 0;
+	}
+	return (check);
+}
+
+static int		no_oldpwd(t_shell *shell)
+{
+	int		check;
+	int		i;
+
+	i = -1;
+	check = 1;
+	while (shell->lenv[++i])
 	{
 		if (!ft_strcmp(shell->lenv[i], "OLDPWD"))
-		{
-			add = 0;
-			newenv[i] = ft_strjoin("OLDPWD=", oldpwd);
-		}
-		else
-			newenv[i] = ft_strdup(env[i]);
+			check = 0;
 	}
-	if (add)
-	{
-		printf("hellooooooooo\n");
-		newenv[i++] = ft_strjoin("OLDPWD=", oldpwd);
-	}
-	newenv[i] = NULL;
-	ft_memdel((void **)env);
-	return (newenv);
+	return (check);
 }
 
 char			**replacepwd(t_shell *shell, char *oldpwd, char *pwd)
@@ -62,23 +69,22 @@ char			**replacepwd(t_shell *shell, char *oldpwd, char *pwd)
 	int		add;
 
 	if (!(newenv = (char **)malloc(sizeof(char *)
-		 * (ft_arrlen(shell->env) + 2))))
-        return (NULL);
-    i = -1;
+		* (ft_arrlen(shell->env) + 2))))
+		return (NULL);
+	i = -1;
 	add = 1;
-    while (shell->env[++i])
-    {
-		if (!ft_strcmp(shell->lenv[i], "PWD"))
-		{
-			add = 0;
-			newenv[i] = ft_strjoin("PWD=", pwd);
-		}
+	while (shell->env[++i])
+	{
+		if (!ft_strcmp(shell->lenv[i], "PWD") ||
+			!ft_strcmp(shell->lenv[i], "OLDPWD"))
+			newenv[i] = old_or_current(shell->lenv[i], pwd, oldpwd);
 		else
 			newenv[i] = ft_strdup(shell->env[i]);
 	}
-	if (add)
+	if (no_pwd(shell))
 		newenv[i++] = ft_strjoin("PWD=", pwd);
+	if (no_oldpwd(shell))
+		newenv[i++] = ft_strjoin("OLDPWD=", oldpwd);
 	newenv[i] = NULL;
-	newenv = replaceoldpwd(shell, oldpwd, newenv);
 	return (newenv);
 }

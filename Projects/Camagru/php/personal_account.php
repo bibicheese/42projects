@@ -83,7 +83,10 @@ if (isset($_POST['submit_login']) && $_POST['submit_login'] != "")
 
 if (isset($_POST['submit_delete']) && $_POST['submit_delete'] == "supprimer son compte")
 {
-  make_query("DELETE FROM users WHERE `login` = '$login'");
+  make_query("DELETE FROM comments WHERE `userid` = '$id'");
+  make_query("DELETE FROM likes WHERE `userid` = '$id'");
+  make_query("DELETE FROM pictures WHERE `userid` = '$id'");
+  make_query("DELETE FROM users WHERE `id` = '$id'");
   $_SESSION['id'] = "";
   header("location: ../index.php");
 }

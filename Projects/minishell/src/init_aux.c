@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 11:10:34 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/19 22:06:03 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/23 15:00:11 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int		equal_sign(char *str)
 	return (0);
 }
 
-char	**lenv(char	**env)
+char			**lenv(char **env)
 {
 	char	**left_side;
 	char	**both;
@@ -42,13 +42,13 @@ char	**lenv(char	**env)
 	{
 		both = ft_strsplit(env[i], "=");
 		left_side[i] = ft_strdup(both[0]);
-		ft_memdel((void **) both);
+		free_tab(both);
 	}
 	left_side[i] = NULL;
 	return (left_side);
 }
 
-char	**renv(char	**env)
+char			**renv(char **env)
 {
 	char	**right_side;
 	char	**both;
@@ -63,11 +63,10 @@ char	**renv(char	**env)
 	while (env[++i])
 	{
 		both = ft_strsplit(env[i], "=");
-		right_side[i] = both[1] ? ft_strdup(both[1]) 
+		right_side[i] = both[1] ? ft_strdup(both[1])
 			: ft_strdup(env[i] + equal_sign(env[i]));
-		ft_memdel((void **) both);
+		free_tab(both);
 	}
 	right_side[i] = NULL;
 	return (right_side);
 }
-

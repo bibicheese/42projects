@@ -9,7 +9,7 @@ function add_like(i) {
     url: '/camagru/php/like_ajax.php',
     data: 'like=' + i,
     success: function(yes) {
-      console.log("success");
+      console.log(yes);
     }
   });
   name = '#like' + i;
@@ -31,6 +31,58 @@ function add_like(i) {
     thumb.classList.add("blue");
     like++;
   }
-  var tab = document.querySelector(name3).innerHTML.split(" ");
   document.querySelector(name3).innerHTML = like + ' j\'aime';
+}
+
+function add_comment(i, login) {
+  name = '#comment' + i;
+  name2 = '#nb_com' + i;
+  name3 = '#comment_container' + i;
+  pic_id = i;
+  comment = document.querySelector(name).value;
+  comment = comment;
+  $.ajax({
+    method: 'POST',
+    url: '/camagru/php/comment_ajax.php',
+    data: {pic_id, comment},
+    success: function(yes) {
+      console.log(yes);
+    }
+  });
+  document.querySelector(name).value = "";
+  var tab = document.querySelector(name2).innerHTML.split(" ");
+  var nb_com = tab[0];
+  nb_com++;
+  if (nb_com < 2)
+    document.querySelector(name2).innerHTML = nb_com + ' commentaire';
+  else
+    document.querySelector(name2).innerHTML = nb_com + ' commentaires';
+  // 
+  // var div = document.querySelector(name3);
+  // var span_l = document.createElement("span");
+  // var span_c = document.createElement("span");
+  // span_l.classList.add("comment_login");
+  // span_c.classList.add("comment_text");
+  // var login = document.createTextNode(login + " ");
+  // var comment = document.createTextNode(comment);
+  // span_l.appendChild(login);
+  // span_c.appendChild(comment);
+  // div.appendChild(login);
+  // div.appendChild(comment);
+  // document.body.appendChild(div);
+}
+
+function show_error(i, pic_id) {
+  name = '#comment' + pic_id;
+  if (i == 1)
+  {
+    document.getElementById("must_connected_like").style.display = "flex";
+    $("#must_connected_like").fadeOut(5000);
+  }
+  else
+  {
+    document.getElementById("must_connected_comment").style.display = "flex";
+    $("#must_connected_comment").fadeOut(5000);
+    document.querySelector(name).value = "";
+  }
 }

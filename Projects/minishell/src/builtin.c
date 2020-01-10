@@ -6,40 +6,45 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 18:54:25 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/19 20:57:23 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/23 15:10:05 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void    echo(char **args)
+static void		echo(char **args)
 {
-    int    i;
+	int		i;
 
-    i = 1;
-    while (args[i])
-    {
-		ft_putstr(args[i]);
-        ft_putchar(' ');
-		i++;
-    }
-    ft_putchar('\n');
+	i = 1;
+	while (args[i])
+	{
+		if (args[i][0] == '$')
+			i++;
+		else
+		{
+			ft_putstr(args[i]);
+			ft_putchar(' ');
+			i++;
+		}
+	}
+	ft_putchar('\n');
 }
 
-static void    env(t_shell *shell)
+static void		env(t_shell *shell)
 {
-    int     i;
+	int		i;
 
-    i = 0;
-    if (shell->env)
-    {
+	i = 0;
+	if (shell->env)
+	{
 		while (shell->env[i])
 		{
 			ft_putstr(shell->env[i]);
 			ft_putstr("\n");
-            i++;
+			i++;
 		}
-    }
+	}
 }
 
 static void		ft_exit(char **args, t_shell *shell)
@@ -48,20 +53,20 @@ static void		ft_exit(char **args, t_shell *shell)
 	{
 		ft_putstr_fd("exit: too many arguments\n", 2);
 		shell->error = 1;
-		return;
+		return ;
 	}
 	else
 	{
-		ft_memdel((void **) &shell->oldpwd);
-		ft_memdel((void **) shell->env);
-		ft_memdel((void **) shell->paths);
-		ft_memdel((void **) shell->lenv);
-		ft_memdel((void **) shell->renv);
+		ft_memdel((void **)&shell->oldpwd);
+		free_tab(shell->env);
+		free_tab(shell->paths);
+		free_tab(shell->lenv);
+		free_tab(shell->renv);
 		args[1] ? exit(ft_atoi(args[1])) : exit(0);
 	}
 }
 
-int		builtin(char **args, t_shell *shell)
+int				builtin(char **args, t_shell *shell)
 {
 	if (!ft_strcmp(args[0], "exit"))
 		ft_exit(args, shell);

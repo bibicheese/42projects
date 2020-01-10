@@ -1,0 +1,187 @@
+*{
+	margin:0px;
+	padding:0px;
+	font-family: serif;
+	font-style: italic;
+}
+
+.acheter{
+	margin-left: 100px;
+	margin-right: 100px;
+	text-decoration: none;
+	color: black;
+	font-weight: bold;
+}
+
+.go{
+
+	padding-left: 40px;
+}
+
+.forme{
+	display: inline;
+	
+}
+
+.photo
+{
+	width: 10%;
+	margin-left: 60px;
+}
+
+.titre2{
+	text-decoration: none;
+	color: red;
+}
+
+
+.prix{
+	margin-left:60px;
+	width:20%;
+}
+
+.styleprix{
+	color:black;
+
+}
+
+.tentative{
+	margin-left:300px;
+	margin-right: 300px;
+}
+
+.tentative2{
+	margin-left:250px;
+	text-align: center;
+}
+
+
+.utilisateur{
+	font-size: 20px;
+	text-align: right;
+	padding: 14px;
+	
+}
+
+.titre
+{
+	font-family: Courier New;
+	font-style: normal;
+	margin-left: 200px;
+}
+
+.banner
+{
+	background-color: #F0E68C;
+	height: 150px;
+	width: 100%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.visu{
+	text-decoration: none;
+	color: black;
+	margin-left:40px;
+	font-weight: bold;
+}
+
+.achats{
+	font-size: 20px;
+	
+	
+	
+}
+.achats_bis{
+	font-size: 20px;
+	margin-left: 40px;
+}
+
+nav ul{
+	list-style-type: none;
+}
+
+nav li{
+	float: left;
+	width: 20%;
+	text-align:center;
+}
+
+nav ul::after{
+	content:"";
+	display: table;
+	clear: both;
+}
+
+
+.special_cas{
+	width : 25%;
+}
+
+nav{
+	width:100%;
+	margin: 0 auto;
+	background-color: white;
+	position: sticky;
+	top: 0px;
+}
+
+.titre{
+	
+	color:Black;
+}
+
+nav a{
+	display: block;
+	text-decoration: none;
+	color: black;
+	border-bottom: 2px solid transparent;
+	padding: 25px 0px;
+	background-color:#F0E68C;
+}
+
+nav a:hover{
+	color:#1034A6;
+	border-bottom: 2px solid #1034A6;
+}
+
+.sous{
+	display: none;
+	box-shadow: 0px 1px 2px #CCC;
+	background-color: white;
+	position: absolute;
+	width: 30%;
+	z-index: 1000;
+}
+
+nav > ul li:hover .sous{
+	display: block;
+}
+
+.sous li{
+	  float: none;
+	  width: 100%;
+	  text-align: left;
+}
+
+.sous a{
+	  padding: 10px;
+	  border-bottom: none;
+}
+.sous a:hover{
+	  border-bottom: none;
+	  background-color: RGBa(200,200,200,0.1);
+}
+
+.deroulant > a::after{
+		   content: " ▼";
+		   font-size: 12px;
+}
+
+.info_acceuil{
+	margin-left: 400px;
+	width: 50em;
+  border: 1px solid #1034A6;
+  box-shadow: 1px 2px 2px #1034A6;
+  padding: 8px 12px;
+}

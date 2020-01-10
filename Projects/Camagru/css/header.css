@@ -18,6 +18,8 @@ body {
 }
 
 .log {
+  z-index: 10;
+  position: relative;
   font-size: 18px;
   padding: 20px;
   transition: 0.3s;

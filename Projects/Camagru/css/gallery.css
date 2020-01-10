@@ -162,6 +162,7 @@ input:focus {
 }
 
 .all {
+  z-index: -1;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -180,11 +181,11 @@ input:focus {
 }
 
 .must_connected {
-  position: absolute;
+  position: fixed;
   background-color: #e4442c;
   width: 100%;
-  height: auto;
-  margin-top: -50px;
+  height: 60px;
+  margin-top: -70px;
 }
 
 .error_msg {

@@ -45,7 +45,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
 <div id="all2">
   <div id="close2" class="close2">x</div>
   <div id="img_big_container" class="img_big_container">
-    <img src="ressources/gallery/a3044771c942f918ac19e5ec9450df4e234ba046.png" id="big_img">
+    <img src="" id="big_img">
   </div>
 </div>
 

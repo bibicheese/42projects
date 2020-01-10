@@ -34,7 +34,7 @@ if (isset($_POST['submit_1']) && $_POST['submit_1'] == "valider")
        <p>Bonjour ' . $ret['firstname'] . ',</p><br>
        <p>Vous avez demandé à recevoir un nouveau mot de passe pour votre compte <b>' .$login. '</b>.</p>
        <p>Il vous suffit de <b>copier le code ci-dessous puis de le renseigner sur la page de récupération correspondante.</b></p><br><br>
-       <b>' .$code. '</b>
+       <center><b style="font-size: 26px;">' .$code. '</b></center>
      </body>
     </html>
     ';

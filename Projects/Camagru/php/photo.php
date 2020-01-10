@@ -37,7 +37,10 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
         if (file_exists($dossier.$fichier))
           unlink($dossier.$fichier);
         make_query("INSERT INTO pictures (link, userid) VALUES (\"$link\", \"$id\")");
-        echo "enregistrer avec succès";
+        echo "<script>
+          document.getElementById(\"success\").style.display = \"flex\";
+          $(\"#success\").fadeOut(5000);
+        </script>";
       }
     }
     else {
@@ -49,7 +52,7 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
       list($width_src, $height_src) = getimagesize($dossier . $fichier);
       list($width_f, $height_f) = getimagesize("ressources/filtres/" . $filtre . ".png");
 
-      if (!$source = imagecreatefromjpeg($dossier . $fichier))
+      // if (!($source = imagecreatefromjpeg($dossier . $fichier)))
         $source = imagecreatefrompng($dossier . $fichier);
       $filtre = imagecreatefrompng("ressources/filtres/" . $filtre . ".png");
       $filtre_resize = imagecreatetruecolor($width_src, $height_src);
@@ -63,7 +66,10 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
       if (file_exists($dossier.$fichier))
         unlink($dossier.$fichier);
       make_query("INSERT INTO pictures (link, userid) VALUES (\"$link\", \"$id\")");
-      echo "enregistrer avec succès";
+      echo "<script>
+        document.getElementById(\"success\").style.display = \"flex\";
+        $(\"#success\").fadeOut(5000);
+      </script>";
     }
   }
 }
@@ -77,6 +83,10 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
 
 </head>
 <body onresize="set_width()">
+
+<div id="success" class="success">
+  <p>Image enregistrée avec succès</p>
+</div>
 
 <div class="all_page">
   <div id="filtres">
@@ -130,7 +140,7 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
       <img id="filtre_photo" class="filtre_photo" src="">
     </div>
     <div class="pick">
-        <input type="file" accept="image/*" id="import_img" name="import_img" onchange="loadFile(event)">
+        <input type="file" accept="image/*" id="import_img" name="import_img">
         <label class="label_import" for="import_img">Choisir un fichier</label>
         <input type="submit" name="submit_photo" class="submit_photo" value="Envoyer">
       </div>

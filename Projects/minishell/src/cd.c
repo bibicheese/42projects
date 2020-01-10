@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/19 13:30:08 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/19 22:31:29 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/23 15:43:11 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,16 @@ static void		ft_error(char *bad, t_shell *shell)
 {
 	if (!access(bad, F_OK) && access(bad, X_OK) == -1)
 	{
-		ft_putstr("cd: permission denied: ");
-		ft_putstr(bad);
-		ft_putchar('\n');
+		ft_putstr_fd("cd: permission denied: ", 2);
+		ft_putstr_fd(bad, 2);
+		ft_putchar_fd('\n', 2);
 		shell->error = 1;
 	}
 	else
 	{
-		ft_putstr("cd: no such file or directory: ");
-		ft_putstr(bad);
-		ft_putchar('\n');
+		ft_putstr_fd("cd: no such file or directory: ", 2);
+		ft_putstr_fd(bad, 2);
+		ft_putchar_fd('\n', 2);
 		shell->error = 1;
 	}
 }
@@ -48,11 +48,9 @@ static void		cd_solo(t_shell *shell, char *oldpwd)
 			}
 		}
 	}
-	else
-		ft_putstr("cd: HOME isn't set\n");
 }
 
-void	ft_cd(char **args, t_shell *shell)
+void			ft_cd(char **args, t_shell *shell)
 {
 	char	oldpwd[1024];
 
@@ -75,7 +73,7 @@ void	ft_cd(char **args, t_shell *shell)
 		cd_solo(shell, oldpwd);
 }
 
-void	change_env(t_shell *shell, char *oldpwd)
+void			change_env(t_shell *shell, char *oldpwd)
 {
 	char	**newenv;
 	char	pwd[1024];
@@ -87,8 +85,9 @@ void	change_env(t_shell *shell, char *oldpwd)
 		newenv = newpwd(oldpwd, pwd);
 	else
 		newenv = replacepwd(shell, oldpwd, pwd);
-	ft_memdel((void **)shell->env);
+	free_tab(shell->env);
 	shell->env = array_cpy(newenv);
-	ft_memdel((void **)shell->lenv);
+	free_tab(newenv);
+	free_tab(shell->lenv);
 	shell->lenv = lenv(shell->env);
 }

@@ -1,0 +1,7 @@
+CREATE TABLE [IF NOT EXISTS] ft_table 
+(
+    id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    login VARCHAR(40) NOT NULL,
+    group VARCHAR(40) NOT NULL,
+    date_naissance DATETIME NOT NULL,
+)

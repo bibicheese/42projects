@@ -6,7 +6,7 @@
 /*   By: jmondino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/17 11:13:11 by jmondino          #+#    #+#             */
-/*   Updated: 2019/09/19 22:09:05 by jmondino         ###   ########.fr       */
+/*   Updated: 2019/09/23 15:35:32 by jmondino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static char		**fill(char *arg, t_shell *shell, char *value)
 	while (shell->env[i])
 		i++;
 	if (!(newenv = malloc(sizeof(char *) * (i + 2))))
-		return NULL;
+		return (NULL);
 	i = -1;
 	while (shell->env[++i])
 	{
@@ -74,25 +74,28 @@ static void		fill_env(char *arg, t_shell *shell)
 {
 	char	**newenv;
 	char	**value;
-	
+
 	value = ft_strsplit(arg, "=");
 	newenv = fill(arg, shell, value[0]);
-	ft_memdel((void **) value);
-	ft_memdel((void **) shell->env);
+	free_tab(value);
+	free_tab(shell->env);
 	shell->env = array_cpy(newenv);
-	ft_memdel((void **) newenv);
-	ft_memdel((void **) shell->paths);
-    shell->paths = paths(shell->env);
-	ft_memdel((void **) shell->lenv);
-	ft_memdel((void **) shell->renv);
+	free_tab(newenv);
+	free_tab(shell->paths);
+	shell->paths = paths(shell->env);
+	free_tab(shell->lenv);
+	free_tab(shell->renv);
 	shell->lenv = lenv(shell->env);
 	shell->renv = renv(shell->env);
 }
 
-void	ft_setenv(t_shell *shell, char **args)
+void			ft_setenv(t_shell *shell, char **args)
 {
 	if (!args[1] || args[2])
-		ft_putstr("usage: setenv VARNAME=VALUE\n");
+	{
+		ft_putstr_fd("usage: setenv VARNAME=VALUE\n", 2);
+		shell->error = 1;
+	}
 	else
 	{
 		if (parsing(args[1]))
@@ -103,6 +106,9 @@ void	ft_setenv(t_shell *shell, char **args)
 				fill_newenv(args[1], shell);
 		}
 		else
-			ft_putstr("usage: setenv VARNAME=VALUE\n");
+		{
+			ft_putstr_fd("usage: setenv VARNAME=VALUE\n", 2);
+			shell->error = 1;
+		}
 	}
 }
