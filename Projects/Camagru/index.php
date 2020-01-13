@@ -38,6 +38,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
 <title>Photogru</title>
 <link rel="stylesheet" href="css/signin.css">
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 <body>

@@ -155,3 +155,46 @@ input:focus{
   background-color: red;
   cursor: pointer;
 }
+
+.yes {
+  padding: 5;
+  width: 50px;
+  margin-left: 20px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.no {
+  padding: 5;
+  width: 50px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.yes:hover, .no:hover {
+  cursor: pointer;
+}
+
+.green {
+  background-color: #009900;
+}
+
+.red {
+  background-color: #e4442c;
+}
+
+.grey {
+  background: grey;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+footer p {
+  text-align: right;
+}

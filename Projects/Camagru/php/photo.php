@@ -49,11 +49,18 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
       $gallery = "ressources/gallery/";
       $link = $gallery . $name . ".png";
 
-      list($width_src, $height_src) = getimagesize($dossier . $fichier);
+      list($width_src, $height_src, $type) = getimagesize($dossier . $fichier);
       list($width_f, $height_f) = getimagesize("ressources/filtres/" . $filtre . ".png");
 
-      // if (!($source = imagecreatefromjpeg($dossier . $fichier)))
+      if ($type == 2)
+        $source = imagecreatefromjpeg($dossier . $fichier);
+      if ($type == 3)
         $source = imagecreatefrompng($dossier . $fichier);
+      else
+      {
+        echo "image non supporté";
+        return ;
+      }
       $filtre = imagecreatefrompng("ressources/filtres/" . $filtre . ".png");
       $filtre_resize = imagecreatetruecolor($width_src, $height_src);
       imagealphablending($filtre_resize, false);
@@ -158,6 +165,11 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
     <canvas id="canvas" style="display: none;"></canvas>
   </div>
 </div>
+
+<footer>
+    <hr>
+    <p>© 2020 jmondino 42 student</p>
+</footer>
 
 <script src="js/photo.js"></script>
 </body>

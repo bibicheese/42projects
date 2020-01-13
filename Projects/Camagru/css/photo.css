@@ -175,3 +175,11 @@ body {
 	margin-right: auto;
 	}
 }
+
+footer {
+	margin-top: 300px;
+}
+
+footer p {
+  text-align: right;
+}

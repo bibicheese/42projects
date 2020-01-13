@@ -12,6 +12,8 @@
   <p class="error_msg">Vous devez être connecté pour pouvoir commenter.</p>
 </div>
 
+<div class="page_container">
+  <div class="content_wrap">
 <?php
 
 $all_pic = make_query("SELECT * FROM pictures");
@@ -167,13 +169,19 @@ if ($nb_pic > 0)
     }
 }
 else {
-  echo "
-  <div class=\"all\">
-    <p class=\"nothing\">Rien à afficher</p>
-  </div>";
+  echo "<p class=\"nothing\">Aucune publication.</p>";
 }
 
 ?>
+
+</div>
+
+<footer>
+    <hr>
+    <p>© 2020 jmondino 42 student</p>
+</footer>
+
+</div>
 
 <script src="js/gallery.js"></script>
 </body>

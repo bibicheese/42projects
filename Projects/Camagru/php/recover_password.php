@@ -113,6 +113,7 @@ if ($page == 3) {
 <html>
 <head>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../css/recover_password.css">
 
 
@@ -219,6 +220,11 @@ if ($page == 3) {
 }
 
 ?>
+
+<footer>
+    <hr>
+    <p>© 2020 jmondino 42 student</p>
+</footer>
 
 <script src="../js/strength_passwd.js"></script>
 </body>

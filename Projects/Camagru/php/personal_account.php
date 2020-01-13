@@ -12,6 +12,7 @@ $same_mail = false;
 $ret = make_query("SELECT * FROM users WHERE `id` = '$id'");
 $ret = $ret->fetch(PDO::FETCH_ASSOC);
 $current_login = $ret['login'];
+$notif = $ret['notif'];
 
 if (isset($_POST['submit_password']) && $_POST['submit_password'] == "valider")
 {
@@ -90,12 +91,23 @@ if (isset($_POST['submit_delete']) && $_POST['submit_delete'] == "supprimer son 
   $_SESSION['id'] = "";
   header("location: ../index.php");
 }
+
+if (isset($_POST['yes_notif']) && $_POST['yes_notif'] == "Oui")
+  make_query("UPDATE users SET `notif` = '1' WHERE `id` = '$id'");
+
+if (isset($_POST['no_notif']) && $_POST['no_notif'] == "Non")
+  make_query("UPDATE users SET `notif` = '0' WHERE `id` = '$id'");
+
+$ret = make_query("SELECT * FROM users WHERE `id` = '$id'");
+$ret = $ret->fetch(PDO::FETCH_ASSOC);
+$notif = $ret['notif'];
 ?>
 
 <html>
 
 <head>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="../css/personal_account.css">
 
@@ -221,10 +233,25 @@ if (isset($_POST['submit_delete']) && $_POST['submit_delete'] == "supprimer son 
 
       <hr class="other_one">
 
-      </form>
+      <div class="each">
+        <form method="post">
+          <strong class="text">Notification :</strong>
+          <input type="submit" class="yes <?php if($notif == 1) echo "green"; else echo "grey"; ?>" name="yes_notif" value="Oui">
+          /
+          <input type="submit" class="no <?php if($notif == 0) echo "red"; else echo "grey"; ?>" name="no_notif" value="Non">
+        </form>
+      </div>
+
+      <hr class="other_one">
+
       <form method="post">
       <input type="submit" class="delete" name="submit_delete" value="supprimer son compte">
       </form>
+
+      <footer>
+          <hr>
+          <p>© 2020 jmondino 42 student</p>
+      </footer>
 
 <script src="../js/confirm_passwd.js"></script>
 <script src="../js/strength_passwd.js"></script>
