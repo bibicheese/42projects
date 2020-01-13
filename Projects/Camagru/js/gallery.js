@@ -57,7 +57,7 @@ function add_comment(i, login) {
     document.querySelector(name2).innerHTML = nb_com + ' commentaire';
   else
     document.querySelector(name2).innerHTML = nb_com + ' commentaires';
-  location.reload();
+  location.reload(false);
 }
 
 function show_error(i, pic_id) {

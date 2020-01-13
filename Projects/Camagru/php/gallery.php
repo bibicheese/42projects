@@ -16,7 +16,7 @@
   <div class="content_wrap">
 <?php
 
-$all_pic = make_query("SELECT * FROM pictures");
+$all_pic = make_query("SELECT * FROM pictures", "query");
 $all_pic = $all_pic->fetchAll(PDO::FETCH_ASSOC);
 $nb_pic = count($all_pic);
 $i = $nb_pic;
@@ -26,10 +26,10 @@ if ($nb_pic > 0)
   while ($i > 0)
   {
     $pic_id = $all_pic[$i - 1]['id'];
-    $pic = make_query("SELECT * FROM pictures WHERE `id` = '$pic_id'");
+    $pic = make_query("SELECT * FROM pictures WHERE `id` = '$pic_id'", "query");
     $pic = $pic->fetch(PDO::FETCH_ASSOC);
     $userid = $pic['userid'];
-    $user = make_query("SELECT * FROM users WHERE `id` = '$userid'");
+    $user = make_query("SELECT * FROM users WHERE `id` = '$userid'", "query");
     $user = $user->fetch(PDO::FETCH_ASSOC);
     $name = $user['firstname'] . " " . $user['lastname'];
     $description = $pic['description'];
@@ -42,10 +42,10 @@ if ($nb_pic > 0)
             <div class=\"gallery_img_place\">
               <img src=\"$link\" class=\"gallery_img\" onclick=\"display_big('$link')\">
             </div>";
-            $ret = make_query("SELECT COUNT(*) FROM comments WHERE `imgid` = '$pic_id'");
+            $ret = make_query("SELECT COUNT(*) FROM comments WHERE `imgid` = '$pic_id'", "query");
             $ret = $ret->fetch(PDO::FETCH_ASSOC);
             $nb_com = $ret['COUNT(*)'];
-            $ret = make_query("SELECT COUNT(*) FROM likes WHERE `pictureid` = '$pic_id'");
+            $ret = make_query("SELECT COUNT(*) FROM likes WHERE `pictureid` = '$pic_id'", "query");
             $ret = $ret->fetch(PDO::FETCH_ASSOC);
             $nb_likes = $ret['COUNT(*)'];
             echo "
@@ -80,7 +80,7 @@ if ($nb_pic > 0)
                   if (isset($_SESSION['id']))
                   {
                     $id = $_SESSION['id'];
-                    $ret = make_query("SELECT * FROM likes WHERE `userid` = '$id' AND `pictureid` = '$pic_id'");
+                    $ret = make_query("SELECT * FROM likes WHERE `userid` = '$id' AND `pictureid` = '$pic_id'", "query");
                     $ret = $ret->fetch(PDO::FETCH_ASSOC);
                     if ($ret)
                     {
@@ -127,7 +127,7 @@ if ($nb_pic > 0)
                 <input id=\"comment$i\" type=\"text\" class=\"comment_post\" placeholder=\"Votre commentaire..\"";
                 if (isset($_SESSION['id']) && $_SESSION['id'] != "")
                 {
-                  $user = make_query("SELECT * FROM users WHERE `id` = '$id'");
+                  $user = make_query("SELECT * FROM users WHERE `id` = '$id'", "query");
                   $user = $user->fetch(PDO::FETCH_ASSOC);
                   $login = $user['firstname'] . " " . $user['lastname'];
                   echo "onchange=\"add_comment('$i', '$login')\"";
@@ -135,7 +135,7 @@ if ($nb_pic > 0)
                 else
                   echo "onchange=\"show_error(2, '$i')\"";
                 echo ">";
-              $comment_db = make_query("SELECT * FROM comments");
+              $comment_db = make_query("SELECT * FROM comments", "query");
               $comment_db = $comment_db->fetchAll(PDO::FETCH_ASSOC);
               $nb_com = count($comment_db);
               $j = 0;
@@ -144,10 +144,10 @@ if ($nb_pic > 0)
                 while ($j < $nb_com)
                 {
                   $com_id = $comment_db[$j]['id'];
-                  $coms = make_query("SELECT * FROM comments WHERE `imgid` = '$pic_id' AND `id` = '$com_id'");
+                  $coms = make_query("SELECT * FROM comments WHERE `imgid` = '$pic_id' AND `id` = '$com_id'", "query");
                   $coms = $coms->fetch(PDO::FETCH_ASSOC);
                   $userid = $coms['userid'];
-                  $user = make_query("SELECT * FROM users WHERE `id` = '$userid'");
+                  $user = make_query("SELECT * FROM users WHERE `id` = '$userid'", "query");
                   $user = $user->fetch(PDO::FETCH_ASSOC);
                   $login = $user['firstname'] . " " . $user['lastname'];
                   $comment = $coms['comm'];

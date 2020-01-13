@@ -20,13 +20,15 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
 	else
 		$month = $_POST['birth_month'];
 	$birthDate = $day."/".$month."/".$_POST['birth_year'];
-	$mail = $_POST['mail'];
-	$login = $_POST['login'];
-	$passwd = $_POST['passwd'];
-	$firstname = $_POST['firstname'];
-	$lastname = $_POST['lastname'];
-	$ret = make_query("SELECT * FROM users WHERE `login` = '$login'");
-	$ret2 = make_query("SELECT * FROM users WHERE `email` = '$mail'");
+	$mail = htmlspecialchars($_POST['mail']);
+	$login = htmlspecialchars($_POST['login']);
+	$passwd = htmlspecialchars($_POST['passwd']);
+	$firstname = htmlspecialchars($_POST['firstname']);
+	$lastname = htmlspecialchars($_POST['lastname']);
+	$ret = make_query("SELECT * FROM users WHERE `login` = '$login'", "prepare");
+	$ret->execute(array($login));
+	$ret2 = make_query("SELECT * FROM users WHERE `email` = '$mail'", "prepare");
+	$ret2->execute(array($mail));
 	$ret = $ret->fetch(PDO::FETCH_ASSOC);
 	$ret2 = $ret2->fetch(PDO::FETCH_ASSOC);
 	if ($ret)
@@ -37,7 +39,8 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
 		{
 		$token = openssl_random_pseudo_bytes(20, $truc);
 		$token = bin2hex($token);
-		make_query("INSERT INTO users (firstname, lastname, email, password, login, birth, age, token) VALUES (\"$firstname\", \"$lastname\", \"$mail\", \"$passwd\", \"$login\", \"$birthDate\", \"$age\", \"$token\")");
+		$ret = make_query("INSERT INTO users (firstname, lastname, email, password, login, birth, age, token) VALUES ('$firstname', '$lastname', '$mail', '$passwd', '$login', '$birthDate', '$age', '$token')", "prepare");
+		$ret->execute(array($firstname, $lastname, $mail, $passwd, $login, $birthDate, $age, $token));
 		$to  = $mail;
 		$subject = "Bienvenue sur Photogru !";
 		$message = '

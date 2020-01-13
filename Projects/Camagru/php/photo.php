@@ -13,10 +13,23 @@ $fichier = basename($name);
 
 if (isset($_POST['submit_photo']) && $_POST['submit_photo'] == "Envoyer")
 {
-  if (file_exists($dossier.$fichier))
-    unlink($dossier.$fichier);
-  if (move_uploaded_file($_FILES['import_img']['tmp_name'], $dossier . $fichier))
-    echo "";
+  $file = $_FILES["import_img"];
+  $legalExtensions = array("jpg", "png");
+  $legalSize = "1000000"; // 1 mo
+  $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+  $size = $file['size'];
+  if (in_array($extension, $legalExtensions)) {
+    if ($size <= $legalSize) {
+      if (file_exists($dossier.$fichier))
+        unlink($dossier.$fichier);
+      if (move_uploaded_file($_FILES['import_img']['tmp_name'], $dossier . $fichier))
+        echo "";
+    }
+    else
+      echo "Image trop lourde";
+  }
+  else
+    echo "Extension non supportée";
 }
 
 if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
@@ -36,7 +49,7 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
       {
         if (file_exists($dossier.$fichier))
           unlink($dossier.$fichier);
-        make_query("INSERT INTO pictures (link, userid) VALUES (\"$link\", \"$id\")");
+        make_query("INSERT INTO pictures (link, userid) VALUES ('$link', '$id')", "query");
         echo "<script>
           document.getElementById(\"success\").style.display = \"flex\";
           $(\"#success\").fadeOut(5000);
@@ -72,7 +85,7 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
 
       if (file_exists($dossier.$fichier))
         unlink($dossier.$fichier);
-      make_query("INSERT INTO pictures (link, userid) VALUES (\"$link\", \"$id\")");
+      make_query("INSERT INTO pictures (link, userid) VALUES ('$link', '$id')", "query");
       echo "<script>
         document.getElementById(\"success\").style.display = \"flex\";
         $(\"#success\").fadeOut(5000);

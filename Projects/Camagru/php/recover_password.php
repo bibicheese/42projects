@@ -15,9 +15,10 @@ if (isset($_POST['submit_1']) && $_POST['submit_1'] == "valider")
 {
   $code = openssl_random_pseudo_bytes(4, $truc);
   $code = bin2hex($code);
-  $login = $_POST['login'];
-  $mail = $_POST['mail'];
-  $ret = make_query("SELECT * FROM users WHERE `login` = '$login'");
+  $login = htmlspecialchars($_POST['login']);
+  $mail = htmlspecialchars($_POST['mail']);
+  $ret = make_query("SELECT * FROM users WHERE `login` = '$login'", "prepare");
+  $ret->execute(array($login));
   $ret = $ret->fetch(PDO::FETCH_ASSOC);
   if (!$ret)
     $fake_login = true;
@@ -44,7 +45,8 @@ if (isset($_POST['submit_1']) && $_POST['submit_1'] == "valider")
     $headers[] = "From: Camagru <noreply@localhost>";
 
     mail($to, $subject, $message, implode("\r\n", $headers));
-    make_query("UPDATE users SET `recover` = '$code' WHERE `email` = '$mail'");
+    $ret = make_query("UPDATE users SET `recover` = '$code' WHERE `email` = '$mail'", "prepare");
+    $ret->execute(array($code, $mail));
     header("Location: ".$_SERVER['PHP_SELF']."?page=2&mail=".$mail."&login=".$login);
   }
 }
@@ -58,9 +60,10 @@ if ($page == 2) {
     header("Location: ".$_SERVER['PHP_SELF']."?page=1");
   if (isset($_GET['mail']) && $_GET['mail'] != "")
   {
-      $mail = $_GET['mail'];
-      $login = $_GET['login'];
-      $ret = make_query("SELECT * FROM users WHERE `email` = '$mail'");
+      $mail = htmlspecialchars($_GET['mail']);
+      $login = htmlspecialchars($_GET['login']);
+      $ret = make_query("SELECT * FROM users WHERE `email` = '$mail'", "prepare");
+      $ret->execute(array($mail));
       $ret = $ret->fetch(PDO::FETCH_ASSOC);
       if (!$ret || $ret['login'] != $login)
         header("Location: ".$_SERVER['PHP_SELF']."?page=1");
@@ -69,7 +72,7 @@ if ($page == 2) {
 
   if (isset($_POST['submit_2']) && $_POST['submit_2'] == "valider")
   {
-    if ($code != $_POST['code']) {
+    if ($code != htmlspecialchars($_POST['code'])) {
       $fake_code = true;
     }
     else {
@@ -87,10 +90,11 @@ if ($page == 3) {
       header("Location: ".$_SERVER['PHP_SELF']."?page=1");
     if (isset($_GET['code']) && $_GET['code'] != "")
     {
-      $code = $_GET['code'];
-      $login = $_GET['login'];
-      $mail = $_GET['mail'];
-      $ret = make_query("SELECT * FROM users WHERE `recover` = '$code'");
+      $code = htmlspecialchars($_GET['code']);
+      $login = htmlspecialchars($_GET['login']);
+      $mail = htmlspecialchars($_GET['mail']);
+      $ret = make_query("SELECT * FROM users WHERE `recover` = '$code'", "prepare");
+      $ret->execute(array($code));
       $ret = $ret->fetch(PDO::FETCH_ASSOC);
       if (!$ret || $ret['login'] != $login || $ret['email'] != $mail)
         header("Location: ".$_SERVER['PHP_SELF']."?page=1");
@@ -98,11 +102,12 @@ if ($page == 3) {
 
     if (isset($_POST['submit_3']) && $_POST['submit_3'] == "valider")
     {
-      $password = $_POST['password'];
-      if ($_POST['confirm'] != $_POST['password'])
+      $password = htmlspecialchars($_POST['password']);
+      if (htmlspecialchars($_POST['confirm']) != htmlspecialchars($_POST['password']))
         $confirm = true;
       else {
-          make_query("UPDATE users SET `password` = '$password' WHERE `recover` = '$code'");
+          $ret = make_query("UPDATE users SET `password` = '$password' WHERE `recover` = '$code'", "prepare");
+          $ret->execute(array($password, $code));
           header("location: ../index.php");
       }
     }

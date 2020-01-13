@@ -177,7 +177,9 @@ body {
 }
 
 footer {
-	margin-top: 300px;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
 }
 
 footer p {

@@ -174,6 +174,7 @@ input:focus {
 }
 
 .must_connected {
+  z-index: 20;
   position: fixed;
   background-color: #e4442c;
   width: 100%;
@@ -212,14 +213,15 @@ input:focus {
 
 .page_container {
   position: relative;
+  height: 100%;
 }
 
 .content_wrap {
-  padding-bottom: 4rem;
+  min-height: 88%;
 }
 
 footer {
-  position: absolute;
+  position: relative;
   bottom: 0;
   width: 100%;
   height: auto;

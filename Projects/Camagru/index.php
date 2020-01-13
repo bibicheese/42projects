@@ -8,15 +8,17 @@ $active = true;
 
 if (isset($_GET['token']))
 {
-  $token = $_GET['token'];
-  make_query("UPDATE users SET active=1 WHERE `token` = '$token'");
+  $token = htmlspecialchars($_GET['token']);
+  $ret = make_query("UPDATE users SET active=1 WHERE `token` = '$token'", "prepare");
+  $ret->execute(array($token));
 }
 
 if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
 {
-  $login = $_POST['account'];
-  $passwd = $_POST['passwd'];
-  $ret = make_query("SELECT * FROM users WHERE `login` = '$login'");
+  $login = htmlspecialchars($_POST['account']);
+  $passwd = htmlspecialchars($_POST['passwd']);
+  $ret = make_query("SELECT * FROM users WHERE `login` = '$login'", "prepare");
+  $ret->execute(array($login));
   $ret = $ret->fetch(PDO::FETCH_ASSOC);
   if (!$ret)
     $fake_login = true;

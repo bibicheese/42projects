@@ -3,7 +3,7 @@ include "logout.php";
 $i = 8;
 $id = $_SESSION['id'];
 
-$ret = make_query("SELECT * FROM users WHERE `id` = '$id'");
+$ret = make_query("SELECT * FROM users WHERE `id` = '$id'", "query");
 $ret = $ret->fetch(PDO::FETCH_ASSOC);
 
 $login = $ret['login'];
@@ -46,8 +46,8 @@ if (strlen($login) > $i) {
 <div class="menu">
   <form method="post">
     <button type="submit" class="log" name="logout">Se deconnecter</button>
-  </form>
   <a href="php/personal_account.php" class="name_account"><div class="log">Mon compte</div></a>
+  </form>
 </div>
 
 <script src="js/connected.js"></script>

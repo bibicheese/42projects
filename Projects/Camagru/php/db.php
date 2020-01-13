@@ -70,9 +70,9 @@ function create_table_comments($conn) {
 	}
 }
 
-function make_query($query) {
+function make_query($query, $method) {
 	global $conn;
-	return $conn->query($query);
+	return $conn->$method($query);
 }
 
 $host = "localhost";

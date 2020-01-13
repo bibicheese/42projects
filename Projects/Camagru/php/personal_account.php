@@ -9,23 +9,24 @@ $same_password = false;
 $same_login = false;
 $same_mail = false;
 
-$ret = make_query("SELECT * FROM users WHERE `id` = '$id'");
+$ret = make_query("SELECT * FROM users WHERE `id` = '$id'", "query");
 $ret = $ret->fetch(PDO::FETCH_ASSOC);
 $current_login = $ret['login'];
 $notif = $ret['notif'];
 
 if (isset($_POST['submit_password']) && $_POST['submit_password'] == "valider")
 {
-  if ($_POST['old_passwd'] != $ret['password']) {
+  $new_passwd = htmlspecialchars($_POST['new_passwd']);
+  if (htmlspecialchars($_POST['old_passwd']) != $ret['password']) {
     $old_passwd = false;
   }
-  else if ($_POST['new_passwd'] != $_POST['confirm'])
+  else if ($new_passwd != htmlspecialchars($_POST['confirm']))
     $confirm = false;
-  else if ($_POST['new_passwd'] == $ret['password'])
+  else if ($new_passwd == $ret['password'])
     $same_password = true;
   else {
-    $new_passwd = $_POST['new_passwd'];
-    make_query("UPDATE users SET `password` = '$new_passwd' WHERE `login` = '$login'");
+    $ret = make_query("UPDATE users SET `password` = '$new_passwd' WHERE `login` = '$current_login'", "prepare");
+    $ret->execute(array($new_passwd, $current_login));
     $_SESSION['id'] = "";
     header("location: ../index.php");
   }
@@ -33,18 +34,22 @@ if (isset($_POST['submit_password']) && $_POST['submit_password'] == "valider")
 
 if (isset($_POST['submit_mail']) && $_POST['submit_mail'] == "valider")
 {
-  $new_mail = $_POST['new_mail'];
-  $ret2 = make_query("SELECT * FROM users WHERE `email` = '$new_mail'");
+  $new_mail = htmlspecialchars($_POST['new_mail']);
+  $ret2 = make_query("SELECT * FROM users WHERE `email` = '$new_mail'", "prepare");
+  $ret2->execute(array($new_mail));
   $ret2 = $ret2->fetch(PDO::FETCH_ASSOC);
-  if ($_POST['new_mail'] == $ret['email'] || $ret2)
+  if ($new_mail == $ret['email'] || $ret2)
     $same_mail = true;
   else {
     $old_mail = $ret['email'];
     $token = openssl_random_pseudo_bytes(20, $truc);
     $token = bin2hex($token);
-    make_query("UPDATE users SET `token` = '$token' WHERE `email` = '$old_mail'");
-    make_query("UPDATE users SET `active` = '0' WHERE `email` = '$old_mail'");
-    make_query("UPDATE users SET `email` = '$new_mail' WHERE `email` = '$old_mail'");
+    $ret = make_query("UPDATE users SET `token` = '$token' WHERE `email` = '$old_mail'", "prepare");
+    $ret->execute(array($token, $old_mail));
+    $ret = make_query("UPDATE users SET `active` = '0' WHERE `email` = '$old_mail'", "prepare");
+    $ret->execute(array($old_mail));
+    $ret = make_query("UPDATE users SET `email` = '$new_mail' WHERE `email` = '$old_mail'", "prepare");
+    $ret->execute(array($new_mail, $old_mail));
     $to  = $new_mail;
 		$subject = "Changement d'adresse mail";
 		$message = '
@@ -70,35 +75,37 @@ if (isset($_POST['submit_mail']) && $_POST['submit_mail'] == "valider")
 
 if (isset($_POST['submit_login']) && $_POST['submit_login'] != "")
 {
-  $new_login = $_POST['new_login'];
-  $ret2 = make_query("SELECT * FROM users WHERE `login` = '$new_login'");
+  $new_login = htmlspecialchars($_POST['new_login']);
+  $ret2 = make_query("SELECT * FROM users WHERE `login` = '$new_login'", "prepare");
+  $ret2->execute(array($new_login));
   $ret2 = $ret2->fetch(PDO::FETCH_ASSOC);
-  if ($_POST['new_login'] == $ret['login'] || $ret2)
+  if ($new_login == $ret['login'] || $ret2)
     $same_login = true;
   else {
     $old_login = $ret['login'];
-    make_query("UPDATE users SET `login` = '$new_login' WHERE `login` = '$old_login'");
+    $ret = make_query("UPDATE users SET `login` = '$new_login' WHERE `login` = '$old_login'", "prepare");
+    $ret->execute(array($new_login, $old_login));
     header("Location: ".$_SERVER['PHP_SELF']);
   }
 }
 
 if (isset($_POST['submit_delete']) && $_POST['submit_delete'] == "supprimer son compte")
 {
-  make_query("DELETE FROM comments WHERE `userid` = '$id'");
-  make_query("DELETE FROM likes WHERE `userid` = '$id'");
-  make_query("DELETE FROM pictures WHERE `userid` = '$id'");
-  make_query("DELETE FROM users WHERE `id` = '$id'");
+  make_query("DELETE FROM comments WHERE `userid` = '$id'", "query");
+  make_query("DELETE FROM likes WHERE `userid` = '$id'", "query");
+  make_query("DELETE FROM pictures WHERE `userid` = '$id'", "query");
+  make_query("DELETE FROM users WHERE `id` = '$id'", "query");
   $_SESSION['id'] = "";
   header("location: ../index.php");
 }
 
 if (isset($_POST['yes_notif']) && $_POST['yes_notif'] == "Oui")
-  make_query("UPDATE users SET `notif` = '1' WHERE `id` = '$id'");
+  make_query("UPDATE users SET `notif` = '1' WHERE `id` = '$id'", "query");
 
 if (isset($_POST['no_notif']) && $_POST['no_notif'] == "Non")
-  make_query("UPDATE users SET `notif` = '0' WHERE `id` = '$id'");
+  make_query("UPDATE users SET `notif` = '0' WHERE `id` = '$id'", "query");
 
-$ret = make_query("SELECT * FROM users WHERE `id` = '$id'");
+$ret = make_query("SELECT * FROM users WHERE `id` = '$id'", "query");
 $ret = $ret->fetch(PDO::FETCH_ASSOC);
 $notif = $ret['notif'];
 ?>
