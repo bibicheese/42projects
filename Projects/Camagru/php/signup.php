@@ -1,5 +1,5 @@
 <?php
-require "db.php";
+require "../config/database.php";
 session_start();
 
 $login_used = false;
@@ -23,6 +23,8 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
 	$mail = htmlspecialchars($_POST['mail']);
 	$login = htmlspecialchars($_POST['login']);
 	$passwd = htmlspecialchars($_POST['passwd']);
+	$hash_passwd = hash('whirlpool', $passwd);
+	$hash_passwd = hash('whirlpool', $hash_passwd);
 	$firstname = htmlspecialchars($_POST['firstname']);
 	$lastname = htmlspecialchars($_POST['lastname']);
 	$ret = make_query("SELECT * FROM users WHERE `login` = '$login'", "prepare");
@@ -35,12 +37,12 @@ if (isset($_POST['submit']) && $_POST['submit'] == "Terminer l'inscription")
 		$login_used = true;
 	if ($ret2)
 		$mail_used = true;
-		if (!$login_used && !$mail_used)
-		{
+	if (!$login_used && !$mail_used)
+	{
 		$token = openssl_random_pseudo_bytes(20, $truc);
 		$token = bin2hex($token);
-		$ret = make_query("INSERT INTO users (firstname, lastname, email, password, login, birth, age, token) VALUES ('$firstname', '$lastname', '$mail', '$passwd', '$login', '$birthDate', '$age', '$token')", "prepare");
-		$ret->execute(array($firstname, $lastname, $mail, $passwd, $login, $birthDate, $age, $token));
+		$ret = make_query("INSERT INTO users (firstname, lastname, email, password, login, birth, age, token) VALUES ('$firstname', '$lastname', '$mail', '$hash_passwd', '$login', '$birthDate', '$age', '$token')", "prepare");
+		$ret->execute(array($firstname, $lastname, $mail, $hash_passwd, $login, $birthDate, $age, $token));
 		$to  = $mail;
 		$subject = "Bienvenue sur Photogru !";
 		$message = '

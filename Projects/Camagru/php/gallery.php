@@ -32,12 +32,10 @@ if ($nb_pic > 0)
     $user = make_query("SELECT * FROM users WHERE `id` = '$userid'", "query");
     $user = $user->fetch(PDO::FETCH_ASSOC);
     $name = $user['firstname'] . " " . $user['lastname'];
-    $description = $pic['description'];
     $link = $pic['link'];
     echo "<div class=\"gallery_content\">
             <div class=\"header_content\">
               <p class=\"user\">$name</p>
-              <p class=\"description\">$description</p>
             </div>
             <div class=\"gallery_img_place\">
               <img src=\"$link\" class=\"gallery_img\" onclick=\"display_big('$link')\">
@@ -180,8 +178,8 @@ else {
     <hr>
     <p>© 2020 jmondino 42 student</p>
 </footer>
-
 </div>
+
 
 <script src="js/gallery.js"></script>
 </body>

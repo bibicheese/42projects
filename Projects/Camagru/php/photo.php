@@ -67,7 +67,7 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
 
       if ($type == 2)
         $source = imagecreatefromjpeg($dossier . $fichier);
-      if ($type == 3)
+      else if ($type == 3)
         $source = imagecreatefrompng($dossier . $fichier);
       else
       {
@@ -109,6 +109,7 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
 </div>
 
 <div class="all_page">
+  <div class="wrapper">
   <div id="filtres">
     <form method="post" enctype="multipart/form-data">
       <p>
@@ -124,8 +125,8 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
         <label for="ocean">Océan</label>
       </p>
       <p>
-        <input type="radio" name="filtre" value="fumée" onclick="send_data('fumée')">
-        <label for="fumée">Fumée</label>
+        <input type="radio" name="filtre" value="fumee" onclick="send_data('fumee')">
+        <label for="fumee">Fumée</label>
       </p>
       <p>
         <input type="radio" name="filtre" value="plage" onclick="send_data('plage')">
@@ -136,8 +137,8 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
         <label for="trou_noir">Espace</label>
       </p>
       <p>
-        <input type="radio" name="filtre" value="foret" onclick="send_data('foret')">
-        <label for="foret">Forêt</label>
+        <input type="radio" name="filtre" value="forest" onclick="send_data('forest')">
+        <label for="forest">Forêt</label>
       </p>
       <p>
         <input type="radio" name="filtre" value="feu" onclick="send_data('feu')">
@@ -160,10 +161,10 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
       <img id="filtre_photo" class="filtre_photo" src="">
     </div>
     <div class="pick">
-        <input type="file" accept="image/*" id="import_img" name="import_img">
-        <label class="label_import" for="import_img">Choisir un fichier</label>
-        <input type="submit" name="submit_photo" class="submit_photo" value="Envoyer">
-      </div>
+      <input type="file" accept="image/*" id="import_img" name="import_img">
+      <label class="label_import" for="import_img">Choisir un fichier</label>
+      <input type="submit" name="submit_photo" class="submit_photo" value="Envoyer">
+    </div>
       <input type="submit" name="shoot" class="shoot" value="Enregistrer">
       </form>
   <br>
@@ -177,12 +178,25 @@ if (isset($_POST['shoot']) && $_POST['shoot'] == "Enregistrer")
     </div>
     <canvas id="canvas" style="display: none;"></canvas>
   </div>
-</div>
+
+    <p>Anciens montages :</p>
+    <div class="old_montage">
+      <?php
+        $pictures = make_query("SELECT link FROM pictures WHERE `userid` = '$id' ORDER BY id DESC", "query");
+        $pictures = $pictures->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($pictures as $key => $value) {
+          echo "<img class=\"old_pic\" src=\"" . $value['link'] . "\">";
+        }
+      ?>
+    </div>
+  </div>
 
 <footer>
     <hr>
     <p>© 2020 jmondino 42 student</p>
 </footer>
+
+</div>
 
 <script src="js/photo.js"></script>
 </body>

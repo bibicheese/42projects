@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "db.php";
+require "../config/database.php";
 
 $i = $_POST['like'];
 $all_pic = make_query("SELECT * FROM pictures", "query");

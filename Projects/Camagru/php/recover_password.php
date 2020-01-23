@@ -1,9 +1,9 @@
 <?php
 session_start();
-require ("db.php");
 
 if (isset($_SESSION['login']) && $_SESSION['login'] != "" || !isset($_GET['page']))
   header ("location: ../index.php");
+require ("../config/database.php");
 $page = $_GET['page'];
 
 /* PAGE 1 : authentification --------------------- */
@@ -83,7 +83,7 @@ if ($page == 2) {
 
 /* PAGE 3 : changing password -------------------- */
 
-$confirm = false;
+$confirm = true;
 
 if ($page == 3) {
     if (((!isset($_GET['mail']) || !isset($_GET['login']) || !isset($_GET['code'])) || $_GET['mail'] == "" || $_GET['login'] == "") || $_GET['code'] == "")
@@ -103,11 +103,13 @@ if ($page == 3) {
     if (isset($_POST['submit_3']) && $_POST['submit_3'] == "valider")
     {
       $password = htmlspecialchars($_POST['password']);
+      $hash_passwd = hash('whirlpool', $password);
+      $hash_passwd = hash('whirlpool', $hash_passwd);
       if (htmlspecialchars($_POST['confirm']) != htmlspecialchars($_POST['password']))
-        $confirm = true;
+        $confirm = false;
       else {
-          $ret = make_query("UPDATE users SET `password` = '$password' WHERE `recover` = '$code'", "prepare");
-          $ret->execute(array($password, $code));
+          $ret = make_query("UPDATE users SET `password` = '$hash_passwd' WHERE `recover` = '$code'", "prepare");
+          $ret->execute(array($hash_passwd, $code));
           header("location: ../index.php");
       }
     }
@@ -211,7 +213,7 @@ if ($page == 3) {
       <div class=\"each\">
         <label for=\"confirm\" class=\"text\">Confirmez le nouveau mot de passe*</label><br>
         <input class=\"champ\" type=\"password\" placeholder=\"Confirmez le nouveau mot de passe\" name=\"confirm\" required>";
-          if ($confirm)
+          if (!$confirm)
             echo "<p class=\"error_msg\">Les mots de passe ne correspondent pas</p>";
     echo "
       </div>

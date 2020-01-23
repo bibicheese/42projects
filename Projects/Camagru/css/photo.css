@@ -4,8 +4,9 @@ body {
 }
 
 .all_page {
+	position: relative;
 	width: 100%;
-	height: auto;
+	height: 100%;
 }
 
 .img_place_photo {
@@ -15,6 +16,7 @@ body {
 	height: 500px;
 	border: solid 1px;
 	background-color: black;
+	justify-content: center;
 }
 
 .pick {
@@ -71,12 +73,9 @@ body {
 }
 
 .filtre_photo {
+	display: none;
 	z-index: 5;
 	position: absolute;
-	/* height: 100%; */
-	/* max-width: 100%; */
-	/* width: 280px; */
-	/* margin: auto; */
 }
 
 .shoot {
@@ -106,7 +105,7 @@ body {
 	margin-top: -110px;
 	float: right;
 	width: 100%;
-	height: 90%;
+	height: auto;
 }
 
 .video_section {
@@ -168,18 +167,37 @@ body {
   padding: 10;
 }
 
+.old_montage {
+	overflow: auto;
+	display: flex;
+	height: 140px;
+	width: 60%;
+	border: solid 1px;
+}
+
+.old_pic {
+	height: 100%;
+	width: auto;
+	margin-right: 10px;
+}
+
 @media screen and (min-width: 900px) {
-.all_page {
+.wrapper {
 	width: 900px;
 	margin-left: auto;
 	margin-right: auto;
 	}
 }
 
+.wrapper {
+	min-height: 90%;
+}
+
 footer {
-	position: absolute;
+	position: relative;
 	bottom: 0;
 	width: 100%;
+	height: auto;
 }
 
 footer p {

@@ -1,7 +1,11 @@
 <?php
 session_start();
-require "php/db.php";
+require "config/database.php";
 
+$exist = make_query("SELECT * FROM information_schema.tables WHERE table_schema = '$dbname' AND table_name = 'users' LIMIT 1;", "query");
+$exist = $exist->fetch(PDO::FETCH_ASSOC);
+if (!$exist)
+  header("location: config/setup.php");
 $fake_login = false;
 $fake_passwd = false;
 $active = true;
@@ -17,12 +21,14 @@ if (isset($_POST['submit']) && $_POST['submit'] == "se connecter")
 {
   $login = htmlspecialchars($_POST['account']);
   $passwd = htmlspecialchars($_POST['passwd']);
+  $hash_passwd = hash('whirlpool', $passwd);
+  $hash_passwd = hash('whirlpool', $hash_passwd);
   $ret = make_query("SELECT * FROM users WHERE `login` = '$login'", "prepare");
   $ret->execute(array($login));
   $ret = $ret->fetch(PDO::FETCH_ASSOC);
   if (!$ret)
     $fake_login = true;
-  else if ($ret["password"] != $passwd)
+  else if ($ret["password"] != $hash_passwd)
     $fake_passwd = true;
   else if ($ret['active'] != 1){
     $active = false;

@@ -5,9 +5,12 @@ function send_data(filter) {
     document.querySelector('#filtre_photo').removeAttribute('src');
     document.querySelector('#filtre_photo').removeAttribute('width');
     document.querySelector('#filtre_photo').removeAttribute('height');
+    // document.querySelector('#filtre_photo').style.display = "none";
   }
-  else
+  else {
     document.querySelector('#filtre_photo').src = "ressources/filtres/" + filter + ".png";
+    document.querySelector('#filtre_photo').style.display = "block";
+  }
   set_width();
 }
 
@@ -48,7 +51,7 @@ function set_width() {
     },
     function(stream) {
       if (navigator.mozGetUserMedia) {
-        video.mozSrcObject = stream;
+        video.srcObject = stream;
       } else {
         var vendorURL = window.URL || window.webkitURL;
         video.srcObject = stream;

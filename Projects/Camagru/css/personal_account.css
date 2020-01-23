@@ -188,11 +188,19 @@ input:focus{
   background: grey;
 }
 
+.page_container {
+  position: relative;
+  height: 100%;
+}
+
+.wrapper {
+  min-height: 95%;
+}
+
 footer {
-  position: absolute;
+  position: relative;
   bottom: 0;
-  right: 0;
-  left: 0;
+  width: 100%;
 }
 
 footer p {

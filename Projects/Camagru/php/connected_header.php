@@ -1,5 +1,6 @@
 <?php
 include "logout.php";
+
 $i = 8;
 $id = $_SESSION['id'];
 

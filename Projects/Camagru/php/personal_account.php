@@ -1,7 +1,11 @@
 <?php
 session_start();
-require "db.php";
-$id = $_SESSION['id'];
+if (isset($_SESSION['id']))
+  $id = $_SESSION['id'];
+else {
+  header("location: ../index.php");
+}
+require "../config/database.php";
 
 $old_passwd = true;
 $confirm = true;
@@ -16,17 +20,22 @@ $notif = $ret['notif'];
 
 if (isset($_POST['submit_password']) && $_POST['submit_password'] == "valider")
 {
+  $old_passwd = htmlspecialchars($_POST['old_passwd']);
+  $hash_old_passwd = hash('whirlpool', $old_passwd);
+  $hash_old_passwd = hash('whirlpool', $hash_old_passwd);
   $new_passwd = htmlspecialchars($_POST['new_passwd']);
-  if (htmlspecialchars($_POST['old_passwd']) != $ret['password']) {
+  $hash_new_passwd = hash('whirlpool', $new_passwd);
+  $hash_new_passwd = hash('whirlpool', $hash_new_passwd);
+  if ($hash_old_passwd != $ret['password']) {
     $old_passwd = false;
   }
   else if ($new_passwd != htmlspecialchars($_POST['confirm']))
     $confirm = false;
-  else if ($new_passwd == $ret['password'])
+  else if ($hash_new_passwd == $ret['password'])
     $same_password = true;
   else {
-    $ret = make_query("UPDATE users SET `password` = '$new_passwd' WHERE `login` = '$current_login'", "prepare");
-    $ret->execute(array($new_passwd, $current_login));
+    $ret = make_query("UPDATE users SET `password` = '$hash_new_passwd' WHERE `login` = '$current_login'", "prepare");
+    $ret->execute(array($hash_new_passwd, $current_login));
     $_SESSION['id'] = "";
     header("location: ../index.php");
   }
@@ -121,6 +130,8 @@ $notif = $ret['notif'];
 </head>
 <body>
 
+<div class="page_container">
+<div class="wrapper">
 <div class="topnav">
     <div class="logo">
         <a href="../index.php"><img src="../ressources/photo.gru.png" class="img"></a>
@@ -254,11 +265,12 @@ $notif = $ret['notif'];
       <form method="post">
       <input type="submit" class="delete" name="submit_delete" value="supprimer son compte">
       </form>
-
+</div>
       <footer>
           <hr>
           <p>© 2020 jmondino 42 student</p>
       </footer>
+</div>
 
 <script src="../js/confirm_passwd.js"></script>
 <script src="../js/strength_passwd.js"></script>

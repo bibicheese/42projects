@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "db.php";
+require "../config/database.php";
 
 
 $i = $_POST["pic_id"];
