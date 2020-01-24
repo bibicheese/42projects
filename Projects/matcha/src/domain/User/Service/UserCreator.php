@@ -1,50 +1,35 @@
 <?php
 
-namespace App\Domain\User\Service;
+namespace Src\Domain\User\Service;
 
-use App\Domain\User\Data\UserCreateData;
-use App\Domain\User\Repository\UserCreatorRepository;
-use UnexpectedValueException;
+use Src\Domain\User\Data\UserData;
 
-/**
- * Service.
- */
+
 final class UserCreator
 {
-    /**
-     * @var UserCreatorRepository
-     */
-    private $repository;
+    private $connection;
 
-    /**
-     * The constructor.
-     *
-     * @param UserCreatorRepository $repository The repository
-     */
-    public function __construct(UserCreatorRepository $repository)
-    {
-        $this->repository = $repository;
+    public function __construct() {
+        require __DIR__ . '../../../../config/database.php';
+        $db = new db;
+        $db = $db->connect();
+        $this->connection = $db;
     }
 
-    /**
-     * Create a new user.
-     *
-     * @param UserCreateData $user The user data
-     *
-     * @return int The new user ID
-     */
-    public function createUser(UserCreateData $user): int
-    {
-        // Validation
-        if (empty($user->username)) {
-            throw new UnexpectedValueException('Username required');
-        }
+    public function createUser(UserData $user): int {
+        $row = [
+            'login' => $user->login,
+            'password' => $user->password,
+            'email' => $user->email
+          ];
 
-        // Insert user
-        $userId = $this->repository->insertUser($user);
+        $sql = "INSERT INTO test SET
+                login=:login,
+                password=:password,
+                email=:email;
+                ";
 
-        // Logging here: User created successfully
-
-        return $userId;
+        $this->connection->prepare($sql)->execute($row);
+        return (int)$this->connection->lastInsertId();
     }
 }
