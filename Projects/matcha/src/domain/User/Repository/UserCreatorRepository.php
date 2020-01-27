@@ -1,54 +1,44 @@
 <?php
 
-namespace App\Domain\User\Repository;
+namespace Src\Domain\User\Repository;
 
-use App\Domain\User\Data\UserCreateData;
+use Src\Domain\User\Data\UserCreateData;
 use PDO;
 
-/**
- * Repository.
- */
 class UserCreatorRepository
 {
-    /**
-     * @var PDO The database connection
-     */
     private $connection;
 
-    /**
-     * Constructor.
-     *
-     * @param PDO $connection The database connection
-     */
-    public function __construct(PDO $connection)
-    {
+    public function __construct(PDO $connection) {
         $this->connection = $connection;
     }
 
-    /**
-     * Insert user row.
-     *
-     * @param UserCreateData $user The user
-     *
-     * @return int The new ID
-     */
-    public function insertUser(UserCreateData $user): int
-    {
+    public function insertUser(UserCreateData $user): array {
         $row = [
-            'username' => $user->username,
-            'first_name' => $user->firstName,
-            'last_name' => $user->lastName,
+            'login' => $user->login,
+            'password' => $user->password,
             'email' => $user->email,
         ];
 
         $sql = "INSERT INTO users SET
-                username=:username,
-                first_name=:first_name,
-                last_name=:last_name,
+                login=:login,
+                password=:password,
                 email=:email;";
 
         $this->connection->prepare($sql)->execute($row);
 
-        return (int)$this->connection->lastInsertId();
+        return array('success' => 'user created');
+        // return (int)$this->connection->lastInsertId();
+    }
+
+    public function UserExist(UserCreateData $user) {
+      $data['login'] = $user->login;
+      $data['email'] = $user->email;
+
+      foreach ($data as $key => $value) {
+        $sql = "SELECT * FROM users WHERE `$key` = '$value'";
+        if ($ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
+          return $key;
+      }
     }
 }

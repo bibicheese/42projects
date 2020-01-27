@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Action;
+namespace Src\Action;
 
-use App\Domain\User\Data\UserCreateData;
-use App\Domain\User\Service\UserCreator;
+use Src\Domain\User\Data\UserCreateData;
+use Src\Domain\User\Service\UserCreator;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
 
@@ -11,30 +11,22 @@ final class UserCreateAction
 {
     private $userCreator;
 
-    public function __construct(UserCreator $userCreator)
-    {
+    public function __construct(UserCreator $userCreator) {
         $this->userCreator = $userCreator;
     }
 
-    public function __invoke(ServerRequest $request, Response $response): Response
-    {
-        // Collect input from the HTTP request
+    public function __invoke(ServerRequest $request, Response $response): Response {
         $data = (array)$request->getParsedBody();
-        
-        // Mapping (should be done in a mapper class)
+
         $user = new UserCreateData();
-        $user->username = $data['username'];
-        $user->firstName = $data['first_name'];
-        $user->lastName = $data['last_name'];
+        $user->login = $data['login'];
+        $user->password = $data['password'];
         $user->email = $data['email'];
 
-        // Invoke the Domain with inputs and retain the result
-        $userId = $this->userCreator->createUser($user);
+        $status = $this->userCreator->createUser($user);
 
-        // Transform the result into the JSON representation
-        $result = ['user_id' => $userId];
+        $result = ['create_user_status' => $status];
 
-        // Build the HTTP response
-        return $response->withJson($result)->withStatus(201);
+        return $response->withJson($result);
     }
 }

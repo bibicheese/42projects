@@ -2,9 +2,8 @@
 
 namespace Src\Domain\User\Data;
 
-final class UserCreateData
+final class UserLoginData
 {
     public $login;
     public $password;
-    public $email;
 }

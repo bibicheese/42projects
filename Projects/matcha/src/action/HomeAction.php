@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Action;
+namespace Src\Action;
 
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
