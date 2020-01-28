@@ -6,6 +6,7 @@ use Src\Domain\User\Data\UserloginData;
 use Src\Domain\User\Service\Userlogger;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
+use \SlimSession\Helper;
 
 final class UserLoginAction
 {
@@ -24,7 +25,14 @@ final class UserLoginAction
 
       $status = $this->userLogger->LoginUser($user);
 
-      $result = ['login_user_status' => ['user_id' => $status]];
+      if (is_numeric($status)) {
+          $session = new Helper();
+          $session['id'] = $status;
+          $id = $session['id'];
+          $result = ['login_user_status' => ['success' => "$id : user logged"]];
+      }
+      else
+        $result = ['login_user_status' => ['error' => $status]];
 
       return $response->withJson($result);
     }

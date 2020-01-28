@@ -13,7 +13,7 @@ final class UserLogger
       $this->repository = $repository;
   }
 
-  public function LoginUser(UserLoginData $user): int {
+  public function LoginUser(UserLoginData $user) {
     return $this->repository->indentifyUser($user);
   }
 }

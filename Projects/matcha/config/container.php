@@ -2,8 +2,10 @@
 
 use Psr\Container\ContainerInterface;
 use Selective\Config\Configuration;
+use \Slim\Middleware\Session;
 use Slim\App;
 use Slim\Factory\AppFactory;
+use \SlimSession\Helper;
 
 return [
     Configuration::class => function () {
@@ -14,12 +16,18 @@ return [
         AppFactory::setContainer($container);
         $app = AppFactory::create();
 
+        $app->add(new Session([
+          'name' => 'user_session',
+          'autorefresh' => true,
+          'lifetime' => '1 hour'
+        ]));
         // Optional: Set the base path to run the app in a sub-directory
         // The public directory must not be part of the base path
         //$app->setBasePath('/slim4-tutorial');
 
         return $app;
     },
+
     PDO::class => function (ContainerInterface $container) {
     $config = $container->get(Configuration::class);
 

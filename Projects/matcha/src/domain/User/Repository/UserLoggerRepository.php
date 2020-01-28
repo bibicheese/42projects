@@ -13,15 +13,19 @@ class UserLoggerRepository
         $this->connection = $connection;
     }
 
-    public function indentifyUser(UserLoginData $user): int {
+    public function indentifyUser(UserLoginData $user) {
       $login = $user->login;
       $password = $user->password;
 
-      $sql = "SELECT * FROM users WHERE `login` = '$login' AND `password` = '$password'";
+      $sql = "SELECT * FROM users WHERE `login` = '$login'";
 
-      if ($ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
-          return $ret['id'];
+      if (!($ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC)))
+        return "login";
+
+      else if ($ret['password'] != $password)
+        return "password";
+
       else
-        return -1;
+        return $ret['id'];
     }
 }
