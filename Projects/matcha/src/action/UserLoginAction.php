@@ -2,11 +2,12 @@
 
 namespace Src\Action;
 
-use Src\Domain\User\Data\UserloginData;
+use Src\Domain\User\Data\UserData;
 use Src\Domain\User\Service\Userlogger;
+use SlimSession\Helper;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
-use \SlimSession\Helper;
+
 
 final class UserLoginAction
 {
@@ -19,7 +20,7 @@ final class UserLoginAction
     public function __invoke(ServerRequest $request, Response $response): Response {
       $data = (array)$request->getParsedBody();
 
-      $user = new UserLoginData();
+      $user = new UserData();
       $user->login = $data['login'];
       $user->password = $data['password'];
 

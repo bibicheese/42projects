@@ -2,7 +2,7 @@
 
 namespace Src\Domain\User\Service;
 
-use Src\Domain\User\Data\UserLoginData;
+use Src\Domain\User\Data\UserData;
 use Src\Domain\User\Repository\UserloggerRepository;
 
 final class UserLogger
@@ -13,7 +13,7 @@ final class UserLogger
       $this->repository = $repository;
   }
 
-  public function LoginUser(UserLoginData $user) {
+  public function LoginUser(UserData $user) {
     return $this->repository->indentifyUser($user);
   }
 }

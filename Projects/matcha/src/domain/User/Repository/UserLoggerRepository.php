@@ -2,7 +2,7 @@
 
 namespace Src\Domain\User\Repository;
 
-use Src\Domain\User\Data\UserloginData;
+use Src\Domain\User\Data\UserData;
 use PDO;
 
 class UserLoggerRepository
@@ -13,7 +13,7 @@ class UserLoggerRepository
         $this->connection = $connection;
     }
 
-    public function indentifyUser(UserLoginData $user) {
+    public function indentifyUser(UserData $user) {
       $login = $user->login;
       $password = $user->password;
 

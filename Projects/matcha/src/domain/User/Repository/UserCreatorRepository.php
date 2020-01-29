@@ -2,7 +2,7 @@
 
 namespace Src\Domain\User\Repository;
 
-use Src\Domain\User\Data\UserCreateData;
+use Src\Domain\User\Data\UserData;
 use PDO;
 
 class UserCreatorRepository
@@ -13,7 +13,7 @@ class UserCreatorRepository
         $this->connection = $connection;
     }
 
-    public function insertUser(UserCreateData $user): array {
+    public function insertUser(UserData $user): string {
         $row = [
             'login' => $user->login,
             'password' => $user->password,
@@ -27,11 +27,10 @@ class UserCreatorRepository
 
         $this->connection->prepare($sql)->execute($row);
 
-        return array('success' => 'user created');
-        // return (int)$this->connection->lastInsertId();
+        return "user created";
     }
 
-    public function UserExist(UserCreateData $user) {
+    public function UserExist(UserData $user) {
       $data['login'] = $user->login;
       $data['email'] = $user->email;
 
@@ -40,5 +39,6 @@ class UserCreatorRepository
         if ($ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
           return $key;
       }
+      return NULL;
     }
 }

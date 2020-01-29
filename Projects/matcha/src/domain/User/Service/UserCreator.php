@@ -2,7 +2,7 @@
 
 namespace Src\Domain\User\Service;
 
-use Src\Domain\User\Data\UserCreateData;
+use Src\Domain\User\Data\UserData;
 use Src\Domain\User\Repository\UserCreatorRepository;
 
 final class UserCreator
@@ -12,10 +12,10 @@ final class UserCreator
     public function __construct(UserCreatorRepository $repository) {
         $this->repository = $repository;
     }
-    public function createUser(UserCreateData $user): array {
+    public function createUser(UserData $user): array {
         if ($error = $this->repository->UserExist($user))
-          return array('error' => $error);
+          return ['error' => $error . " taken"];
         else
-          return $this->repository->insertUser($user);
+          return ['success' => $this->repository->insertUser($user)];
     }
 }

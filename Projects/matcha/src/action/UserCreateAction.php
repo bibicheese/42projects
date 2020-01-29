@@ -2,7 +2,7 @@
 
 namespace Src\Action;
 
-use Src\Domain\User\Data\UserCreateData;
+use Src\Domain\User\Data\UserData;
 use Src\Domain\User\Service\UserCreator;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
@@ -18,7 +18,7 @@ final class UserCreateAction
     public function __invoke(ServerRequest $request, Response $response): Response {
         $data = (array)$request->getParsedBody();
 
-        $user = new UserCreateData();
+        $user = new UserData();
         $user->login = $data['login'];
         $user->password = $data['password'];
         $user->email = $data['email'];
