@@ -29,6 +29,7 @@ class db {
                 orientation VARCHAR(30) DEFAULT 'bi',
                 login VARCHAR(30) NOT NULL UNIQUE,
                 password VARCHAR(255) NOT NULL,
+                token VARCHAR(255) DEFAULT NULL,
                 reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
       }
       catch(PDOException $e) {

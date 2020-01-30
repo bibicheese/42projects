@@ -10,4 +10,7 @@ return function (App $app) {
   $app->post('/login', \Src\Action\UserLoginAction::class);
   $app->post('/logout', \Src\Action\UserLogoutAction::class);
   $app->post('/account_editor', \Src\Action\UserDataAccEditAction::class);
+  $app->post('/recovery_mail', \Src\Action\RecoverySendMailAction::class);
+  $app->post('/recovery_token', \Src\Action\RecoverySendTokenAction::class);
+  $app->post('/recovery_pasword', \Src\Action\RecoveryPasswordAction::class);
 };
