@@ -20,8 +20,9 @@ class db {
   try {
     $db->query("CREATE TABLE IF NOT EXISTS users (
                 id INT UNIQUE AUTO_INCREMENT PRIMARY KEY,
-                firstname VARCHAR(30) DEFAULT NULL,
-                lastname VARCHAR(30) DEFAULT NULL,
+                active INT DEFAULT 0,
+                firstname VARCHAR(30) NOT NULL,
+                lastname VARCHAR(30) NOT NULL,
                 email VARCHAR(50) UNIQUE NOT NULL,
                 birth VARCHAR(30) DEFAULT NULL,
                 age INT DEFAULT 0,

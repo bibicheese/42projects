@@ -7,8 +7,8 @@ final class UserData
     public $login;
     public $password;
     public $email;
-    public $firstName;
-    public $lastName;
+    public $firstname;
+    public $lastname;
     public $birth;
     public $age;
     public $gender;

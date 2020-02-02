@@ -7,7 +7,7 @@ use Slim\Http\Response;
 use Slim\Http\ServerRequest;
 
 
-final class RecoverySendMailAction
+final class RecoveryPasswordAction
 {
     private $recoverer;
 
@@ -18,7 +18,15 @@ final class RecoverySendMailAction
     public function __invoke(ServerRequest $request, Response $response): Response {
         $data = (array)$request->getParsedBody();
 
-        $result = ['Recovery mail status' => $this->recoverer->changePassword($data['password'])];
+        if ($data['email'])
+          $result = ['Recovery mail status' =>  $this->recoverer->prepareMail($data['email'])];
+        else if ($data['token'])
+          $result = ['Recovery token status' => $this->recoverer->getToken($data['token'])];
+        else if ($data['password']) {
+          $password = hash('whirlpool', $data['password']);
+          $result = ['Recovery password status' => $this->recoverer->changePassword($password)];
+        }
+
         return $response->withJson($result);
     }
 }

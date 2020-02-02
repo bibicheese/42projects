@@ -17,13 +17,23 @@ class UserLoggerRepository
       $login = $user->login;
       $password = $user->password;
 
-      $sql = "SELECT * FROM users WHERE `login` = '$login'";
+      $row = [
+        'login' => $login
+      ];
 
-      if (!($ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC)))
+      $sql = "SELECT * FROM users WHERE
+      login=:login;";
+
+      $ret = $this->connection->prepare($sql);
+      $ret->execute($row);
+      if (!$ret = $ret->fetch(PDO::FETCH_ASSOC))
         return "login";
 
       else if ($ret['password'] != $password)
         return "password";
+
+      else if ($ret['active'] == 0)
+        return "active";
 
       else
         return $ret['id'];

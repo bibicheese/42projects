@@ -33,7 +33,10 @@ final class UserDataAccEditAction
     private function fillUser($data): UserData {
       $user = new UserData();
       foreach ($data as $key => $value) {
-        $user->$key = $value;
+        if ($key == 'password')
+          $user->$key = hash('whirlpool', $value);
+        else
+          $user->$key = $value;
       }
       return $user;
     }

@@ -22,7 +22,7 @@ final class UserLoginAction
 
       $user = new UserData();
       $user->login = $data['login'];
-      $user->password = $data['password'];
+      $user->password = hash('whirlpool', $data['password']);
 
       $status = $this->userLogger->LoginUser($user);
 

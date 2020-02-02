@@ -18,15 +18,23 @@ final class UserCreateAction
     public function __invoke(ServerRequest $request, Response $response): Response {
         $data = (array)$request->getParsedBody();
 
-        $user = new UserData();
-        $user->login = $data['login'];
-        $user->password = $data['password'];
-        $user->email = $data['email'];
+        $user = $this->fillUser($data);
 
         $status = $this->userCreator->createUser($user);
 
         $result = ['create_user_status' => $status];
 
         return $response->withJson($result);
+    }
+
+    private function fillUser($data): UserData {
+      $user = new UserData();
+      foreach ($data as $key => $value) {
+        if ($key == 'password')
+          $user->$key = hash('whirlpool', $value);
+        else
+          $user->$key = $value;
+      }
+      return $user;
     }
 }

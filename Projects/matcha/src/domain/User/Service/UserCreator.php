@@ -16,6 +16,6 @@ final class UserCreator
         if ($error = $this->repository->UserExist($user))
           return ['error' => $error . " taken"];
         else
-          return ['success' => $this->repository->insertUser($user)];
+          return $this->repository->insertUser($user);
     }
 }

@@ -23,8 +23,8 @@ class UserAccEditorRepository
         'login' => $user->login,
         'password' => $user->password,
         'email' => $user->email,
-        'first name' => $user->firstName,
-        'last name' => $user->lastName,
+        'first name' => $user->firstname,
+        'last name' => $user->lastname,
         'orientaion' => $user->orientation,
         'gender' => $user->gender,
         'birth' => $user->birth,
@@ -52,14 +52,31 @@ class UserAccEditorRepository
       $data['email'] = $user->email;
       $password = $user->password;
 
+
       foreach ($data as $key => $value) {
-        $sql = "SELECT * FROM users WHERE `$key` = '$value'";
-        if ($ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
+        $row = [
+          $key => $value
+        ];
+
+        $sql = "SELECT * FROM users WHERE
+        $key=:$key;";
+
+        $ret = $this->connection->prepare($sql);
+        $ret->execute($row);
+        if ($ret = $ret->fetch(PDO::FETCH_ASSOC))
           return $key . " taken";
       }
-      $sql = "SELECT * FROM users WHERE `id` = '$this->sess_id'";
 
-      $ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+      $row = [
+        'id' => $this->sess_id
+      ];
+
+      $sql = "SELECT * FROM users WHERE
+      id=:id;";
+
+      $ret = $this->connection->prepare($sql);
+      $ret->execute($row);
+      $ret = $ret->fetch(PDO::FETCH_ASSOC);
       if ($ret['password'] == $password)
         return "password same";
 

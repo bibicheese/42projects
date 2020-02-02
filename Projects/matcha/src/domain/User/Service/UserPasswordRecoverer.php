@@ -19,6 +19,9 @@ final class UserPasswordRecoverer
         return $this->repository->confirmToken($token);
     }
     public function changePassword($password) {
-        return $this->repository->insertPassword($password);
+        if ($error = $this->repository->verifyPassword($password))
+          return $error;
+        else
+          return $this->repository->insertPassword($password);
     }
 }
