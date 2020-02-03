@@ -98,28 +98,6 @@ class UserPasswordRecovererRepository
     }
 
 
-    public function insertPassword($password) {
-      $file = '../src/tmp/recovery.txt';
-      $check = explode(';', file_get_contents($file));
-
-      $row = [
-        'email' => $check[0],
-        'token' => $check[1],
-        'password' => $password
-      ];
-
-      $sql = "UPDATE users SET
-      password=:password
-      WHERE
-      email=:email
-      AND
-      token=:token;";
-
-      $this->connection->prepare($sql)->execute($row);
-      unlink($file);
-      return ['succes' => 'password has been changed'];
-    }
-
     public function verifyPassword($password) {
       $file = '../src/tmp/recovery.txt';
       $check = explode(';', file_get_contents($file));
@@ -140,5 +118,28 @@ class UserPasswordRecovererRepository
       if ($ret['password'] == $password)
         return ['error' => 'password same'];
 
+    }
+
+
+    public function insertPassword($password) {
+      $file = '../src/tmp/recovery.txt';
+      $check = explode(';', file_get_contents($file));
+
+      $row = [
+        'email' => $check[0],
+        'token' => $check[1],
+        'password' => $password
+      ];
+
+      $sql = "UPDATE users SET
+      password=:password
+      WHERE
+      email=:email
+      AND
+      token=:token;";
+
+      $this->connection->prepare($sql)->execute($row);
+      unlink($file);
+      return ['succes' => 'password has been changed'];
     }
 }

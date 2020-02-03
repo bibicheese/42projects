@@ -22,7 +22,8 @@ final class UserDataAccEditAction
           $data = (array)$request->getParsedBody();
 
           $user = $this->fillUser($data);
-
+          if ($data['interest'])
+            $this->userDataAccEditor->checkInterest($data['interest']);
           $result = ['user_account_status' => $this->userDataAccEditor->modifyData($user)];
         }
         else

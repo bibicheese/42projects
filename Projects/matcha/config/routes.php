@@ -11,4 +11,5 @@ return function (App $app) {
   $app->post('/logout', \Src\Action\UserLogoutAction::class);
   $app->post('/account_editor', \Src\Action\UserDataAccEditAction::class);
   $app->post('/recovery_password', \Src\Action\RecoveryPasswordAction::class);
+  $app->post('/images', \Src\Action\UploadImagesAction::class);
 };

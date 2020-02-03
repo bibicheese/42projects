@@ -19,6 +19,15 @@ class UserAccEditorRepository
     }
 
     public function insertData(UserData $user) {
+      if ($user->birth) {
+        $birth = $user->birth;
+        $birth = explode('/', $birth);
+        $age = (date("md", date("U", mktime(0, 0, 0, $birthDate[0], $birthDate[1], $birthDate[2])))
+        > date("md") ?
+        ((date("Y") - $birthDate[2]) - 1) :
+        (date("Y") - $birthDate[2]));
+      }
+
       $data = [
         'login' => $user->login,
         'password' => $user->password,
@@ -28,6 +37,8 @@ class UserAccEditorRepository
         'orientaion' => $user->orientation,
         'gender' => $user->gender,
         'birth' => $user->birth,
+        'bio' => $user->bio,
+        'age' => $age
       ];
 
       foreach ($data as $key => $value) {
@@ -51,7 +62,6 @@ class UserAccEditorRepository
       $data['login'] = $user->login;
       $data['email'] = $user->email;
       $password = $user->password;
-
 
       foreach ($data as $key => $value) {
         $row = [
@@ -82,4 +92,110 @@ class UserAccEditorRepository
 
       return NULL;
     }
+
+    public function insertInterest($interest) {
+      $interest = explode(',', $interest);
+      foreach ($interest as $key => $value) {
+        $row = [
+          'tag' => $value
+        ];
+
+        $sql = "SELECT * FROM tags WHERE
+        tag=:tag;";
+
+        $ret = $this->connection->prepare($sql);
+        $ret->execute($row);
+        $ret = $ret->fetch(PDO::FETCH_ASSOC);
+        if ($ret) {
+          $tag_ids = explode(',', $ret['userids']);
+
+          if (in_array($this->sess_id, $tag_ids))
+            continue;
+          else {
+            $row = [
+              'userids' => $ret['userids'] . ',' . $this->sess_id,
+              'tag' => $value
+            ];
+
+            $sql = "UPDATE tags SET
+            userids=:userids
+            WHERE
+            tag=:tag;";
+
+            $this->connection->prepare($sql)->execute($row);
+          }
+        }
+        else {
+          $row = [
+            'tag' => $value,
+            'userids' => $this->sess_id
+          ];
+
+          $sql = "INSERT INTO tags SET
+          tag=:tag,
+          userids=:userids;";
+
+          $this->connection->prepare($sql)->execute($row);
+        }
+      }
+      $this->removeUserFromTag($interest);
+    }
+
+
+    private function removeUserFromTag($interest) {
+      $ret = $this->connection->query("SELECT * FROM tags");
+      $ret = $ret->fetchAll(PDO::FETCH_ASSOC);
+      $rows = count($ret);
+      $i = -1;
+
+      while (++$i < $rows)
+      {
+        if (in_array($this->sess_id, explode(',', $ret[$i]['userids']))) {
+          if (!in_array($ret[$i]['tag'], $interest)) {
+            if ($newids = $this->removeId($ret[$i]['userids'])) {
+              $row = [
+                'userids' => $newids,
+                'id' => $ret[$i]['id']
+              ];
+
+              $sql = "UPDATE tags SET
+              userids=:userids
+              WHERE
+              id=:id;";
+
+              $this->connection->prepare($sql)->execute($row);
+            }
+            else {
+              $row = [
+                'id' => $ret[$i]['id']
+              ];
+
+              $sql = "DELETE FROM tags WHERE
+              id=:id;";
+
+              $this->connection->prepare($sql)->execute($row);
+            }
+          }
+        }
+      }
+    }
+
+
+    private function removeId($userids) {
+      $userids = explode(',', $userids);
+      $rows = count($userids);
+      $i = 0;
+
+      foreach ($userids as $key => $value) {
+        if ($value != $this->sess_id && $value)
+          $newids = $i == 0 ? $newids . $value : $newids . ',' . $value;
+        $i++;
+      }
+
+      if ($newids == ',')
+        return NULL;
+      return $newids;
+    }
+
+
 }

@@ -24,7 +24,7 @@ class UserCreatorRepository
             'firstname' => $user->firstname,
             'lastname' => $user->lastname,
             'token' => $this->token
-        ];
+          ];
 
         $sql = "INSERT INTO users SET
                 login=:login,

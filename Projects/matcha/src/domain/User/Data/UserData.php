@@ -13,4 +13,6 @@ final class UserData
     public $age;
     public $gender;
     public $orientation;
+    public $bio;
+    public $interest;
 }
