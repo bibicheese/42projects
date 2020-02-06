@@ -12,7 +12,7 @@ final class UserCreator
     public function __construct(UserCreatorRepository $repository) {
         $this->repository = $repository;
     }
-    public function createUser(UserData $user): array {
+    public function createUser(UserData $user) {
         if ($error = $this->repository->UserExist($user))
           return ['error' => $error . " taken"];
         else

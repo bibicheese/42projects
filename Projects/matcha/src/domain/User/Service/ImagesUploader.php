@@ -13,6 +13,9 @@ final class ImagesUploader
     }
 
     public function checkImages($uploadedFiles) {
-        return $this->repository->uploadImages($uploadedFiles);
+      if ($error = $this->repository->maximum5($uploadedFiles))
+        return ['error' => $error];
+      else
+        return ['success' => $this->repository->uploadImages($uploadedFiles)];
     }
 }

@@ -22,10 +22,10 @@ class UserAccEditorRepository
       if ($user->birth) {
         $birth = $user->birth;
         $birth = explode('/', $birth);
-        $age = (date("md", date("U", mktime(0, 0, 0, $birthDate[0], $birthDate[1], $birthDate[2])))
+        $age = (date("md", date("U", mktime(0, 0, 0, $birth[0], $birth[1], $birth[2])))
         > date("md") ?
-        ((date("Y") - $birthDate[2]) - 1) :
-        (date("Y") - $birthDate[2]));
+        ((date("Y") - $birth[2]) - 1) :
+        (date("Y") - $birth[2]));
       }
 
       $data = [
