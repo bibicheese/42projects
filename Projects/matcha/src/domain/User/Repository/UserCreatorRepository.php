@@ -2,6 +2,7 @@
 
 namespace Src\Domain\User\Repository;
 
+use ipinfo\ipinfo\IPinfo;
 use Src\Domain\User\Data\UserData;
 use PDO;
 
@@ -17,17 +18,22 @@ class UserCreatorRepository
     public function insertUser(UserData $user) {
         $this->token = bin2hex(openssl_random_pseudo_bytes(16, $truc));
 
-        if ($ip = $this->get_user_ip())
-          return ['success' => 'ip = ' . $ip];
-        else
-          return ['error' => 'no ip'];
+        $access_token = 'd068dfed09a69b';
+        $client = new IPinfo($access_token);
+        $ip = $this->get_user_ip();
+        // $ip = "194.167.30.240";
+        $details = $client->getDetails($ip);
+        return $details;
         $row = [
             'login' => $user->login,
             'password' => $user->password,
             'email' => $user->email,
             'firstname' => $user->firstname,
             'lastname' => $user->lastname,
-            'token' => $this->token
+            'token' => $this->token,
+            'city' => $details->city,
+            'dept' => substr($details->postal, 0, 2),
+            'region' => $details->region
           ];
 
         $sql = "INSERT INTO users SET
@@ -36,6 +42,9 @@ class UserCreatorRepository
                 firstname=:firstname,
                 lastname=:lastname,
                 token=:token,
+                city=:city,
+                dept=:dept,
+                region=:region,
                 email=:email;";
 
         $this->connection->prepare($sql)->execute($row);
@@ -48,24 +57,25 @@ class UserCreatorRepository
 
 
     private function get_user_ip() {
-      foreach ( array(
+      $server = array(
               'HTTP_CLIENT_IP',
               'HTTP_X_FORWARDED_FOR',
               'HTTP_X_FORWARDED',
               'HTTP_X_CLUSTER_CLIENT_IP',
               'HTTP_FORWARDED_FOR',
               'HTTP_FORWARDED',
-              'REMOTE_ADDR' ) as $key ) {
-                if ( array_key_exists( $key, $_SERVER ) === true ) {
-                  foreach ( explode( ',', $_SERVER[ $key ] ) as $ip ) {
-                    $ip = trim( $ip );
-                    // if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) !== false
-                    // && ( ( ip2long( $ip ) & 0xff000000 ) != 0x7f000000 ) )
-                      return $ip;
-                    }
-                  }
+              'REMOTE_ADDR' );
+      foreach ( $server as $key ) {
+        if ( array_key_exists( $key, $_SERVER ) === true ) {
+          foreach ( explode( ',', $_SERVER[ $key ] ) as $ip ) {
+              $ip = trim( $ip );
+              if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) !== false
+              && ( ( ip2long( $ip ) & 0xff000000 ) != 0x7f000000 ) )
+              return $ip;
+          }
         }
-    return false;
+      }
+    return "163.172.250.12";
     }
 
 

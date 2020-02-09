@@ -12,6 +12,7 @@ return function (App $app) {
   $app->post('/account_editor', \Src\Action\UserDataAccEditAction::class);
   $app->post('/recovery_password', \Src\Action\RecoveryPasswordAction::class);
   $app->post('/images', \Src\Action\UploadImagesAction::class);
-  $app->get('/profile/{name}', \Src\Action\ViewProfileAction::class);
-  $app->get('/suggest_list', \Src\Action\SuggestListAction::class);
+  $app->get('/profil/{login}', \Src\Action\ViewProfilAction::class);
+  $app->get('/suggest_list', \Src\Action\ListSuggestionAction::class);
+  $app->post('/like', \Src\Action\UserLikeAction::class);
 };

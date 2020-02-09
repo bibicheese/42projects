@@ -12,16 +12,45 @@ class db {
     $conn = new PDO($mysql_conn, $this->user, $this->paswd, array(PDO::MYSQL_ATTR_LOCAL_INFILE => true));
     $conn->query("CREATE DATABASE IF NOT EXISTS $this->dbname");
     $conn->query("use $this->dbname");
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    if (! $conn->query("SELECT * FROM users LIMIT 1")) {
-      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      $this->table_users($conn);
-      $this->table_tags($conn);
-      $this->table_images($conn);
-      $this->table_location($conn);
-      $this->fill_table_users($conn);
-      $this->fill_table_location($conn);
+    try {
+      $conn->query("SELECT * FROM users LIMIT 1");
     }
+    catch(PDOException $e) {
+      $this->table_users($conn);
+      $this->fill_table_users($conn);
+    }
+
+    try {
+      $conn->query("SELECT * FROM tags LIMIT 1");
+    }
+    catch(PDOException $e) {
+      $this->table_tags($conn);
+      $this->fill_table_tags($conn);
+    }
+
+    try {
+      $conn->query("SELECT * FROM images LIMIT 1");
+    }
+    catch(PDOException $e) {
+      $this->table_images($conn);
+    }
+
+    try {
+      $conn->query("SELECT * FROM viewers LIMIT 1");
+    }
+    catch(PDOException $e) {
+      $this->table_viewers($conn);
+    }
+
+    try {
+      $conn->query("SELECT * FROM likes LIMIT 1");
+    }
+    catch(PDOException $e) {
+      $this->table_likes($conn);
+    }
+
     return $conn;
   }
 
@@ -42,6 +71,9 @@ class db {
                 token VARCHAR(255) DEFAULT NULL,
                 bio VARCHAR(255) DEFAULT NULL,
                 views VARCHAR(255) DEFAULT NULL,
+                city VARCHAR(255) DEFAULT NULL,
+                dept VARCHAR(2) DEFAULT NULL,
+                region VARCHAR(255) DEFAULT NULL,
                 reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
       }
       catch(PDOException $e) {
@@ -70,7 +102,7 @@ class db {
                 id INT UNIQUE AUTO_INCREMENT PRIMARY KEY,
                 link VARCHAR(255) NOT NULL UNIQUE,
                 userid INT NOT NULL,
-                profile INT DEFAULT 0,
+                profil INT DEFAULT 0,
                 reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
       }
       catch(PDOException $e) {
@@ -79,27 +111,38 @@ class db {
   }
 
 
-  private function table_location($db) {
-  try {
-    $db->query("CREATE TABLE IF NOT EXISTS location (
-                ip_from INT(10) UNSIGNED DEFAULT 0,
-                ip_to INT(10) UNSIGNED DEFAULT 0,
-                country_code CHAR(2) DEFAULT NULL,
-                country_name VARCHAR(64) DEFAULT NULL,
-                region_name VARCHAR(128) DEFAULT NULL,
-                city_name VARCHAR(128) DEFAULT NULL,
-                latitude DOUBLE DEFAULT 0.000000,
-                longitude DOUBLE DEFAULT 0.000000,
-                zip VARCHAR(15) DEFAULT NULL)");
-      }
-      catch(PDOException $e) {
-        echo "tags_table failed: " . $e->getMessage();
-      }
+  private function table_viewers($db) {
+    try {
+      $db->query("CREATE TABLE IF NOT EXISTS viewers (
+                  visitor INT NOT NULL,
+                  host INT NOT NULL,
+                  visit_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
+        }
+        catch(PDOException $e) {
+          echo "tags_table failed: " . $e->getMessage();
+        }
+  }
+
+
+  private function table_likes($db) {
+    try {
+      $db->query("CREATE TABLE IF NOT EXISTS likes (
+                  liker INT NOT NULL,
+                  action VARCHAR(20) DEFAULT 'liked =>',
+                  liked INT NOT NULL)");
+        }
+        catch(PDOException $e) {
+          echo "tags_table failed: " . $e->getMessage();
+        }
   }
 
 
   private function fill_table_users($db) {
     $file = fopen("../config/seed/USERS.CSV", "r");
+    $cities = fopen("../config/seed/CITIES.CSV", "r");
+    $i = 0;
+    $j = 0;
+
 
     $sql = "INSERT INTO users SET
     active=:active,
@@ -112,11 +155,19 @@ class db {
     orientation=:orientation,
     login=:login,
     password=:password,
+    city=:city,
+    dept=:dept,
+    region=:region,
     bio=:bio;";
 
     while (! feof($file))
     {
+      if ($j > 2)
+        $j = 0;
       $ligne = explode(",", fgets($file));
+      if ($i >= 200)
+        $city = explode(",", fgets($cities));
+
       if ($ligne[0]) {
         $birth = trim($ligne[3], '"');
         $birth = explode('/', $birth);
@@ -124,39 +175,82 @@ class db {
         > date("md") ?
         ((date("Y") - $birth[2]) - 1) : (date("Y") - $birth[2]));
 
+        $orientation = [
+          '0' => 'hetero',
+          '1' => 'gay',
+          '2' => 'bi'
+        ];
+
         $row = [
           'active' => '1',
-          'firstname' => trim($ligne[0], '"'),
-          'lastname' => trim($ligne[1], '"'),
-          'email' => trim($ligne[2], '"'),
-          'birth' => trim($ligne[3], '"'),
+          'firstname' => $ligne[0],
+          'lastname' => $ligne[1],
+          'email' => $ligne[2],
+          'birth' => $ligne[3],
           'age' => $age,
-          'gender' => trim($ligne[4], '"'),
-          'orientation' => trim($ligne[5], '"'),
-          'login' => trim($ligne[6], '"'),
-          'password' => hash('whirlpool', trim($ligne[7], '"')),
-          'bio' => trim(str_replace(["\n","\r"],"", $ligne[8]), '"')
+          'gender' => $ligne[4],
+          'orientation' => $orientation[$j],
+          'login' => $ligne[5],
+          'password' => hash('whirlpool', $ligne[6]),
+          'bio' => str_replace(["\n","\r"], "", $ligne[7]),
+          'city' => $i < 200 ? "Paris" : $city[0],
+          'dept' => $i < 200 ? "75" : $city[1],
+          'region' => "Île-de-France"
         ];
 
         $db->prepare($sql)->execute($row);
+        $i++;
+        $j++;
       }
     }
     fclose($file);
+    fclose($cities);
   }
 
 
-  private function fill_table_location($db) {
-    try {
-      $sql = "LOAD DATA LOCAL INFILE '../config/seed/IPLOCATION.CSV'
-                  INTO TABLE location
-                  FIELDS TERMINATED BY ',' ENCLOSED BY '\"'
-                  LINES TERMINATED BY '\r\n'
-                  IGNORE 0 LINES;";
-        $db->prepare($sql)->execute();
-    }
-    catch(PDOException $e) {
-      echo $e->getMessage();
-    }
+  private function fill_table_tags($db) {
+      $file = fopen("../config/seed/TAGS.CSV", "r");
+      $sql = "SELECT count(*) FROM users";
+      $ret = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+
+      $i = $ret[0]['count(*)'];
+
+      while ($i != 1) {
+        if (feof($file)) {
+          fclose($file);
+          $file = fopen("../config/seed/TAGS.CSV", "r");
+        }
+        $ligne = fgets($file);
+        if ($ligne) {
+          $sql = "SELECT * FROM tags WHERE
+          tag = '$ligne'";
+
+          if ($ret = $db->query($sql)->fetch(PDO::FETCH_ASSOC)) {
+            $row = [
+              'userids' => $ret['userids'] . ',' . $i,
+              'tag' => $ligne
+            ];
+
+            $sql = "UPDATE tags SET
+            userids=:userids
+            WHERE
+            tag=:tag;";
+          }
+          else {
+            $row = [
+              'tag' => $ligne,
+              'userids' => $i
+            ];
+
+            $sql = "INSERT INTO tags SET
+            tag=:tag,
+            userids=:userids;";
+          }
+          $db->prepare($sql)->execute($row);
+          $i--;
+        }
+      }
+      fclose($file);
   }
 }
 

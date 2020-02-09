@@ -21,7 +21,7 @@ final class UserLoginAction
       $data = (array)$request->getParsedBody();
 
       $user = new UserData();
-      $user->login = $data['login'];
+      $user->email = $data['email'];
       $user->password = hash('whirlpool', $data['password']);
 
       $status = $this->userLogger->LoginUser($user);
