@@ -15,4 +15,5 @@ return function (App $app) {
   $app->get('/profil/{login}', \Src\Action\ViewProfilAction::class);
   $app->get('/suggest_list', \Src\Action\ListSuggestionAction::class);
   $app->post('/like', \Src\Action\UserLikeAction::class);
+  $app->get('/my_account', \Src\Action\ViewSelfProfilAction::class);
 };

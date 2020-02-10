@@ -182,17 +182,17 @@ class UserAccEditorRepository
 
 
     private function removeId($userids) {
-      $userids = explode(',', $userids);
+      $userids = explode('.', $userids);
       $rows = count($userids);
       $i = 0;
 
       foreach ($userids as $key => $value) {
         if ($value != $this->sess_id && $value)
-          $newids = $i == 0 ? $newids . $value : $newids . ',' . $value;
+          $newids = $i == 0 ? $newids . $value : $newids . '.' . $value;
         $i++;
       }
 
-      if ($newids == ',')
+      if ($newids == '.')
         return NULL;
       return $newids;
     }

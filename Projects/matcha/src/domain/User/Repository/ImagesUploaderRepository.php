@@ -31,13 +31,13 @@ class ImagesUploaderRepository
         if ($image->getError() === UPLOAD_ERR_OK) {
           $filepath = $this->moveUploadedFile($directory, $image);
           $row = [
-            'profile' => $key == "profile" ? 1 : 0,
+            'profil' => $key == "profil" ? 1 : 0,
             'link' => $filepath,
             'userid' => $this->sess_id
           ];
 
           $sql = "INSERT INTO images SET
-          profile=:profile,
+          profil=:profil,
           link=:link,
           userid=:userid;";
 

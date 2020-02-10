@@ -37,12 +37,19 @@ class ListSuggesterRepository
         `id` = '$id'";
         $user = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
 
-        $mine = "%\,$id\,%";
         $sql = "SELECT * FROM tags WHERE
-        userids LIKE '$mine'";
-        $tags = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        userids REGEXP '(,|^)$id(,|$)'";
+        $MyTags_db = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
-        return $tags;
+        $i = count($MyTags_db);
+        while ($i-- != 0)
+        {
+          $MyTags = !$MyTags ? $MyTags_db[$i]['tag'] :
+                               $MyTags . "," . $MyTags_db[$i]['tag'];
+          $matchTagsIds = !$matchTagsIds ? $MyTags_db[$i]['userids'] :
+                                           $matchTagsIds . "," . $MyTags_db[$i]['userids'];
+        }
+        $MyTags = explode(',', $MyTags);
         $ageUp = $user['age'] + 3;
         $ageDown = $user['age'] - 3;
         $select = "firstname,
@@ -51,17 +58,37 @@ class ListSuggesterRepository
                   gender,
                   orientation,
                   city,
-                  bio";
+                  bio,
+                  id,
+                  login";
 
         if ($user['orientation'] != 'bi') {
           $gender = $this->getGender($user['orientation'], $user['gender']);
           $orientation = $user['orientation'];
+          $orientationOr = 'bi';
           $city = $user['city'];
 
           $sql = "SELECT $select FROM users WHERE
+          id != '$id'
+          AND
+          id IN ($matchTagsIds)
+          AND
           gender = '$gender'
           AND
           orientation = '$orientation'
+          AND
+          city = '$city'
+          AND
+          age BETWEEN $ageDown AND $ageUp
+          UNION
+          SELECT $select FROM users WHERE
+          id != '$id'
+          AND
+          id IN ($matchTagsIds)
+          AND
+          gender = '$gender'
+          AND
+          orientation = '$orientationOr'
           AND
           city = '$city'
           AND
@@ -76,6 +103,10 @@ class ListSuggesterRepository
           $city = $user['city'];
 
           $sql = "SELECT $select FROM users WHERE
+          id != '$id'
+          AND
+          id IN ($matchTagsIds)
+          AND
           gender = '$gender'
           AND
           orientation = '$orientation'
@@ -85,6 +116,10 @@ class ListSuggesterRepository
           age BETWEEN $ageDown AND $ageUp
           UNION
           SELECT $select FROM users WHERE
+          id != $id
+          AND
+          id IN ($matchTagsIds)
+          AND
           gender = '$genderOr'
           AND
           orientation = '$orientationOr'
@@ -94,13 +129,47 @@ class ListSuggesterRepository
           age BETWEEN $ageDown AND $ageUp
           UNION
           SELECT $select FROM users WHERE
+          id != '$id'
+          AND
+          id IN ($matchTagsIds)
+          AND
           orientation = '$orientationBase'
           AND
           city = '$city'
           AND
           age BETWEEN $ageDown AND $ageUp;";
         }
-        return $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        $ret = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        $i = 0;
+        foreach ($ret as $key => $value) {
+          $id = $ret[$i]['id'];
+
+          $sql = "SELECT tag FROM tags WHERE
+          userids REGEXP '(,|^)$id(,|$)'";
+          $userTags = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+
+          $sql = "SELECT link FROM images WHERE
+          userid = '$id'
+          AND
+          profil = '1'";
+          if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
+            $profilPic['link'] = "../src/images/default.png";
+
+          $j = count($userTags);
+          while ($j-- != 0) {
+            if (!$tags && in_array($userTags[$j]['tag'], $MyTags))
+              $tags = $userTags[$j]['tag'];
+            else {
+              if (in_array($userTags[$j]['tag'], $MyTags))
+                $tags = $tags . "," . $userTags[$j]['tag'];
+            }
+          }
+          $ret[$i][tags] = $tags;
+          $ret[$i][profil] = $profilPic['link'];
+          $i++;
+          $tags = NULL;
+        }
+        return $ret;
     }
 
     private function getGender($orientation, $gender) {

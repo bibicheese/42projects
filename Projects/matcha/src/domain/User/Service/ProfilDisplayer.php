@@ -14,6 +14,6 @@ final class ProfilDisplayer
     }
 
     public function getInfo($user) {
-      return $this->repository->Displayer($user);
+      return $this->repository->displayer($user);
     }
 }

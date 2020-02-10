@@ -114,6 +114,7 @@ class db {
   private function table_viewers($db) {
     try {
       $db->query("CREATE TABLE IF NOT EXISTS viewers (
+                  id INT UNIQUE AUTO_INCREMENT PRIMARY KEY,
                   visitor INT NOT NULL,
                   host INT NOT NULL,
                   visit_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
@@ -215,38 +216,41 @@ class db {
 
       $i = $ret[0]['count(*)'];
 
-      while ($i != 1) {
+      while ($i != 0) {
         if (feof($file)) {
           fclose($file);
           $file = fopen("../config/seed/TAGS.CSV", "r");
         }
-        $ligne = fgets($file);
-        if ($ligne) {
-          $sql = "SELECT * FROM tags WHERE
-          tag = '$ligne'";
+        $ligne = explode(',', fgets($file));
+        if ($ligne[0]) {
+          foreach ($ligne as $key => $value) {
+            $value = str_replace(["\n","\r"], "", $value);
+            $sql = "SELECT * FROM tags WHERE
+            tag = '$value'";
 
-          if ($ret = $db->query($sql)->fetch(PDO::FETCH_ASSOC)) {
-            $row = [
-              'userids' => $ret['userids'] . ',' . $i,
-              'tag' => $ligne
-            ];
+            if ($ret = $db->query($sql)->fetch(PDO::FETCH_ASSOC)) {
+              $row = [
+                'userids' => $ret['userids'] . ',' . $i,
+                'tag' => $value
+              ];
 
-            $sql = "UPDATE tags SET
-            userids=:userids
-            WHERE
-            tag=:tag;";
+              $sql = "UPDATE tags SET
+              userids=:userids
+              WHERE
+              tag=:tag;";
+            }
+            else {
+              $row = [
+                'tag' => $value,
+                'userids' => $i
+              ];
+
+              $sql = "INSERT INTO tags SET
+              tag=:tag,
+              userids=:userids;";
+            }
+            $db->prepare($sql)->execute($row);
           }
-          else {
-            $row = [
-              'tag' => $ligne,
-              'userids' => $i
-            ];
-
-            $sql = "INSERT INTO tags SET
-            tag=:tag,
-            userids=:userids;";
-          }
-          $db->prepare($sql)->execute($row);
           $i--;
         }
       }

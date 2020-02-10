@@ -18,7 +18,7 @@ class ProfilDisplayerRepository
       $this->sess_id = $session['id'];
     }
 
-    public function Displayer($user) {
+    public function displayer($user) {
       $login = $user->login;
 
       $row = [
@@ -34,14 +34,23 @@ class ProfilDisplayerRepository
         return ['error' => 'user do not exist'];
 
       $id = $dataUser['id'];
+
+      $this->addViews($id);
+
       $sql = "SELECT link FROM images WHERE
-      `userid` = '$id'
+      userid = '$id'
       AND
-      `profil` = 1";
+      profil = '1'";
       if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
         $profilPic = "../src/images/default.png";
 
-      $this->addViews($dataUser['id']);
+      $sql = "SELECT tag FROM tags WHERE
+      userids REGEXP '(,|^)$id(,|$)'";
+      $tags_db = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+
+      $j = count($tags_db);
+      while ($j-- != 0)
+        $tags = !$tags ? $tags_db[$j]['tag'] : $tags . "," . $tags_db[$j]['tag'];
 
       return [
         'firstname' => $dataUser['firstname'],
@@ -51,7 +60,8 @@ class ProfilDisplayerRepository
         'genre' => $dataUser['gender'],
         'orientation' => $dataUser['orientation'],
         'bio' => $dataUser['bio'],
-        'profilPic' => $profilPic
+        'profilPic' => $profilPic['link'],
+        'tags' => $tags
       ];
 
     }
@@ -63,5 +73,7 @@ class ProfilDisplayerRepository
         `host` = '$idVisited';";
         $this->connection->query($sql);
       }
+      else
+        header("location: 127.0.0.1/my_profil");
     }
 }
