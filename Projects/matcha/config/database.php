@@ -128,6 +128,7 @@ class db {
   private function table_likes($db) {
     try {
       $db->query("CREATE TABLE IF NOT EXISTS likes (
+                  id INT UNIQUE AUTO_INCREMENT PRIMARY KEY,
                   liker INT NOT NULL,
                   action VARCHAR(20) DEFAULT 'liked =>',
                   liked INT NOT NULL)");

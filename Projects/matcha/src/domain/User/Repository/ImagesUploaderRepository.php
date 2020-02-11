@@ -19,7 +19,9 @@ class ImagesUploaderRepository
     }
 
     public function maximum5($images) {
-      $ret = $this->connection->query("SELECT * FROM images WHERE `userid` = '$this->sess_id'")->fetchAll(PDO::FETCH_ASSOC);
+      $sql = "SELECT * FROM images WHERE
+      userid = '$this->sess_id'"
+      $ret = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
       if ((count($images) + count($ret)) > 5)
         return "too much images";
     }

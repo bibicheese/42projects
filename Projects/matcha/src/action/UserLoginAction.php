@@ -30,10 +30,10 @@ final class UserLoginAction
           $session = new Helper();
           $session['id'] = $status;
           $id = $session['id'];
-          $result = ['login_user_status' => ['success' => "$id : user logged"]];
+          $result = ['login_user_status' => ['status' => 1, 'success' => "$id"]];
       }
       else
-        $result = ['login_user_status' => ['error' => $status]];
+        $result = ['login_user_status' => ['status' => 0, 'error' => $status]];
 
       return $response->withJson($result);
     }

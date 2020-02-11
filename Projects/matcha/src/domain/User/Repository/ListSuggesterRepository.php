@@ -14,10 +14,17 @@ class ListSuggesterRepository
 
     public function infoComplete($id) {
         $sql = "SELECT * FROM users WHERE
-        `id` = '$id';";
-        $ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+        id = '$id';";
+        $userData = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
 
-        foreach ($ret as $key => $value) {
+        $sql = "SELECT link FROM images WHERE
+        userid = '$id'
+        AND
+        profil = '1'";
+        if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
+          // return 'must complete profil first';
+
+        foreach ($userData as $key => $value) {
           if (! $value && $key == 'firstname' ||
               ! $value && $key == 'lastname' ||
               ! $value && $key == 'email' ||
@@ -34,7 +41,7 @@ class ListSuggesterRepository
 
     public function displayList($id) {
         $sql = "SELECT * FROM users WHERE
-        `id` = '$id'";
+        id = '$id'";
         $user = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
 
         $sql = "SELECT * FROM tags WHERE

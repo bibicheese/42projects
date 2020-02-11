@@ -44,6 +44,13 @@ class ProfilDisplayerRepository
       if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
         $profilPic = "../src/images/default.png";
 
+      $sql = "SELECT link FROM images WHERE
+      userid = '$id'
+      AND
+      profil = '0'";
+      if (! $images = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
+        $images = NULL;
+
       $sql = "SELECT tag FROM tags WHERE
       userids REGEXP '(,|^)$id(,|$)'";
       $tags_db = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -61,6 +68,7 @@ class ProfilDisplayerRepository
         'orientation' => $dataUser['orientation'],
         'bio' => $dataUser['bio'],
         'profilPic' => $profilPic['link'],
+        'images' => $images,
         'tags' => $tags
       ];
 
