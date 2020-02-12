@@ -23,7 +23,7 @@ class UserCreatorRepository
         $ip = $this->get_user_ip();
         // $ip = "194.167.30.240";
         $details = $client->getDetails($ip);
-        return $details;
+        // return $details;
         $row = [
             'login' => $user->login,
             'password' => $user->password,

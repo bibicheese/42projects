@@ -72,8 +72,12 @@ class db {
                 bio VARCHAR(255) DEFAULT NULL,
                 views VARCHAR(255) DEFAULT NULL,
                 city VARCHAR(255) DEFAULT NULL,
-                dept VARCHAR(2) DEFAULT NULL,
+                arr CHAR(2) DEFAULT NULL,
+                dept CHAR(2) DEFAULT NULL,
+                ZIP VARCHAR(5) DEFAULT NULL,
                 region VARCHAR(255) DEFAULT NULL,
+                latitude VARCHAR(255) DEFAULT NULL,
+                longitude VARCHAR(255) DEFAULT NULL,
                 reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
       }
       catch(PDOException $e) {
@@ -87,7 +91,7 @@ class db {
     $db->query("CREATE TABLE IF NOT EXISTS tags (
                 id INT UNIQUE AUTO_INCREMENT PRIMARY KEY,
                 tag VARCHAR(50) NOT NULL UNIQUE,
-                userids VARCHAR(255) NOT NULL,
+                userids VARCHAR(1024) NOT NULL,
                 reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
       }
       catch(PDOException $e) {
@@ -140,8 +144,9 @@ class db {
 
 
   private function fill_table_users($db) {
-    $file = fopen("../config/seed/USERS.CSV", "r");
-    $cities = fopen("../config/seed/CITIES.CSV", "r");
+    $fileUsers = fopen("../config/seed/USERS.CSV", "r");
+    $filesIdf = fopen("../config/seed/CITIES.CSV", "r");
+    $fileParis = fopen("../config/seed/PARIS.CSV", "r");
     $i = 0;
     $j = 0;
 
@@ -157,18 +162,27 @@ class db {
     orientation=:orientation,
     login=:login,
     password=:password,
+    bio=:bio,
     city=:city,
+    arr=:arr,
     dept=:dept,
+    ZIP=:ZIP,
     region=:region,
-    bio=:bio;";
+    latitude=:latitude,
+    longitude=:longitude;";
 
-    while (! feof($file))
+    while (! feof($fileUsers))
     {
-      if ($j > 2)
-        $j = 0;
-      $ligne = explode(",", fgets($file));
-      if ($i >= 200)
-        $city = explode(",", fgets($cities));
+      if (feof($fileParis)) {
+        fclose($fileParis);
+        $fileParis = fopen("../config/seed/PARIS.CSV", "r");
+      }
+
+      $ligne = explode(",", fgets($fileUsers));
+      if ($i >= 400)
+        $idf = explode(",", fgets($filesIdf));
+      else 
+        $paris = explode(",", fgets($fileParis));
 
       if ($ligne[0]) {
         $birth = trim($ligne[3], '"');
@@ -178,11 +192,13 @@ class db {
         ((date("Y") - $birth[2]) - 1) : (date("Y") - $birth[2]));
 
         $orientation = [
-          '0' => 'hetero',
-          '1' => 'gay',
-          '2' => 'bi'
+          '0' => 'Hétérosexuel',
+          '1' => 'Homosexuel',
+          '2' => 'Bisexuel'
         ];
 
+        if ($j > 2)
+          $j = 0;
         $row = [
           'active' => '1',
           'firstname' => $ligne[0],
@@ -195,9 +211,13 @@ class db {
           'login' => $ligne[5],
           'password' => hash('whirlpool', $ligne[6]),
           'bio' => str_replace(["\n","\r"], "", $ligne[7]),
-          'city' => $i < 200 ? "Paris" : $city[0],
-          'dept' => $i < 200 ? "75" : $city[1],
-          'region' => "Île-de-France"
+          'city' => $i < 400 ? $paris[0] : $idf[0],
+          'arr' => $i < 400 ? $paris[1] : NULL,
+          'dept' => $i < 400 ? $paris[2] : $idf[1],
+          'ZIP' => $i < 400 ? $paris[3] : $idf[2],
+          'region' => "Île-de-France",
+          'latitude' => $i < 400 ? $paris[4] : $idf[3],
+          'longitude' => $i < 400 ? $paris[5] : $idf[4]
         ];
 
         $db->prepare($sql)->execute($row);
@@ -205,8 +225,9 @@ class db {
         $j++;
       }
     }
-    fclose($file);
-    fclose($cities);
+    fclose($fileUsers);
+    fclose($filesIdf);
+    fclose($fileParis);
   }
 
 
@@ -215,30 +236,40 @@ class db {
       $sql = "SELECT count(*) FROM users";
       $ret = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
-      $i = $ret[0]['count(*)'];
-
-      while ($i != 0) {
+      $max = $ret[0]['count(*)'];
+      $i = 0;
+      while ($i++ != $max) {
         if (feof($file)) {
           fclose($file);
           $file = fopen("../config/seed/TAGS.CSV", "r");
         }
         $ligne = explode(',', fgets($file));
         if ($ligne[0]) {
-          foreach ($ligne as $key => $value) {
-            $value = str_replace(["\n","\r"], "", $value);
+          $j = 0;
+          while ($j++ < 3) {
+            $rand = rand(0, 50);
+            $value = $ligne[$rand];
             $sql = "SELECT * FROM tags WHERE
             tag = '$value'";
 
             if ($ret = $db->query($sql)->fetch(PDO::FETCH_ASSOC)) {
-              $row = [
-                'userids' => $ret['userids'] . ',' . $i,
-                'tag' => $value
-              ];
+              $userids = $ret['userids'];
+              $regex = "/(,|^)$i(,|$)/";
+              if (! preg_match($regex, $userids, $match)) {
+                $row = [
+                  'userids' => $ret['userids'] . ',' . $i,
+                  'tag' => $value
+                ];
 
-              $sql = "UPDATE tags SET
-              userids=:userids
-              WHERE
-              tag=:tag;";
+                $sql = "UPDATE tags SET
+                userids=:userids
+                WHERE
+                tag=:tag;";
+                
+                $db->prepare($sql)->execute($row);
+              }
+              else 
+                $j--;
             }
             else {
               $row = [
@@ -249,14 +280,16 @@ class db {
               $sql = "INSERT INTO tags SET
               tag=:tag,
               userids=:userids;";
+              
+              $db->prepare($sql)->execute($row);
             }
-            $db->prepare($sql)->execute($row);
           }
-          $i--;
         }
       }
       fclose($file);
   }
+
 }
+  
 
 ?>

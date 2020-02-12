@@ -59,17 +59,18 @@ class ProfilDisplayerRepository
       while ($j-- != 0)
         $tags = !$tags ? $tags_db[$j]['tag'] : $tags . "," . $tags_db[$j]['tag'];
 
+      $tags = explode(',', $tags);
       return [
         'firstname' => $dataUser['firstname'],
         'lastname' => $dataUser['lastname'],
         'birth' => $dataUser['birth'],
         'age' => $dataUser['age'],
-        'genre' => $dataUser['gender'],
+        'gender' => $dataUser['gender'],
         'orientation' => $dataUser['orientation'],
         'bio' => $dataUser['bio'],
         'profilPic' => $profilPic['link'],
-        'images' => $images,
-        'tags' => $tags
+        'images' => $images, //array
+        'tags' => $tags //array
       ];
 
     }

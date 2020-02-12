@@ -47,18 +47,18 @@ class ListSuggesterRepository
         $sql = "SELECT * FROM tags WHERE
         userids REGEXP '(,|^)$id(,|$)'";
         $MyTags_db = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-
+        
         $i = count($MyTags_db);
         while ($i-- != 0)
         {
           $MyTags = !$MyTags ? $MyTags_db[$i]['tag'] :
                                $MyTags . "," . $MyTags_db[$i]['tag'];
-          $matchTagsIds = !$matchTagsIds ? $MyTags_db[$i]['userids'] :
-                                           $matchTagsIds . "," . $MyTags_db[$i]['userids'];
+          // $matchTagsIds = !$matchTagsIds ? $MyTags_db[$i]['userids'] :
+          //                                  $matchTagsIds . "," . $MyTags_db[$i]['userids'];
         }
         $MyTags = explode(',', $MyTags);
-        $ageUp = $user['age'] + 3;
-        $ageDown = $user['age'] - 3;
+        // $ageUp = $user['age'] + 3;
+        // $ageDown = $user['age'] - 3;
         $select = "firstname,
                   lastname,
                   age,
@@ -68,45 +68,33 @@ class ListSuggesterRepository
                   bio,
                   id,
                   login";
-
-        if ($user['orientation'] != 'bi') {
+        if ($user['orientation'] != 'Bisexuel') {
           $gender = $this->getGender($user['orientation'], $user['gender']);
           $orientation = $user['orientation'];
-          $orientationOr = 'bi';
-          $city = $user['city'];
+          $orientationOr = 'Bisexuel';
+          // $city = $user['city'];
 
           $sql = "SELECT $select FROM users WHERE
           id != '$id'
           AND
-          id IN ($matchTagsIds)
-          AND
           gender = '$gender'
           AND
           orientation = '$orientation'
-          AND
-          city = '$city'
-          AND
-          age BETWEEN $ageDown AND $ageUp
           UNION
           SELECT $select FROM users WHERE
           id != '$id'
           AND
-          id IN ($matchTagsIds)
-          AND
           gender = '$gender'
           AND
-          orientation = '$orientationOr'
-          AND
-          city = '$city'
-          AND
-          age BETWEEN $ageDown AND $ageUp;";
+          orientation = '$orientationOr';";
+
         }
         else {
           $gender = 'male';
           $genderOr = 'female';
-          $orientationBase = 'bi';
-          $orientation = $user['gender'] == 'male' ? 'gay' : 'hetero';
-          $orientationOr = $user['gender'] == 'male' ? 'hetero' : 'gay';
+          $orientationBase = 'Bisexuel';
+          $orientation = $user['gender'] == 'male' ? 'Homosexuel' : 'Hétérosexuel';
+          $orientationOr = $user['gender'] == 'male' ? 'Hétérosexuel' : 'Homosexuel';
           $city = $user['city'];
 
           $sql = "SELECT $select FROM users WHERE
@@ -164,13 +152,9 @@ class ListSuggesterRepository
 
           $j = count($userTags);
           while ($j-- != 0) {
-            if (!$tags && in_array($userTags[$j]['tag'], $MyTags))
-              $tags = $userTags[$j]['tag'];
-            else {
-              if (in_array($userTags[$j]['tag'], $MyTags))
-                $tags = $tags . "," . $userTags[$j]['tag'];
-            }
+              $tags = !$tags ? $userTags[$j]['tag'] : $tags . "," . $userTags[$j]['tag'];
           }
+          $tags = explode(',', $tags);
           $ret[$i][tags] = $tags;
           $ret[$i][profil] = $profilPic['link'];
           $i++;
@@ -180,13 +164,13 @@ class ListSuggesterRepository
     }
 
     private function getGender($orientation, $gender) {
-      if ($orientation == 'gay') {
+      if ($orientation == 'Homosexuel') {
         if ($gender == 'male')
           return 'male';
         else
           return 'female';
       }
-      elseif ($orientation == 'hetero') {
+      elseif ($orientation == 'Hétérosexuel') {
         if ($gender == 'male')
           return 'female';
         else
