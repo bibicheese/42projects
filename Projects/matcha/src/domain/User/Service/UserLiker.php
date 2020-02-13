@@ -14,7 +14,7 @@ final class UserLiker
     }
 
 
-    public function like($user) {
-      return $this->repository->addLike($user);
+    public function like($user, $id) {
+      return $this->repository->addLike($user, $id);
     }
 }

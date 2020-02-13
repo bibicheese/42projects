@@ -4,6 +4,8 @@ namespace Src\Action;
 
 use Src\Domain\User\Data\UserData;
 use Src\Domain\User\Service\UserLIker;
+use Src\Domain\User\Data\UserAuth;
+use Src\Domain\User\Repository\checkUserLoggedRepository;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
 
@@ -11,18 +13,30 @@ use Slim\Http\ServerRequest;
 final class UserLikeAction
 {
     private $liker;
+    private $checkAuth;
 
-    public function __construct(UserLiker $liker) {
+    public function __construct(UserLiker $liker, checkUserLoggedRepository $checkAuth) {
         $this->liker = $liker;
+        $this->checkAuth = $checkAuth;
     }
 
     public function __invoke(ServerRequest $request, Response $response): Response {
-      $data = (array)$request->getParsedBody();
+      $data = $request->getParsedBody();
+      $log = $request->getQueryParams();
+
+      $userAuth = new UserAuth();
+      $userAuth->id = $log['id'];
+      $userAuth->token = $log['token'];
 
       $user = new UserData;
       $user->login = $data['login'];
-      $result = $this->liker->like($user);
-
+      
+      if ($status = $this->checkAuth->check($userAuth)
+        $result = ['status' => 0, 'error' => $status]];
+      else {
+        $result = ['status' => 1, 'success' => $this->liker->like($user, $userAuth->id)]];
+      }
+      
       return $response->withJson($result);
     }
 }

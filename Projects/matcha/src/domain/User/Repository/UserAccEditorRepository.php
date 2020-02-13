@@ -2,23 +2,18 @@
 
 namespace Src\Domain\User\Repository;
 
-use SlimSession\Helper;
 use Src\Domain\User\Data\UserData;
 use PDO;
 
 class UserAccEditorRepository
 {
     private $connection;
-    private $session;
-    private $sess_id;
 
-    public function __construct(PDO $connection, Helper $session) {
+    public function __construct(PDO $connection) {
         $this->connection = $connection;
-        $this->session = $session;
-        $this->sess_id = $session['id'];
     }
 
-    public function insertData(UserData $user) {
+    public function insertData(UserData $user, $id) {
       if ($user->birth) {
         $birth = $user->birth;
         $birth = explode('/', $birth);
@@ -52,13 +47,16 @@ class UserAccEditorRepository
         $query = ++$i == $elm ? $query . "$key=:$key" : $query . "$key=:$key,";
       }
 
-      $sql = "UPDATE users SET $query WHERE `id` = '$this->sess_id'";
+      $sql = "UPDATE users SET
+      $query 
+      WHERE
+      id = '$id'";
 
       $this->connection->prepare($sql)->execute($data);
       return "data has been modified";
     }
 
-    public function UserExist(UserData $user) {
+    public function UserExist(UserData $user, $id) {
       $data['login'] = $user->login;
       $data['email'] = $user->email;
       $password = $user->password;
@@ -78,7 +76,7 @@ class UserAccEditorRepository
       }
 
       $row = [
-        'id' => $this->sess_id
+        'id' => $id
       ];
 
       $sql = "SELECT * FROM users WHERE
@@ -93,7 +91,7 @@ class UserAccEditorRepository
       return NULL;
     }
 
-    public function insertInterest($interest) {
+    public function insertInterest($interest, $id) {
       $interest = explode(',', $interest);
       foreach ($interest as $key => $value) {
         $row = [
@@ -109,11 +107,11 @@ class UserAccEditorRepository
         if ($ret) {
           $tag_ids = explode(',', $ret['userids']);
 
-          if (in_array($this->sess_id, $tag_ids))
+          if (in_array($id, $tag_ids))
             continue;
           else {
             $row = [
-              'userids' => $ret['userids'] . ',' . $this->sess_id,
+              'userids' => $ret['userids'] . ',' . $id,
               'tag' => $value
             ];
 
@@ -128,7 +126,7 @@ class UserAccEditorRepository
         else {
           $row = [
             'tag' => $value,
-            'userids' => $this->sess_id
+            'userids' => $id
           ];
 
           $sql = "INSERT INTO tags SET
@@ -138,11 +136,11 @@ class UserAccEditorRepository
           $this->connection->prepare($sql)->execute($row);
         }
       }
-      $this->removeUserFromTag($interest);
+      $this->removeUserFromTag($interest, $id);
     }
 
 
-    private function removeUserFromTag($interest) {
+    private function removeUserFromTag($interest, $id) {
       $ret = $this->connection->query("SELECT * FROM tags");
       $ret = $ret->fetchAll(PDO::FETCH_ASSOC);
       $rows = count($ret);
@@ -150,7 +148,7 @@ class UserAccEditorRepository
 
       while (++$i < $rows)
       {
-        if (in_array($this->sess_id, explode(',', $ret[$i]['userids']))) {
+        if (in_array($id, explode(',', $ret[$i]['userids']))) {
           if (!in_array($ret[$i]['tag'], $interest)) {
             if ($newids = $this->removeId($ret[$i]['userids'])) {
               $row = [
@@ -187,7 +185,7 @@ class UserAccEditorRepository
       $i = 0;
 
       foreach ($userids as $key => $value) {
-        if ($value != $this->sess_id && $value)
+        if ($value != $id && $value)
           $newids = $i == 0 ? $newids . $value : $newids . '.' . $value;
         $i++;
       }

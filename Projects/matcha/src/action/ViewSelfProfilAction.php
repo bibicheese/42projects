@@ -17,13 +17,9 @@ final class ViewSelfProfilAction
     }
 
     public function __invoke(ServerRequest $request, Response $response, $args): response {
-        $session = new Helper();
-        if ($id = $session['id']) {
-          $result = $this->displayer->getProfil($id);
-        }
-        else {
-          $result = ['error' => 'user not logged'];
-        }
+        $data = $request->getQueryParams();
+        
+        $result = $this->displayer->getProfil($data['id']);
 
         return $response->withJson($result);
     }

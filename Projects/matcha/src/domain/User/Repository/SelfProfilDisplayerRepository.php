@@ -17,25 +17,30 @@ class SelfProfilDisplayerRepository
     public function displayer($id) {
       $sql = "SELECT * FROM users WHERE
       id = '$id'";
-      $user = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+      if (! $user = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
+        return NULL;
       $size = strlen($user['password']);
       $crypted = str_repeat("*", $size);
 
 
+      $gender = $user['gender'];
       $sql = "SELECT link FROM images WHERE
       userid = '$id'
       AND
       profil = '1'";
-      if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
-        $profilPic = "../src/images/default.png";
-
+      if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))  {
+          if ($gender == 'Male')
+            $profilPic = "/img/male.jpg";
+          elseif ($gender == 'Female')
+            $profilPic = "/img/female.jpg";
+      }
 
       $sql = "SELECT link FROM images WHERE
       userid = '$id'
       AND
       profil = '0'";
       if (! $images = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC))
-        $images = NULL;
+        $images = [];
 
 
       $sql = "SELECT tag FROM tags WHERE
@@ -48,26 +53,30 @@ class SelfProfilDisplayerRepository
 
 
       return [
-        'firstname' => $user['firstname'],
-        'lastname' => $user['lastname'],
-        'email' => $user['email'],
-        'birth' => $user['birth'],
-        'age' => $user['age'],
-        'genre' => $user['gender'],
-        'orientation' => $user['orientation'],
-        'login' => $user['login'],
-        'password' => $crypted,
-        'bio' => $user['bio'],
-        'city' => $user['city'],
-        'dept' => $user['dept'],
-        'region' => $user['region'],
-        'reg_date' => $user['reg_date'],
-        'profilPic' => $profilPic,
-        'images' => $images,
-        'tags' => $tags,
-        'historic today' => $this->getTodayHistorique($id),
-        'historic week' => $this->getWeekHistorique($id),
-        'liked by' => $this->getLike($id)
+        'status' => 1,
+        'success' => [
+          'firstname' => $user['firstname'],
+          'lastname' => $user['lastname'],
+          'email' => $user['email'],
+          'birth' => $user['birth'],
+          'age' => $user['age'],
+          'genre' => $user['gender'],
+          'orientation' => $user['orientation'],
+          'login' => $user['login'],
+          'password' => $crypted,
+          'bio' => $user['bio'],
+          'city' => $user['city'],
+          'dept' => $user['dept'],
+          'region' => $user['region'],
+          'reg_date' => $user['reg_date'],
+          'score' => $user['score'],
+          'profilePic' => $profilPic,
+          'images' => $images,
+          'tags' => $tags,
+          'historic today' => $this->getTodayHistorique($id),
+          'historic week' => $this->getWeekHistorique($id),
+          'liked by' => $this->getLike($id)
+        ]
       ];
     }
 

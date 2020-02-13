@@ -6,7 +6,7 @@ use Src\Domain\User\Service\UserActivator;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
 
-final class HomeAction
+final class ActiveAction
 {
     private $userActivator;
 
@@ -17,10 +17,7 @@ final class HomeAction
     public function __invoke(ServerRequest $request, Response $response): Response {
         $data = $request->getQueryParams();
 
-        if ($data['token'])
-          $result = ['home' => $this->userActivator->getToken($data['token'])];
-        else
-          $result = ['home' => 'Hello, Wolrd!'];
+        $result = $this->userActivator->getToken($data['token']);
 
         return $response->withJson($result);;
     }

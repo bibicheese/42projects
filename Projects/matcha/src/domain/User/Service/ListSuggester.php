@@ -2,6 +2,7 @@
 
 namespace Src\Domain\User\Service;
 
+use Src\Domain\User\Data\UserAuth;
 use Src\Domain\User\Repository\ListSuggesterRepository;
 
 final class ListSuggester
@@ -15,6 +16,7 @@ final class ListSuggester
     public function getList($id) {
       if ($error = $this->repository->infoComplete($id))
         return ['error' => $error];
+      
       else
         return $this->repository->displayList($id);
     }

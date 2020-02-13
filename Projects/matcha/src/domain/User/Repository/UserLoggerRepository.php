@@ -26,17 +26,39 @@ class UserLoggerRepository
 
       $ret = $this->connection->prepare($sql);
       $ret->execute($row);
-      if (!$ret = $ret->fetch(PDO::FETCH_ASSOC))
-        return "email";
+      if (!$ret = $ret->fetch(PDO::FETCH_ASSOC)) {
+        return [
+          'error' => 'email'
+        ];
+      }
 
-      else if ($ret['password'] != $password)
-        return "password";
+      else if ($ret['password'] != $password) {
+        return [
+          'error' => 'password'
+        ];
+      }
 
-      else if ($ret['active'] == 0)
-        return "active";
+      else if ($ret['active'] == 0) {
+        return [
+          'error' => 'active'
+        ];
+      }
 
-      else
-        return $ret['id'];
+      else {
+        $token = bin2hex(openssl_random_pseudo_bytes(16, $truc));
+        $id = $ret['id'];
+        
+        $sql = "UPDATE users SET
+        token_log = '$token'
+        WHERE
+        id = '$id'";
+        $this->connection->query($sql);
+        
+        return [
+          'success' => $id,
+          'token' => $token
+        ];
+      }
     }
 
     public function locate(UserData $user) {

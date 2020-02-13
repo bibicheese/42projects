@@ -2,34 +2,44 @@
 
 namespace Src\Action;
 
-use Src\Domain\User\service\UserDataAccEditor;
-use Src\Domain\User\Data\UserData;
-use SlimSession\Helper;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
+use Src\Domain\User\service\UserDataAccEditor;
+use Src\Domain\User\Data\UserData;
+use Src\Domain\User\Data\UserAuth;
+use Src\Domain\User\Repository\checkUserLoggedRepository;
 
 final class UserDataAccEditAction
 {
     private $userDataAccEditor;
+    private $checkAuth;
 
-    public function __construct(UserDataAccEditor $userDataAccEditor) {
+    public function __construct(UserDataAccEditor $userDataAccEditor, checkUserLoggedRepository $checkAuth) {
       $this->userDataAccEditor = $userDataAccEditor;
+      $this->checkAuth = $checkAuth;
     }
 
     public function __invoke(ServerRequest $request, Response $response): Response {
-        $session = new Helper();
-        if (isset($session['id'])){
-          $data = (array)$request->getParsedBody();
-
-          $user = $this->fillUser($data);
+        $data = $request->getParsedBody();
+        $log = $request->getQueryParams();
+        
+        $userAuth = new UserAuth();
+        $userAuth->id = $log['id'];
+        $userAuth->token = $log['token'];
+        
+        $user = $this->fillUser($data);
+        
+        if ($status = $this->checkAuth->check($userAuth)
+          $result = ['status' => 0, 'error' => $status]];
+        else {
           if ($data['interest'])
-            $this->userDataAccEditor->checkInterest($data['interest']);
-          $result = ['user_account_status' => $this->userDataAccEditor->modifyData($user)];
+            $this->userDataAccEditor->checkInterest($data['interest'], $userAuth->id);
+          $result = $this->userDataAccEditor->modifyData($user, $userAuth->id)];
         }
-        else
-          $result = ['user_account_status' => ['error' => 'user not logged']];
+        
         return $response->withJson($result);
     }
+
 
     private function fillUser($data): UserData {
       $user = new UserData();

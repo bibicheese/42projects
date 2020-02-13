@@ -4,7 +4,6 @@ namespace Src\Action;
 
 use Src\Domain\User\Data\UserData;
 use Src\Domain\User\Service\Userlogger;
-use SlimSession\Helper;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
 
@@ -18,7 +17,7 @@ final class UserLoginAction
     }
 
     public function __invoke(ServerRequest $request, Response $response): Response {
-      $data = (array)$request->getParsedBody();
+      $data = $request->getParsedBody();
 
       $user = new UserData();
       $user->email = $data['email'];
@@ -26,15 +25,14 @@ final class UserLoginAction
 
       $status = $this->userLogger->LoginUser($user);
 
-      if (is_numeric($status)) {
-          $session = new Helper();
-          $session['id'] = $status;
-          $id = $session['id'];
-          $result = ['login_user_status' => ['status' => 1, 'success' => "$id"]];
+      if ($status['success']) {
+      
+          $id = $status;
+          $result = ['status' => 1, 'id' => $status['success']['id'], 'token' => $status['token']];
       }
       else
-        $result = ['login_user_status' => ['status' => 0, 'error' => $status]];
-
+        $result = ['status' => 0, 'error' => $status['error']];
+      
       return $response->withJson($result);
     }
 }

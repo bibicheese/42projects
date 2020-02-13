@@ -2,23 +2,18 @@
 
 namespace Src\Domain\User\Repository;
 
-use SlimSession\Helper;
 use Src\Domain\User\Data\UserData;
 use PDO;
 
 class UserLikerRepository
 {
   private $connection;
-  private $session;
-  private $sess_id;
 
-  public function __construct(PDO $connection, Helper $session) {
+  public function __construct(PDO $connection) {
     $this->connection = $connection;
-    $this->session = $session;
-    $this->sess_id = $session['id'];
   }
 
-    public function addLike(UserData $user) {
+    public function addLike(UserData $user, $id) {
       $login = $user->login;
       $row = [
         'login' => $login
@@ -28,11 +23,12 @@ class UserLikerRepository
       $idToLike = $this->connection->prepare($sql);
       $idToLike->execute($row);
       $idToLike = $idToLike->fetch(PDO::FETCH_ASSOC);
+      $idToLike = $idToLike['id'];
 
 
       $row = [
-        'liker' => $this->sess_id,
-        'liked' => $idToLike['id']
+        'liker' => $id,
+        'liked' => $idToLike
       ];
       $sql = "SELECT * FROM likes WHERE
       liker=:liker
@@ -49,6 +45,12 @@ class UserLikerRepository
         $result = "unliked";
       }
       else {
+        $sql = "UPDATE users SET
+        score = score - 2
+        WHERE
+        id = '$id'";
+        $this->connection->query($sql);
+        
         $sql = "INSERT INTO likes SET
         liker=:liker,
         liked=:liked;";
@@ -57,9 +59,17 @@ class UserLikerRepository
       $this->connection->prepare($sql)->execute($row);
 
       if ($result == "liked") {
+        $sql = "UPDATE users SET
+        score = score + 7
+        WHERE
+        id = '$id'
+        AND
+        id = '$idToLike'";
+        $this->connection->query($sql);
+        
         $row = [
-          'liked' => $this->sess_id,
-          'liker' => $idToLike['id']
+          'liked' => $id,
+          'liker' => $idToLike
         ];
         $sql = "SELECT * FROM likes WHERE
         liked=:liked

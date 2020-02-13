@@ -2,32 +2,30 @@
 
 namespace Src\Domain\User\Repository;
 
-use SlimSession\Helper;
 use Slim\Http\UploadedFile;
 use PDO;
 
 class ImagesUploaderRepository
 {
     private $connection;
-    private $session;
-    private $sess_id;
 
-    public function __construct(PDO $connection, Helper $session) {
+    public function __construct(PDO $connection) {
       $this->connection = $connection;
-      $this->session = $session;
-      $this->sess_id = $session['id'];
     }
 
-    public function maximum5($images) {
+    public function maximum5($images, $id) {
       $sql = "SELECT * FROM images WHERE
-      userid = '$this->sess_id'"
+      userid = '$id'"
       $ret = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
       if ((count($images) + count($ret)) > 5)
-        return "too much images";
+        return [
+          'status' => 0,
+          'error' => 'max 5 images'
+        ];
     }
 
-    public function uploadImages($images) {
-      $directory = "../src/images/";
+    public function uploadImages($images, $id) {
+      $directory = "../img/";
 
       foreach ($images as $key => $image) {
         if ($image->getError() === UPLOAD_ERR_OK) {
@@ -35,7 +33,7 @@ class ImagesUploaderRepository
           $row = [
             'profil' => $key == "profil" ? 1 : 0,
             'link' => $filepath,
-            'userid' => $this->sess_id
+            'userid' => $id
           ];
 
           $sql = "INSERT INTO images SET
@@ -46,7 +44,10 @@ class ImagesUploaderRepository
           $this->connection->prepare($sql)->execute($row);
         }
       }
-      return "images uploaded";
+      return [
+        'status' => 1,
+        'success' => 'images saved'
+      ];
     }
 
     private function moveUploadedFile($directory, $uploadedFile) {

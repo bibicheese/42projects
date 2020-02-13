@@ -1,6 +1,7 @@
 {
     "require": {
         "bryanjhv/slim-session": "^4.0",
+        "cboden/ratchet": "^0.4.2",
         "ipinfo/ipinfo": "^1.1",
         "php-di/php-di": "^6.0",
         "selective/config": "^0.1.1",

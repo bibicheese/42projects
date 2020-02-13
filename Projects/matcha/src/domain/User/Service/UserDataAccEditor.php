@@ -19,10 +19,10 @@ final class UserDataAccEditor
     }
 
 
-    public function modifyData(UserData $user): array {
-        if ($error = $this->repository->UserExist($user))
-          return ['error' => $error];
+    public function modifyData(UserData $user) {
+        if ($error = $this->repository->UserExist($user, $id))
+          return ['status' => 0, 'error' => $error];
         else
-          return ['success' => $this->repository->insertData($user)];
+          return ['stauts' => 1, 'success' => $this->repository->insertData($user, $id)];
     }
 }
