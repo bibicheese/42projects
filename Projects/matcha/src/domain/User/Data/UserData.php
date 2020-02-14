@@ -15,4 +15,6 @@ final class UserData
     public $orientation;
     public $bio;
     public $interest;
+    public $city;
+    public $arr;
 }

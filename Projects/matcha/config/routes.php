@@ -13,8 +13,9 @@ return function (App $app) {
   $app->post('/api/recovery_password', \Src\Action\RecoveryPasswordAction::class);
   $app->post('/api/images', \Src\Action\UploadImagesAction::class);
   $app->get('/api/profil/{login}', \Src\Action\ViewProfilAction::class);
-  $app->get('/api/suggest_list', \Src\Action\ListSuggestionAction::class);
+  $app->post('/api/suggest_list', \Src\Action\ListSuggestionAction::class);
   $app->post('/api/like', \Src\Action\UserLikeAction::class);
   $app->get('/api/my_account', \Src\Action\ViewSelfProfilAction::class);
   $app->get('/api/get_tags', \Src\Action\GetTagsAction::class);
+  $app->post('/api/get_everyone', \Src\Action\GetEveryoneAction::class);
 };

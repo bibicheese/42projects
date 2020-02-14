@@ -13,11 +13,11 @@ final class ListSuggester
         $this->repository = $repository;
     }
 
-    public function getList($id) {
+    public function getList($id, $instruc) {
       if ($error = $this->repository->infoComplete($id))
         return ['error' => $error];
       
       else
-        return $this->repository->displayList($id);
+        return $this->repository->displayList($id, $instruc);
     }
 }

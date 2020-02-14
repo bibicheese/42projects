@@ -14,15 +14,15 @@ final class UserDataAccEditor
     }
 
 
-    public function checkInterest($interest) {
-        return $this->repository->insertInterest($interest);
+    public function checkInterest($interest, $id) { 
+        return $this->repository->insertInterest($interest, $id);
     }
 
 
-    public function modifyData(UserData $user) {
+    public function modifyData(UserData $user, $id) {
         if ($error = $this->repository->UserExist($user, $id))
           return ['status' => 0, 'error' => $error];
-        else
-          return ['stauts' => 1, 'success' => $this->repository->insertData($user, $id)];
+        else 
+          return $this->repository->insertData($user, $id);
     }
 }

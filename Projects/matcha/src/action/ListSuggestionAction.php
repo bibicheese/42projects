@@ -6,6 +6,7 @@ use Slim\Http\Response;
 use Slim\Http\ServerRequest;
 use Src\Domain\User\Data\UserAuth;
 use Src\Domain\User\Service\ListSuggester;
+use Src\Domain\User\Data\SortInstruc;
 use Src\Domain\User\Repository\checkUserLoggedRepository;
 
 final class ListSuggestionAction
@@ -19,16 +20,22 @@ final class ListSuggestionAction
     }
 
     public function __invoke(ServerRequest $request, Response $response): Response {
-        $log = $request->getQueryParams();
+        $data = $request->getParsedBody();
         
         $userAuth = new UserAuth();
-        $userAuth->id = $log['id'];
-        $userAuth->token = $log['token'];
+        $userAuth->id = $data['id'];
+        $userAuth->token = $data['token'];
+        
+        $instruc = new SortInstruc();
+        $instruc->age = $data['age'];
+        $instruc->score = $data['score'];
+        $instruc->dst = $data['dst'];
+        $instruc->tsyn = $data['tsyn'];
         
         if ($status = $this->checkAuth->check($userAuth))
           $result = ['status' => 0, 'error' => $status];
         else
-          $result = ['status' => 1, 'success' => $this->suggester->getList($userAuth->id)];
+          $result = ['status' => 1, 'success' => $this->suggester->getList($userAuth->id, $instruc)];
         
         return $response->withJson($result);
     }

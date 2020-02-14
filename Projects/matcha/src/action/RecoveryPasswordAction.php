@@ -16,7 +16,7 @@ final class RecoveryPasswordAction
     }
 
     public function __invoke(ServerRequest $request, Response $response): Response {
-        $data = (array)$request->getParsedBody();
+        $data = $request->getParsedBody();
 
         if ($data['email'])
           $result = ['Recovery mail status' =>  $this->recoverer->prepareMail($data['email'])];

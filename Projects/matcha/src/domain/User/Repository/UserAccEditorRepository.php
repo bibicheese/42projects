@@ -27,18 +27,25 @@ class UserAccEditorRepository
         'login' => $user->login,
         'password' => $user->password,
         'email' => $user->email,
-        'first name' => $user->firstname,
-        'last name' => $user->lastname,
+        'firstname' => $user->firstname,
+        'lastname' => $user->lastname,
         'orientaion' => $user->orientation,
         'gender' => $user->gender,
         'birth' => $user->birth,
         'bio' => $user->bio,
+        'city' => $user->city,
+        'arr' => $user->arr,
         'age' => $age
       ];
 
       foreach ($data as $key => $value) {
-        if (!$value)
+        if ($key == 'email' && $value == $email['email']) {
           unset($data[$key]);
+        }
+        if (!$value) {
+          unset($data[$key]);
+        }
+        
       }
 
       $elm = count($data);
@@ -53,13 +60,18 @@ class UserAccEditorRepository
       id = '$id'";
 
       $this->connection->prepare($sql)->execute($data);
-      return "data has been modified";
+      return ['status' => 1, 'success' => 'OK boomer'];
     }
+
 
     public function UserExist(UserData $user, $id) {
       $data['login'] = $user->login;
       $data['email'] = $user->email;
       $password = $user->password;
+
+      $sql = "SELECT email FROM users WHERE
+      id = '$id'";
+      $email = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
 
       foreach ($data as $key => $value) {
         $row = [
@@ -71,8 +83,13 @@ class UserAccEditorRepository
 
         $ret = $this->connection->prepare($sql);
         $ret->execute($row);
-        if ($ret = $ret->fetch(PDO::FETCH_ASSOC))
-          return $key . " taken";
+        if ($ret = $ret->fetch(PDO::FETCH_ASSOC)) {
+          if ($key == 'email' && $ret['email'] == $email['email'])
+            echo "";
+          else
+            return $key . " taken";
+        }
+          
       }
 
       $row = [
@@ -86,13 +103,12 @@ class UserAccEditorRepository
       $ret->execute($row);
       $ret = $ret->fetch(PDO::FETCH_ASSOC);
       if ($ret['password'] == $password)
-        return "password same";
+        return "Le mot de passe doit être différent de l'ancien.";
 
       return NULL;
     }
 
     public function insertInterest($interest, $id) {
-      $interest = explode(',', $interest);
       foreach ($interest as $key => $value) {
         $row = [
           'tag' => $value
@@ -103,8 +119,7 @@ class UserAccEditorRepository
 
         $ret = $this->connection->prepare($sql);
         $ret->execute($row);
-        $ret = $ret->fetch(PDO::FETCH_ASSOC);
-        if ($ret) {
+        if ($ret = $ret->fetch(PDO::FETCH_ASSOC)) {
           $tag_ids = explode(',', $ret['userids']);
 
           if (in_array($id, $tag_ids))

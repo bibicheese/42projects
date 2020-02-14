@@ -149,6 +149,7 @@ class db {
     $fileUsers = fopen("../config/seed/USERS.CSV", "r");
     $filesIdf = fopen("../config/seed/CITIES.CSV", "r");
     $fileParis = fopen("../config/seed/PARIS.CSV", "r");
+    $fileScore = fopen("../config/seed/SCORE.CSV", "r");
     $i = 0;
     $j = 0;
 
@@ -164,6 +165,7 @@ class db {
     orientation=:orientation,
     login=:login,
     password=:password,
+    score=:score,
     bio=:bio,
     city=:city,
     arr=:arr,
@@ -180,6 +182,7 @@ class db {
         $fileParis = fopen("../config/seed/PARIS.CSV", "r");
       }
 
+      $score = fgets($fileScore);
       $ligne = explode(",", fgets($fileUsers));
       if ($i >= 400)
         $idf = explode(",", fgets($filesIdf));
@@ -212,6 +215,7 @@ class db {
           'orientation' => $orientation[$j],
           'login' => $ligne[5],
           'password' => hash('whirlpool', $ligne[6]),
+          'score' => $score,
           'bio' => str_replace(["\n","\r"], "", $ligne[7]),
           'city' => $i < 400 ? $paris[0] : $idf[0],
           'arr' => $i < 400 ? $paris[1] : NULL,
