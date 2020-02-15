@@ -42,13 +42,13 @@ class ListSuggesterRepository
     }
 
 
-    public function displayList($id, $instruc) {
+    public function displayList($mainId, $instruc) {
         $sql = "SELECT * FROM users WHERE
-        id = '$id'"; 
+        id = '$mainId'"; 
         $user = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
 
         $sql = "SELECT * FROM tags WHERE
-        userids REGEXP '(,|^)$id(,|$)'";
+        userids REGEXP '(,|^)$mainId(,|$)'";
         $MyTags_db = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         $i = count($MyTags_db);
         while ($i-- != 0)
@@ -62,12 +62,10 @@ class ListSuggesterRepository
         $lonFrom = $user['longitude'];
         
         $select = "firstname,
-                  lastname,
                   age,
                   gender,
                   orientation,
                   city,
-                  bio,
                   id,
                   login,
                   score,
@@ -80,14 +78,14 @@ class ListSuggesterRepository
           $orientationOr = 'Bisexuel';
 
           $sql = "SELECT $select FROM users WHERE
-          id != '$id'
+          id != '$mainId'
           AND
           gender = '$gender'
           AND
           orientation = '$orientation'
           UNION
           SELECT $select FROM users WHERE
-          id != '$id'
+          id != '$mainId'
           AND
           gender = '$gender'
           AND
@@ -103,21 +101,21 @@ class ListSuggesterRepository
           $city = $user['city'];
 
           $sql = "SELECT $select FROM users WHERE
-          id != '$id'
+          id != '$mainId'
           AND
           gender = '$gender'
           AND
           orientation = '$orientation'
           UNION
           SELECT $select FROM users WHERE
-          id != $id
+          id != $mainId
           AND
           gender = '$genderOr'
           AND
           orientation = '$orientationOr'
           UNION
           SELECT $select FROM users WHERE
-          id != '$id'
+          id != '$mainId'
           AND
           orientation = '$orientationBase';";
 
@@ -126,25 +124,25 @@ class ListSuggesterRepository
         $ret = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         $i = 0;
         foreach ($ret as $key => $value) {
-          $id = $ret[$i]['id'];
+          $userid = $ret[$i]['id'];
           $gender = $ret[$i]['gender'];
           $latTo = $ret[$i]['latitude'];
           $lonTo = $ret[$i]['longitude'];
 
           $sql = "SELECT tag FROM tags WHERE
-          userids REGEXP '(,|^)$id(,|$)'";
+          userids REGEXP '(,|^)$userid(,|$)'";
           $userTags = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
           $j = count($userTags);
           $sameTag = 0;
+          $tags = NULL;
           while ($j-- != 0) {
             if (in_array($userTags[$j]['tag'], $MyTags))
               $sameTag++;
             $tags = !$tags ? $userTags[$j]['tag'] : $tags . "," . $userTags[$j]['tag'];
           }
-          $tags = explode(',', $tags);
 
           $sql = "SELECT link FROM images WHERE
-          userid = '$id'
+          userid = '$userid'
           AND
           profil = '1'";
           if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC)) {
@@ -153,18 +151,38 @@ class ListSuggesterRepository
               elseif ($gender == 'Female')
                 $profilPic['link'] = "/img/female.jpg";
           }
-
-          unset($ret[$i]['longitude']);
-          unset($ret[$i]['latitude']);
+          
+          $sql = "SELECT * FROM likes WHERE
+          liker = '$mainId'
+          AND
+          liked = '$userid'";
+          $myLikeTo = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+          
+          $sql = "SELECT * FROM likes WHERE
+          liker = '$userid'
+          AND
+          liked = '$mainId'";
+          $likedBy = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+          
+          if ($likedBy && $myLikeTo)
+            $match = 1;
+          
           $ret[$i]['age'] = (int)$ret[$i]['age'];
           $ret[$i]['score'] = (int)$ret[$i]['score'];
+          $ret[$i][likedBy] = $likedBy ? 1 : 0;
+          $ret[$i][myLikeTo] = $myLikeTo ? 1 : 0;
+          $ret[$i][match] = $match ? 1 : 0;
           $ret[$i][log] = $ret[$i]['token_log'] ? 1 : 0;
           $ret[$i][dst] = $this->getDistance($latFrom, $lonFrom, $latTo, $lonTo);
           $ret[$i][sameTag] = $sameTag;
-          $ret[$i][tags] = $tags;
           $ret[$i][profilePic] = $profilPic['link'];
+          $ret[$i][tags] = $tags;
+          unset($ret[$i]['longitude']);
+          unset($ret[$i]['latitude']);
+          unset($ret[$i]['token_log']);
           $i++;
           $tags = NULL;
+          $match = 0;
         }
         
         $sorted = $this->sortList->sort($ret, $instruc);

@@ -48,7 +48,9 @@ class UserLikerRepository
         $sql = "UPDATE users SET
         score = score - 2
         WHERE
-        id = '$id'";
+        id = '$id'
+        AND
+        score > 1";
         $this->connection->query($sql);
         
         $sql = "INSERT INTO likes SET
@@ -59,11 +61,37 @@ class UserLikerRepository
       $this->connection->prepare($sql)->execute($row);
 
       if ($result == "liked") {
+        $sql = "SELECT score FROM users WHERE
+        id = '$id'";
+        $ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+    
+        if ((int)$ret['score'] < 94)
+          $increase = 7;
+        else if ((int)$ret['score'] <= 100){
+          $increase = 100 - (int)$ret['score'];
+        } 
+        else if ((int)$ret['score'] < 100)
+          $increase = 0;
         $sql = "UPDATE users SET
-        score = score + 7
+        score = score + '$increase'
         WHERE
-        id = '$id'
-        AND
+        id = '$id'";
+        $this->connection->query($sql);
+        
+        $sql = "SELECT score FROM users WHERE
+        id = '$idToLike'";
+        $ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+    
+        if ((int)$ret['score'] < 94)
+          $increase = 7;
+        else if ((int)$ret['score'] <= 100){
+          $increase = 100 - (int)$ret['score'];
+        } 
+        else if ((int)$ret['score'] < 100)
+          $increase = 0;
+        $sql = "UPDATE users SET
+        score = score + '$increase'
+        WHERE
         id = '$idToLike'";
         $this->connection->query($sql);
         

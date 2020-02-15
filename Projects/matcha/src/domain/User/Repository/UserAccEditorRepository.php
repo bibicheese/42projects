@@ -21,7 +21,7 @@ class UserAccEditorRepository
         > date("md") ?
         ((date("Y") - $birth[2]) - 1) :
         (date("Y") - $birth[2]));
-      }
+      } 
 
       $data = [
         'login' => $user->login,
@@ -29,7 +29,7 @@ class UserAccEditorRepository
         'email' => $user->email,
         'firstname' => $user->firstname,
         'lastname' => $user->lastname,
-        'orientaion' => $user->orientation,
+        'orientation' => $user->orientation,
         'gender' => $user->gender,
         'birth' => $user->birth,
         'bio' => $user->bio,
@@ -47,7 +47,8 @@ class UserAccEditorRepository
         }
         
       }
-
+      if (!$data)
+        return ['status' => 1, 'success' => 'OK boomer'];
       $elm = count($data);
       $i = 0;
       foreach ($data as $key => $value) {
@@ -110,10 +111,15 @@ class UserAccEditorRepository
 
     public function insertInterest($interest, $id) {
       foreach ($interest as $key => $value) {
+        if ($value[0] != '#') {
+          $value = '#' . $value;
+          $interest[$key] = $value;
+        }
+          
+
         $row = [
           'tag' => $value
         ];
-
         $sql = "SELECT * FROM tags WHERE
         tag=:tag;";
 
@@ -151,13 +157,13 @@ class UserAccEditorRepository
           $this->connection->prepare($sql)->execute($row);
         }
       }
-      $this->removeUserFromTag($interest, $id);
+    $this->removeUserFromTag($interest, $id);
     }
 
 
     private function removeUserFromTag($interest, $id) {
-      $ret = $this->connection->query("SELECT * FROM tags");
-      $ret = $ret->fetchAll(PDO::FETCH_ASSOC);
+      
+      $ret = $this->connection->query("SELECT * FROM tags")->fetchAll(PDO::FETCH_ASSOC);
       $rows = count($ret);
       $i = -1;
 
@@ -165,7 +171,7 @@ class UserAccEditorRepository
       {
         if (in_array($id, explode(',', $ret[$i]['userids']))) {
           if (!in_array($ret[$i]['tag'], $interest)) {
-            if ($newids = $this->removeId($ret[$i]['userids'])) {
+            if ($newids = $this->removeId($ret[$i]['userids'], $id)) {
               $row = [
                 'userids' => $newids,
                 'id' => $ret[$i]['id']
@@ -194,17 +200,13 @@ class UserAccEditorRepository
     }
 
 
-    private function removeId($userids) {
-      $userids = explode('.', $userids);
-      $rows = count($userids);
-      $i = 0;
-
+    private function removeId($userids, $id) {
+      $userids = explode(',', $userids);
+      
       foreach ($userids as $key => $value) {
         if ($value != $id && $value)
-          $newids = $i == 0 ? $newids . $value : $newids . '.' . $value;
-        $i++;
+          $newids = ! $newids ? $value : $newids . ',' . $value;
       }
-
       if ($newids == '.')
         return NULL;
       return $newids;

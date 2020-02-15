@@ -2,39 +2,33 @@
 
 namespace Src\Action;
 
-use Src\Domain\User\Data\UserData;
-use Src\Domain\User\Service\UserLIker;
-use Src\Domain\User\Data\UserAuth;
-use Src\Domain\User\Repository\checkUserLoggedRepository;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
+use Src\Domain\User\Data\UserAuth;
+use Src\Domain\User\Service\HistoricGetter;
+use Src\Domain\User\Repository\checkUserLoggedRepository;
 
-
-final class UserLikeAction
+final class GetHistoricAction
 {
-    private $liker;
+    private $historic;
     private $checkAuth;
-
-    public function __construct(UserLiker $liker, checkUserLoggedRepository $checkAuth) {
-        $this->liker = $liker;
+    
+    public function __construct(HistoricGetter $historic, checkUserLoggedRepository $checkAuth) {
+        $this->historic = $historic;
         $this->checkAuth = $checkAuth;
     }
 
     public function __invoke(ServerRequest $request, Response $response): Response {
       $data = $request->getParsedBody();
-
+      
       $userAuth = new UserAuth();
       $userAuth->id = $data['id'];
       $userAuth->token = $data['token'];
-
-      $user = new UserData;
-      $user->login = $data['login'];
       
       if ($status = $this->checkAuth->check($userAuth))
         $result = ['status' => 0, 'error' => $status];
-      else {
-        $result = ['status' => 1, 'success' => $this->liker->like($user, $userAuth->id)];
-      }
+      else
+        $result = ['status' => 1, 'success' => $this->historic->getHistoric($userAuth->id)];
       
       return $response->withJson($result);
     }

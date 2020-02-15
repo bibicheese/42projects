@@ -15,9 +15,9 @@ class EveryoneGetterRepository
         $this->sortList = $sortList;
     }
 
-    public function get($id, $instruc) {
+    public function get($mainId, $instruc) {
       $sql = "SELECT latitude, longitude FROM users WHERE
-      id = '$id'";
+      id = '$mainId'";
       $ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
       $latFrom = $ret['latitude'];
       $lonFrom = $ret['longitude'];
@@ -34,11 +34,11 @@ class EveryoneGetterRepository
                 token_log";
       $sql = "SELECT $select FROM users
       WHERE
-      id != '$id'";
+      id != '$mainId'";
       $ret = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
       $sql = "SELECT tag FROM tags WHERE
-      userids REGEXP '(,|^)$id(,|$)'";
+      userids REGEXP '(,|^)$mainId(,|$)'";
       $userTags = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
       $j = count($userTags);
       while ($j-- != 0) {
@@ -48,23 +48,25 @@ class EveryoneGetterRepository
       
       $i = 0; 
       foreach ($ret as $key => $value) {
-        $id = $ret[$i]['id'];
+        $userid = $ret[$i]['id'];
         $gender = $ret[$i]['gender'];
         $latTo = $ret[$i]['latitude'];
         $lonTo = $ret[$i]['longitude'];
 
         $sql = "SELECT tag FROM tags WHERE
-        userids REGEXP '(,|^)$id(,|$)'";
+        userids REGEXP '(,|^)$userid(,|$)'";
         $userTags = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         $j = count($userTags);
         $sameTag = 0;
+        $tags = NULL;
         while ($j-- != 0) {
             if (in_array($userTags[$j]['tag'], $myTags))
               $sameTag++;
+            $tags = !$tags ? $userTags[$j]['tag'] : $tags . "," . $userTags[$j]['tag'];
         }
-
+        $tags = explode(',', $tags);
         $sql = "SELECT link FROM images WHERE
-        userid = '$id'
+        userid = '$userid'
         AND
         profil = '1'";
         if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC)) {
@@ -74,17 +76,38 @@ class EveryoneGetterRepository
               $profilPic['link'] = "/img/female.jpg";
         }
 
-        // $tags = explode(',', $tags);
-        // $ret[$i][tags] = $tags;
+        $sql = "SELECT * FROM likes WHERE
+        liker = '$mainId'
+        AND
+        liked = '$userid'";
+        $myLikeTo = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+        
+        $sql = "SELECT * FROM likes WHERE
+        liker = '$userid'
+        AND
+        liked = '$mainId'";
+        $likedBy = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+        
+        if ($likedBy && $myLikeTo) {
+          $match = 1;
+        }
+          
+
+        $ret[$i]['age'] = (int)$ret[$i]['age'];
+        $ret[$i]['score'] = (int)$ret[$i]['score'];
+        $ret[$i][likedBy] = $likedBy ? 1 : 0;
+        $ret[$i][myLikeTo] = $myLikeTo ? 1 : 0;
+        $ret[$i][match] = $match ? 1 : 0;
+        $ret[$i][log] = $ret[$i]['token_log'] ? 1 : 0;
+        $ret[$i][dst] = $this->getDistance($latFrom, $lonFrom, $latTo, $lonTo);
+        $ret[$i][sameTag] = $sameTag;
+        $ret[$i][profilePic] = $profilPic['link'];
+        $ret[$i][tags] = $tags;
         unset($ret[$i]['latitude']);
         unset($ret[$i]['longitude']);
-        $ret[$i][log] = $ret[$i]['token_log'] ? 1 : 0;
         unset($ret[$i]['token_log']);
-        $ret[$i][dst] = $this->getDistance($latFrom, $lonFrom, $latTo, $lonTo);
-        $ret[$i][profilePic] = $profilPic['link'];
-        $ret[$i][sameTag] = $sameTag;
+        $match = 0;
         $i++;
-        // $tags = NULL;
       }
       
       $sorted = $this->sortList->sort($ret, $instruc);

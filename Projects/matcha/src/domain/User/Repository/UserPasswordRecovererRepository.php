@@ -14,9 +14,10 @@ class UserPasswordRecovererRepository
     }
 
 
-    public function sendMail($email) {
+    public function sendMail($data) {
+      $email = $data['email'];
       $token = bin2hex(openssl_random_pseudo_bytes(4, $truc));
-
+      
       $row = [
         'email' => $email
       ];
@@ -27,7 +28,7 @@ class UserPasswordRecovererRepository
       $ret = $this->connection->prepare($sql);
       $ret->execute($row);
       if (!$ret = $ret->fetch(PDO::FETCH_ASSOC))
-        return ['error' => 'mail is not registered'];
+        return ['status' => 0, 'error' => 'Le mail n\'existe pas.'];
 
       $to  = $email;
       $subject = "Récupération du mot de passe";
@@ -65,17 +66,17 @@ class UserPasswordRecovererRepository
 
           $file = '../src/tmp/recovery.txt';
           file_put_contents($file, $email);
-          return ['success' => 'mail has been sent'];
+          return ['status' => 1, 'success' => 'Un email vient d\'être envoyé à ' . $email . '.'];
         }
 
         else
-          return ['error' => 'mail has not been sent'];
+          return ['status' => 0, 'error' => 'L\'email n\'a pu être envoyé suit à une erreur inconnue.'];
     }
 
 
-    public function confirmToken($token) {
-      $file = '../src/tmp/recovery.txt';
-      $email = file_get_contents($file);
+    public function confirmToken($data) {
+      $email = $data['email'];
+      $token = $data['token'];
 
       $row = [
         'token' => $token,
@@ -90,21 +91,22 @@ class UserPasswordRecovererRepository
       $ret = $this->connection->prepare($sql);
       $ret->execute($row);
       if (!$ret = $ret->fetch(PDO::FETCH_ASSOC))
-        return ['error' => 'token not correct'];
+        return ['status' => 0, 'error' => 'Le token n\'est pas correct.'];
       else {
           file_put_contents($file, ';' . $token, FILE_APPEND);
-          return ['success' => 'token is correct'];
+          return ['status' => 1, 'success' => 'Le token est correct'];
       }
     }
 
 
-    public function verifyPassword($password) {
-      $file = '../src/tmp/recovery.txt';
-      $check = explode(';', file_get_contents($file));
+    public function verifyPassword($data) {
+      $email = $data['email'];
+      $token = $data['token'];
+      $password = hash('whirlpool', $data['password']);
 
       $row = [
-        'email' => $check[0],
-        'token' => $check[1],
+        'email' => $email,
+        'token' => $token,
       ];
 
       $sql = "SELECT * FROM users WHERE
@@ -116,18 +118,19 @@ class UserPasswordRecovererRepository
       $ret->execute($row);
       $ret = $ret->fetch(PDO::FETCH_ASSOC);
       if ($ret['password'] == $password)
-        return ['error' => 'password same'];
+        return ['status' => 0, 'error' => 'Le mot de passe ne peut être identique à l\'ancien'];
 
     }
 
 
-    public function insertPassword($password) {
-      $file = '../src/tmp/recovery.txt';
-      $check = explode(';', file_get_contents($file));
-
+    public function insertPassword($data) {
+      $email = $data['email'];
+      $token = $data['token'];
+      $password = hash('whirlpool', $data['password']);
+    
       $row = [
-        'email' => $check[0],
-        'token' => $check[1],
+        'email' => $email,
+        'token' => $token,
         'password' => $password
       ];
 
@@ -140,6 +143,6 @@ class UserPasswordRecovererRepository
 
       $this->connection->prepare($sql)->execute($row);
       unlink($file);
-      return ['succes' => 'password has been changed'];
+      return ['status' => 1, 'success' => 'Le mot de passe à été changé avec succès'];
     }
 }

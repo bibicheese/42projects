@@ -18,14 +18,15 @@ final class RecoveryPasswordAction
     public function __invoke(ServerRequest $request, Response $response): Response {
         $data = $request->getParsedBody();
 
-        if ($data['email'])
-          $result = ['Recovery mail status' =>  $this->recoverer->prepareMail($data['email'])];
-        else if ($data['token'])
-          $result = ['Recovery token status' => $this->recoverer->getToken($data['token'])];
-        else if ($data['password']) {
-          $password = hash('whirlpool', $data['password']);
-          $result = ['Recovery password status' => $this->recoverer->changePassword($password)];
-        }
+        if ($data['step'] == 1)
+          $result = $this->recoverer->prepareMail($data);
+        
+        else if ($data['step'] == 2)
+          $result = $this->recoverer->getToken($data);
+        
+        else if ($data['step'] == 3)
+          $result = $this->recoverer->changePassword($data);
+          
 
         return $response->withJson($result);
     }

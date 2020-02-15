@@ -23,6 +23,14 @@ class db {
     }
 
     try {
+      $conn->query("SELECT * FROM cities LIMIT 1");
+    }
+    catch(PDOException $e) {
+      $this->table_cities($conn);
+      $this->fill_table_cities($conn);
+    }
+
+    try {
       $conn->query("SELECT * FROM tags LIMIT 1");
     }
     catch(PDOException $e) {
@@ -137,11 +145,31 @@ class db {
                   id INT UNIQUE AUTO_INCREMENT PRIMARY KEY,
                   liker INT NOT NULL,
                   action VARCHAR(20) DEFAULT 'liked =>',
-                  liked INT NOT NULL)");
+                  liked INT NOT NULL,
+                  visit_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
         }
         catch(PDOException $e) {
           echo "tags_table failed: " . $e->getMessage();
         }
+  }
+
+  
+  private function table_cities($db) {
+  try {
+    $db->query("CREATE TABLE IF NOT EXISTS cities (
+                id INT UNIQUE AUTO_INCREMENT PRIMARY KEY,
+                city VARCHAR(50) NOT NULL,
+                arr CHAR(2) DEFAULT NULL,
+                dep CHAR(2) NOT NULL,
+                ZIP CHAR(5) NOT NULL,
+                region VARCHAR(20) DEFAULT NULL,
+                latitude VARCHAR(255) DEFAULT NULL,
+                longitude VARCHAR(255) DEFAULT NULL,
+                reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
+      }
+      catch(PDOException $e) {
+        echo "tags_table failed: " . $e->getMessage();
+      }
   }
 
 
@@ -293,6 +321,66 @@ class db {
         }
       }
       fclose($file);
+  }
+  
+  
+  private function fill_table_cities($db) {
+    $fileParis = fopen("../config/seed/PARIS.CSV", "r");
+    $fileCities = fopen("../config/seed/CITIES.CSV", "r");
+
+    while (! feof($fileParis)) {
+      $ligne = explode(",", fgets($fileParis));
+      if ($ligne[0]) {
+
+        $row = [
+          'city' => $ligne[0],
+          'arr' => $ligne[1],
+          'dep' => $ligne[2],
+          'ZIP' => $ligne[3],
+          'region' => "Île-de-France",
+          'latitude' => $ligne[4],
+          'longitude' => $ligne[5]
+        ];
+
+        $sql = "INSERT INTO cities SET
+        city=:city,
+        arr=:arr,
+        dep=:dep,
+        ZIP=:ZIP,
+        region=:region,
+        latitude=:latitude,
+        longitude=:longitude;";
+
+        $db->prepare($sql)->execute($row);
+      }
+    }
+    fclose($fileParis);
+    
+    while (! feof($fileCities)) {
+      $ligne = explode(",", fgets($fileCities));
+      if ($ligne[0]) {
+
+        $row = [
+          'city' => $ligne[0],
+          'dep' => $ligne[1],
+          'ZIP' => $ligne[2],
+          'region' => "Île-de-France",
+          'latitude' => $ligne[3],
+          'longitude' => $ligne[4]
+        ];
+
+        $sql = "INSERT INTO cities SET
+        city=:city,
+        dep=:dep,
+        ZIP=:ZIP,
+        region=:region,
+        latitude=:latitude,
+        longitude=:longitude;";
+
+        $db->prepare($sql)->execute($row);
+      }
+    }
+    fclose($fileCities);
   }
 
 }

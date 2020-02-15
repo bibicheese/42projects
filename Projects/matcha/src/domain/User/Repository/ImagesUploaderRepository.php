@@ -15,17 +15,16 @@ class ImagesUploaderRepository
 
     public function maximum5($images, $id) {
       $sql = "SELECT * FROM images WHERE
-      userid = '$id'"
+      userid = '$id'";
       $ret = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
       if ((count($images) + count($ret)) > 5)
         return [
-          'status' => 0,
-          'error' => 'max 5 images'
+          'status' => 0, 'error' => 'max 5 images'
         ];
     }
 
     public function uploadImages($images, $id) {
-      $directory = "../img/";
+      $directory = "img/";
 
       foreach ($images as $key => $image) {
         if ($image->getError() === UPLOAD_ERR_OK) {
@@ -45,8 +44,7 @@ class ImagesUploaderRepository
         }
       }
       return [
-        'status' => 1,
-        'success' => 'images saved'
+        'status' => 1, 'success' => 'images saved'
       ];
     }
 

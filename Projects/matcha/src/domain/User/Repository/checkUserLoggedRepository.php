@@ -16,16 +16,15 @@ class checkUserLoggedRepository
       $id = $UserLog->id;
       $token = $UserLog->token;
       
-      $sql = "SELECT * FROM users WHERE
+      $sql = "SELECT token_log FROM users WHERE
       id = '$id'";
       if (! $ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
         return "user no exist";
       
-      return $ret['token_Log'];
-      // if (! $ret['token_log'])
+      if (! $ret['token_log'])
+          return "Vous n'êtes pas connecté, veuillez vous reconnecter.";
         
-        
-      if ($token != $ret['token'])
+      if ($token != $ret['token_log'])
         return "token not good";
     }
 }

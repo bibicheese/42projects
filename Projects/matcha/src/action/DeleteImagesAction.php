@@ -5,31 +5,30 @@ namespace Src\Action;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
 use Src\Domain\User\Data\UserAuth;
-use Src\Domain\User\Service\ImagesUploader;
 use Src\Domain\User\Repository\checkUserLoggedRepository;
+use Src\Domain\User\Repository\ImagesDeleterRepository;
 
-final class UploadImagesAction
+final class DeleteImagesAction
 {
-    private $imagesUploader;
+    private $imagesDeleter;
     private $checkAuth;
 
-    public function __construct(ImagesUploader $imagesUploader, checkUserLoggedRepository $checkAuth) {
-        $this->imagesUploader = $imagesUploader;
+    public function __construct(ImagesDeleterRepository $imagesDeleter, checkUserLoggedRepository $checkAuth) {
+        $this->imagesDeleter = $imagesDeleter;
         $this->checkAuth = $checkAuth;
     }
 
     public function __invoke(ServerRequest $request, Response $response): Response {
-        $uploadedFiles = $request->getUploadedFiles();
-        $log = $request->getQueryParams();
+        $data = $request->getParsedBody();
         
         $userAuth = new UserAuth();
-        $userAuth->id = $log['id'];
-        $userAuth->token = $log['token'];
+        $userAuth->id = $data['id'];
+        $userAuth->token = $data['token'];
         
         if ($status = $this->checkAuth->check($userAuth))
           $result = ['status' => 0, 'error' => $status];
         else
-          $result = $this->imagesUploader->checkImages($uploadedFiles, $userAuth->id);
+          $result = $this->imagesDeleter->delete($data['images'], $userAuth->id);
         
         return $response->withJson($result);
     }

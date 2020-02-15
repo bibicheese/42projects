@@ -94,21 +94,33 @@ class ProfilDisplayerRepository
 
     private function addViews($idVisited, $currId) {
       if ($idVisited != $currId) {
+        $sql = "SELECT * FROM viewers WHERE
+        visitor = '$currId'
+        AND
+        host = '$idVisited'";
+        $ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$ret) {
+          $sql = "UPDATE users SET 
+          score = score + 2
+          WHERE
+          id = '$idVisited'
+          AND
+          score < 100";
+          $this->connection->query($sql);
+        
+          $sql = "UPDATE users SET
+          score = score - 1
+          WHERE
+          id = '$currId'
+          AND
+          score > 0";
+          $this->connection->query($sql);
+        }
+        
         $sql = "INSERT INTO viewers SET
         visitor = '$currId',
         host = '$idVisited'";
-        $this->connection->query($sql);
-    
-        $sql = "UPDATE users SET
-        score = score + 2
-        WHERE
-        id = '$idVisited'";
-        $this->connection->query($sql);
-        
-        $sql = "UPDATE users SET
-        score = score - 1
-        WHERE
-        id = '$currId'";
         $this->connection->query($sql);
       }
       else
