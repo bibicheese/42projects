@@ -245,7 +245,7 @@ class db {
           'password' => hash('whirlpool', $ligne[6]),
           'score' => $score,
           'bio' => str_replace(["\n","\r"], "", $ligne[7]),
-          'city' => $i < 400 ? $paris[0] : $idf[0],
+          'city' => $i < 400 ? $paris[0] . ' ' . $paris[1] : $idf[0],
           'arr' => $i < 400 ? $paris[1] : NULL,
           'dept' => $i < 400 ? $paris[2] : $idf[1],
           'ZIP' => $i < 400 ? $paris[3] : $idf[2],
@@ -333,7 +333,7 @@ class db {
       if ($ligne[0]) {
 
         $row = [
-          'city' => $ligne[0],
+          'city' => $ligne[0] . ' ' . $ligne[1],
           'arr' => $ligne[1],
           'dep' => $ligne[2],
           'ZIP' => $ligne[3],

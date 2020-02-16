@@ -71,11 +71,12 @@ class EveryoneGetterRepository
         profil = '1'";
         if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC)) {
             if ($gender == 'Male')
-              $profilPic['link'] = "/img/male.jpg";
+              $profilPic = "/img/male.jpg";
             elseif ($gender == 'Female')
-              $profilPic['link'] = "/img/female.jpg";
+              $profilPic = "/img/female.jpg";
         }
-
+        else
+          $profilPic = $profilPic['link'];
         $sql = "SELECT * FROM likes WHERE
         liker = '$mainId'
         AND
@@ -101,7 +102,7 @@ class EveryoneGetterRepository
         $ret[$i][log] = $ret[$i]['token_log'] ? 1 : 0;
         $ret[$i][dst] = $this->getDistance($latFrom, $lonFrom, $latTo, $lonTo);
         $ret[$i][sameTag] = $sameTag;
-        $ret[$i][profilePic] = $profilPic['link'];
+        $ret[$i][profilePic] = $profilPic;
         $ret[$i][tags] = $tags;
         unset($ret[$i]['latitude']);
         unset($ret[$i]['longitude']);

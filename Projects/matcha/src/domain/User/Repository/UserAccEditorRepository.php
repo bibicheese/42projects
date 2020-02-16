@@ -33,34 +33,58 @@ class UserAccEditorRepository
         'gender' => $user->gender,
         'birth' => $user->birth,
         'bio' => $user->bio,
-        'city' => $user->city,
-        'arr' => $user->arr,
         'age' => $age
       ];
 
+      $city = $user->city;
+
       foreach ($data as $key => $value) {
-        if ($key == 'email' && $value == $email['email']) {
+        if (($key == 'email' && $value == $email['email']) || !$value)
           unset($data[$key]);
-        }
-        if (!$value) {
-          unset($data[$key]);
-        }
+      }
+
+      if ($city) {
+        $sql = "SELECT * FROM cities WHERE
+        city = '$city'";
+        $ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
         
+        $sql = "UPDATE users SET
+        city=:city,
+        arr=:arr,
+        dept=:dept,
+        ZIP=:ZIP,
+        latitude=:latitude,
+        longitude=:longitude
+        WHERE
+        id = '$id'";
+        
+        $row = [
+          'city' => $ret['city'],
+          'arr' => $ret['arr'],
+          'dept' => $ret['dep'],
+          'ZIP' => $ret['ZIP'],
+          'latitude' => $ret['latitude'],
+          'longitude' => $ret['longitude']
+        ];
+        $this->connection->prepare($sql)->execute($row);
       }
-      if (!$data)
-        return ['status' => 1, 'success' => 'OK boomer'];
-      $elm = count($data);
-      $i = 0;
-      foreach ($data as $key => $value) {
-        $query = ++$i == $elm ? $query . "$key=:$key" : $query . "$key=:$key,";
+      if (!$data && !$city)
+        return ['status' => 1, 'success' => 'RAS'];
+        
+      if ($data) {
+        $elm = count($data);
+        $i = 0;
+        foreach ($data as $key => $value) {
+          $query = ++$i == $elm ? $query . "$key=:$key" : $query . "$key=:$key,";
+        }
+      
+        $sql = "UPDATE users SET
+        $query 
+        WHERE
+        id = '$id'";
+      
+        $this->connection->prepare($sql)->execute($data);
       }
-
-      $sql = "UPDATE users SET
-      $query 
-      WHERE
-      id = '$id'";
-
-      $this->connection->prepare($sql)->execute($data);
       return ['status' => 1, 'success' => 'OK boomer'];
     }
 

@@ -33,7 +33,7 @@ final class UserLikeAction
       if ($status = $this->checkAuth->check($userAuth))
         $result = ['status' => 0, 'error' => $status];
       else {
-        $result = ['status' => 1, 'success' => $this->liker->like($user, $userAuth->id)];
+        $result = $this->liker->like($user, $userAuth->id);
       }
       
       return $response->withJson($result);

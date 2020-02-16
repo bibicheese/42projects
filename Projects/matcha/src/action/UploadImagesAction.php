@@ -12,14 +12,14 @@ final class UploadImagesAction
 {
     private $imagesUploader;
     private $checkAuth;
-
+    
     public function __construct(ImagesUploader $imagesUploader, checkUserLoggedRepository $checkAuth) {
         $this->imagesUploader = $imagesUploader;
         $this->checkAuth = $checkAuth;
     }
 
     public function __invoke(ServerRequest $request, Response $response): Response {
-        $uploadedFiles = $request->getUploadedFiles();
+        $uploadedFile = $request->getUploadedFiles();
         $log = $request->getQueryParams();
         
         $userAuth = new UserAuth();
@@ -29,7 +29,7 @@ final class UploadImagesAction
         if ($status = $this->checkAuth->check($userAuth))
           $result = ['status' => 0, 'error' => $status];
         else
-          $result = $this->imagesUploader->checkImages($uploadedFiles, $userAuth->id);
+          $result = $this->imagesUploader->checkImages($uploadedFile, $userAuth->id);
         
         return $response->withJson($result);
     }

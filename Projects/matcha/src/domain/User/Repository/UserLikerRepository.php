@@ -38,11 +38,10 @@ class UserLikerRepository
       $ret->execute($row);
 
       if ($ret->fetch(PDO::FETCH_ASSOC)) {
-        $sql = "DELETE FROM likes WHERE
-        liker=:liker
-        AND
-        liked=:liked;";
-        $result = "unliked";
+        $result = [
+          'status' => 0,
+          'error' => 'Reprendre c\'est volé.'
+        ];
       }
       else {
         $sql = "UPDATE users SET
@@ -56,7 +55,10 @@ class UserLikerRepository
         $sql = "INSERT INTO likes SET
         liker=:liker,
         liked=:liked;";
-        $result = "liked";
+        $result = [
+          'status' => 1,
+          'success' => 'liked'
+        ];
       }
       $this->connection->prepare($sql)->execute($row);
 
@@ -106,8 +108,12 @@ class UserLikerRepository
         $ret = $this->connection->prepare($sql);
         $ret->execute($row);
 
-        if ($ret->fetch(PDO::FETCH_ASSOC))
-          $result = "MATCH";
+        if ($ret->fetch(PDO::FETCH_ASSOC)) {
+            $result = [
+              'status' => 1,
+              'success' => 'MATCH'
+            ];
+        }
       }
       return $result;
     }

@@ -35,7 +35,7 @@ final class ListSuggestionAction
         if ($status = $this->checkAuth->check($userAuth))
           $result = ['status' => 0, 'error' => $status];
         else
-          $result = ['status' => 1, 'success' => $this->suggester->getList($userAuth->id, $instruc)];
+          $result = $this->suggester->getList($userAuth->id, $instruc);
         
         return $response->withJson($result);
     }

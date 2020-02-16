@@ -34,7 +34,8 @@ class SelfProfilDisplayerRepository
           elseif ($gender == 'Female')
             $profilPic = "/img/female.jpg";
       }
-
+      else
+        $profilPic = $profilPic['link'];
       $sql = "SELECT link FROM images WHERE
       userid = '$id'
       AND

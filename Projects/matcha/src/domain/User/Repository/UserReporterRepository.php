@@ -33,8 +33,8 @@ class UserReporterRepository
          </head>
          <body>
            <p>ADMIN REPORT</p><br>
-           <p>L\'utilisateur ' . $reporter['login'] . 'suspect le compte<b>' . $reported['login'] . '</b>.
-           d\'être un faux compte, une investigation doit être faites.</p><br><br>
+           <p>L\'utilisateur <b>' . $reporter['login'] . '</b> suspect le compte <b>' . $reported['login'] . '</b>
+            d\'être un faux compte, une investigation doit être faite.</p><br><br>
          </body>
         </html>
         ';

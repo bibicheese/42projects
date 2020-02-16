@@ -15,9 +15,9 @@ final class ListSuggester
 
     public function getList($id, $instruc) {
       if ($error = $this->repository->infoComplete($id))
-        return ['error' => $error];
+        return $error;
       
       else
-        return $this->repository->displayList($id, $instruc);
+        return $this->repository->displayList($id, $instruc); 
     }
 }

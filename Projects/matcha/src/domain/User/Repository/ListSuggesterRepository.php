@@ -21,11 +21,15 @@ class ListSuggesterRepository
         $userData = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
 
         $sql = "SELECT link FROM images WHERE
-        userid = '$id'
+        userid = '$id' 
         AND
         profil = '1'";
-        if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
-          // return 'must complete profil first';
+        if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC)) {
+          return [
+            'status' => 0,
+            'error' => 'Vous devez completer votre profile avant.'
+          ];
+        }
 
         foreach ($userData as $key => $value) {
           if (! $value && $key == 'firstname' ||
@@ -37,7 +41,10 @@ class ListSuggesterRepository
               ! $value && $key == 'login' ||
               ! $value && $key == 'password' ||
               ! $value && $key == 'bio')
-              return 'must complete profil first';
+              return [
+                  'status' => 0,
+                  'error' => 'Vous devez completer votre profile avant.'
+              ];
         }
     }
 
@@ -46,7 +53,7 @@ class ListSuggesterRepository
         $sql = "SELECT * FROM users WHERE
         id = '$mainId'"; 
         $user = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
-
+        
         $sql = "SELECT * FROM tags WHERE
         userids REGEXP '(,|^)$mainId(,|$)'";
         $MyTags_db = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -76,7 +83,7 @@ class ListSuggesterRepository
           $gender = $this->getGender($user['orientation'], $user['gender']);
           $orientation = $user['orientation'];
           $orientationOr = 'Bisexuel';
-
+        
           $sql = "SELECT $select FROM users WHERE
           id != '$mainId'
           AND
@@ -90,7 +97,7 @@ class ListSuggesterRepository
           gender = '$gender'
           AND
           orientation = '$orientationOr';";
-
+        
         }
         else {
           $gender = 'Male';
@@ -99,7 +106,7 @@ class ListSuggesterRepository
           $orientation = $user['gender'] == 'male' ? 'Homosexuel' : 'Hétérosexuel';
           $orientationOr = $user['gender'] == 'male' ? 'Hétérosexuel' : 'Homosexuel';
           $city = $user['city'];
-
+        
           $sql = "SELECT $select FROM users WHERE
           id != '$mainId'
           AND
@@ -118,7 +125,7 @@ class ListSuggesterRepository
           id != '$mainId'
           AND
           orientation = '$orientationBase';";
-
+        
         }
         
         $ret = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -128,7 +135,7 @@ class ListSuggesterRepository
           $gender = $ret[$i]['gender'];
           $latTo = $ret[$i]['latitude'];
           $lonTo = $ret[$i]['longitude'];
-
+        
           $sql = "SELECT tag FROM tags WHERE
           userids REGEXP '(,|^)$userid(,|$)'";
           $userTags = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -140,33 +147,34 @@ class ListSuggesterRepository
               $sameTag++;
             $tags = !$tags ? $userTags[$j]['tag'] : $tags . "," . $userTags[$j]['tag'];
           }
-
+        
           $sql = "SELECT link FROM images WHERE
           userid = '$userid'
           AND
           profil = '1'";
           if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC)) {
               if ($gender == 'Male')
-                $profilPic['link'] = "/img/male.jpg";
+                $profilPic = "/img/male.jpg";
               elseif ($gender == 'Female')
-                $profilPic['link'] = "/img/female.jpg";
+                $profilPic = "/img/female.jpg";
           }
-          
+          else
+            $profilPic = $profilPic['link'];
           $sql = "SELECT * FROM likes WHERE
           liker = '$mainId'
           AND
           liked = '$userid'";
           $myLikeTo = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
-          
+        
           $sql = "SELECT * FROM likes WHERE
           liker = '$userid'
           AND
           liked = '$mainId'";
           $likedBy = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
-          
+        
           if ($likedBy && $myLikeTo)
             $match = 1;
-          
+        
           $ret[$i]['age'] = (int)$ret[$i]['age'];
           $ret[$i]['score'] = (int)$ret[$i]['score'];
           $ret[$i][likedBy] = $likedBy ? 1 : 0;
@@ -175,7 +183,7 @@ class ListSuggesterRepository
           $ret[$i][log] = $ret[$i]['token_log'] ? 1 : 0;
           $ret[$i][dst] = $this->getDistance($latFrom, $lonFrom, $latTo, $lonTo);
           $ret[$i][sameTag] = $sameTag;
-          $ret[$i][profilePic] = $profilPic['link'];
+          $ret[$i][profilePic] = $profilPic;
           $ret[$i][tags] = $tags;
           unset($ret[$i]['longitude']);
           unset($ret[$i]['latitude']);
@@ -187,7 +195,10 @@ class ListSuggesterRepository
         
         $sorted = $this->sortList->sort($ret, $instruc);
         
-        return $sorted;
+        return [
+          'status' => 1,
+          'success' => $sorted
+        ];
     }
 
 

@@ -14,7 +14,7 @@ final class ReportUserAction
     private $checkAuth;
 
     public function __construct(UserReporterRepository $reporter, checkUserLoggedRepository $checkAuth) {
-        $this->reported = $reporter;
+        $this->reporter = $reporter;
         $this->checkAuth = $checkAuth;
     }
 

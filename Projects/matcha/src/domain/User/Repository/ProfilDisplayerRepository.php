@@ -42,6 +42,21 @@ class ProfilDisplayerRepository
       
       $this->addViews($id, $currId);
       
+      $sql = "SELECT * FROM likes WHERE
+      liker = '$currId'
+      AND
+      liked = '$id'";
+      $myLikeTo = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+      
+      $sql = "SELECT * FROM likes WHERE
+      liker = '$id'
+      AND
+      liked = '$currId'";
+      $likedBy = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+      
+      if ($likedBy && $myLikeTo)
+        $match = 1;
+      
       $sql = "SELECT link FROM images WHERE
       userid = '$id'
       AND
@@ -52,12 +67,13 @@ class ProfilDisplayerRepository
           elseif ($gender == 'Female')
             $profilPic = "/img/female.jpg";
       }
-      
+      else
+        $profilPic = $profilPic['link'];
       $sql = "SELECT link FROM images WHERE
       userid = '$id'
       AND
       profil = '0'";
-      if (! $images = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC))
+      if (! $images = $this->connection->query($sql)->fetchAll(PDO::FETCH_ASSOC))
         $images = [];
       
       $sql = "SELECT tag FROM tags WHERE
@@ -67,7 +83,7 @@ class ProfilDisplayerRepository
       $j = count($tags_db);
       while ($j-- != 0)
         $tags = !$tags ? $tags_db[$j]['tag'] : $tags . "," . $tags_db[$j]['tag'];
-      
+  
       $tags = explode(',', $tags);
       return [
         'status' => 1,
@@ -80,7 +96,11 @@ class ProfilDisplayerRepository
           'orientation' => $dataUser['orientation'],
           'bio' => $dataUser['bio'],
           'score' => (int)$dataUser['score'],
+          'login' => $dataUser['login'],
           'profilePic' => $profilPic,
+          'myLikeTo' => $myLikeTo ? 1 : 0,
+          'likedBy' => $likedBy ? 1 : 0,
+          'match' => $match ? 1 : 0,
           'images' => $images,
           'city' => $dataUser['city'],
           'arr' => $dataUser['arr'],

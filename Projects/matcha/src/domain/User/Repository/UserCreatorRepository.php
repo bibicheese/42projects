@@ -25,11 +25,11 @@ class UserCreatorRepository
         $details = $client->getDetails($ip);
         // return $details;
         $row = [
-            'login' => $user->login,
-            'password' => $user->password,
-            'email' => $user->email,
-            'firstname' => $user->firstname,
-            'lastname' => $user->lastname,
+            'login' => htmlspecialchars($user->login),
+            'password' => htmlspecialchars($user->password),
+            'email' => htmlspecialchars($user->email),
+            'firstname' => htmlspecialchars($user->firstname),
+            'lastname' => htmlspecialchars($user->lastname),
             'token' => $this->token,
             'city' => $details->city,
             'dept' => substr($details->postal, 0, 2),
