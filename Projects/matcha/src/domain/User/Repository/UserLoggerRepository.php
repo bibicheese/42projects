@@ -28,18 +28,21 @@ class UserLoggerRepository
       $ret->execute($row);
       if (!$ret = $ret->fetch(PDO::FETCH_ASSOC)) {
         return [
+          'status' => 0,
           'error' => 'email'
         ];
       }
 
       else if ($ret['password'] != $password) {
         return [
+          'status' => 0,
           'error' => 'password'
         ];
       }
 
       else if ($ret['active'] == 0) {
         return [
+          'status' => 0,
           'error' => 'active'
         ];
       }
@@ -55,8 +58,13 @@ class UserLoggerRepository
         $this->connection->query($sql);
         
         return [
-          'success' => $id,
-          'token' => $token
+          'status' => 1,
+          'success' => [
+            'id' => $id,
+            'token' => $token,
+            'firstname' => $ret['firstname'],
+            'lastname' => $ret['lastname']
+          ]
         ];
       }
     }

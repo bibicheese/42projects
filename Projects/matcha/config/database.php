@@ -43,6 +43,7 @@ class db {
     }
     catch(PDOException $e) {
       $this->table_images($conn);
+      $this->fill_table_images($conn);
     }
 
     try {
@@ -73,7 +74,7 @@ class db {
                 birth VARCHAR(30) DEFAULT NULL,
                 age INT DEFAULT 0,
                 gender VARCHAR(30) DEFAULT NULL,
-                orientation VARCHAR(30) DEFAULT 'bi',
+                orientation VARCHAR(30) DEFAULT 'Bisexuel',
                 login VARCHAR(30) NOT NULL UNIQUE,
                 password VARCHAR(255) NOT NULL,
                 token VARCHAR(255) DEFAULT NULL,
@@ -381,6 +382,25 @@ class db {
       }
     }
     fclose($fileCities);
+  }
+  
+  
+  private function fill_table_images($db) {
+    $profileJeremie = "img/" . DIRECTORY_SEPARATOR . "d107245412ae9542.jpg";
+    $profileLucas = "img/" . DIRECTORY_SEPARATOR . "13474786e5c3314f.JPG";
+    
+    $sql = "INSERT INTO images SET
+    link = '$profileJeremie',
+    profil = 1,
+    userid = 1";
+    
+    $sql2 = "INSERT INTO images SET
+    link = '$profileLucas',
+    profil = 1,
+    userid = 2";
+    
+    $db->query($sql);
+    $db->query($sql2);
   }
 
 }

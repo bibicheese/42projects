@@ -143,8 +143,6 @@ class ProfilDisplayerRepository
         host = '$idVisited'";
         $this->connection->query($sql);
       }
-      else
-        header("location: 127.0.0.1/my_profil");
     }
     
     private function getDistance($latFrom, $lonFrom, $latTo, $lonTo) {

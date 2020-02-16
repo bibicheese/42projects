@@ -24,14 +24,8 @@ final class UserLoginAction
       $user->password = hash('whirlpool', $data['password']);
 
       $status = $this->userLogger->LoginUser($user);
-
-      if ($status['success']) {
       
-          $id = $status;
-          $result = ['status' => 1, 'id' => $status['success']['id'], 'token' => $status['token']];
-      }
-      else
-        $result = ['status' => 0, 'error' => $status['error']];
+      $result = $status;
       
       return $response->withJson($result);
     }

@@ -33,6 +33,8 @@ class SelfProfilDisplayerRepository
             $profilPic = "/img/male.jpg";
           elseif ($gender == 'Female')
             $profilPic = "/img/female.jpg";
+          else
+            $profilPic = "/img/default.jpg";
       }
       else
         $profilPic = $profilPic['link'];
@@ -65,7 +67,7 @@ class SelfProfilDisplayerRepository
           'orientation' => $user['orientation'],
           'login' => $user['login'],
           'password' => $crypted,
-          'bio' => $user['bio'],
+          'bio' => $user['bio'] ? $user['bio'] : "",
           'city' => $user['city'],
           'arr' => $user['arr'],
           'dept' => $user['dept'],

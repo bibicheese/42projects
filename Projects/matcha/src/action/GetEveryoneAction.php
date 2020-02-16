@@ -35,7 +35,7 @@ final class GetEveryoneAction
       if ($status = $this->checkAuth->check($userAuth))
         $result = ['status' => 0, 'error' => $status];
       else
-        $result = ['status' => 1, 'success' => $this->getEveryone->get($userAuth->id, $instruc)];
+        $result = $this->getEveryone->get($userAuth->id, $instruc);
         
       return $response->withJson($result);
     }

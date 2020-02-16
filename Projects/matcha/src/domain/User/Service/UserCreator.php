@@ -14,7 +14,7 @@ final class UserCreator
     }
     public function createUser(UserData $user) {
         if ($error = $this->repository->UserExist($user))
-          return ['error' => $error . " taken"];
+          return $error;
         else
           return $this->repository->insertUser($user);
     }

@@ -2,7 +2,7 @@
 
 namespace Src\Domain\User\Repository;
 
-use ipinfo\ipinfo\IPinfo;
+// use ipinfo\ipinfo\IPinfo;
 use Src\Domain\User\Data\UserData;
 use PDO;
 
@@ -17,13 +17,19 @@ class UserCreatorRepository
 
     public function insertUser(UserData $user) {
         $this->token = bin2hex(openssl_random_pseudo_bytes(16, $truc));
-
-        $access_token = 'd068dfed09a69b';
-        $client = new IPinfo($access_token);
+        
+        // $access_token = 'd068dfed09a69b';
+        // $client = new IPinfo($access_token);
         $ip = $this->get_user_ip();
-        // $ip = "194.167.30.240";
-        $details = $client->getDetails($ip);
-        // return $details;
+        // $details = $client->getDetails($ip);
+        $details['city'] = 'paris 17';
+        $details['arr'] = '17';
+        $details['dept'] = '75';
+        $details['ZIP'] = '75117';
+        $details['region'] = 'Île-de-France';
+        $details['latitude'] = '48.8835';
+        $details['longitude'] = '2.3219';
+        
         $row = [
             'login' => htmlspecialchars($user->login),
             'password' => htmlspecialchars($user->password),
@@ -31,11 +37,15 @@ class UserCreatorRepository
             'firstname' => htmlspecialchars($user->firstname),
             'lastname' => htmlspecialchars($user->lastname),
             'token' => $this->token,
-            'city' => $details->city,
-            'dept' => substr($details->postal, 0, 2),
-            'region' => $details->region
+            'city' => $details['city'],
+            'arr' => $details['arr'],
+            'dept' => $details['dept'],
+            'ZIP' => $details['ZIP'],
+            'region' => $details['region'],
+            'latitude' => $details['latitude'],
+            'longitude' => $details['longitude']
           ];
-
+        
         $sql = "INSERT INTO users SET
                 login=:login,
                 password=:password,
@@ -43,15 +53,27 @@ class UserCreatorRepository
                 lastname=:lastname,
                 token=:token,
                 city=:city,
+                arr=:arr,
                 dept=:dept,
+                ZIP=:ZIP,
                 region=:region,
+                latitude=:latitude,
+                longitude=:longitude,
                 email=:email;";
-
+        
         $this->connection->prepare($sql)->execute($row);
-        if ($error = $this->sendMail($user))
-          return ['error' => $error];
-        else
-          return ['succes' => 'user created'];
+        if ($error = $this->sendMail($user)) {
+          return [
+            'status' => 0,
+            'error' => $error
+          ];
+        }
+        else {
+          return [
+            'status' => 1,
+            'success' => 'Votre compte a été créé avec succès.'
+          ];
+        }
 
     }
 
@@ -99,7 +121,7 @@ class UserCreatorRepository
        </head>
        <body>
          <h1>Bienvenue ' . $ret['firstname'] . ' !</h1>
-         <a href="http://localhost:8080/home?token='. $this->token .'">
+         <a href="http://localhost:3000/act/'. $this->token .'">
          <p>Cliquez ici pour activer votre compte !</p></a>
        </body>
       </html>
@@ -118,19 +140,23 @@ class UserCreatorRepository
     public function UserExist(UserData $user) {
       $data['login'] = $user->login;
       $data['email'] = $user->email;
-
+      
       foreach ($data as $key => $value) {
         $row = [
           $key => $value
         ];
-
+      
         $sql = "SELECT * FROM users WHERE
         $key=:$key;";
-
+      
         $ret = $this->connection->prepare($sql);
         $ret->execute($row);
-        if ($ret = $ret->fetch(PDO::FETCH_ASSOC))
-          return $key;
+        if ($ret = $ret->fetch(PDO::FETCH_ASSOC)) {
+          return [
+            'status' => 0,
+            'error' => $key 
+          ];
+        }
       }
       return NULL;
     }

@@ -22,7 +22,7 @@ final class UserCreateAction
 
         $status = $this->userCreator->createUser($user);
 
-        $result = ['create_user_status' => $status];
+        $result = $status;
 
         return $response->withJson($result);
     }

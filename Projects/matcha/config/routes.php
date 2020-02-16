@@ -19,7 +19,7 @@ return function (App $app) {
   $app->get('/api/get_tags', \Src\Action\GetTagsAction::class);
   $app->post('/api/get_everyone', \Src\Action\GetEveryoneAction::class);
   $app->post('/api/delete_images', \Src\Action\DeleteImagesAction::class);
-  $app->post('/api/get_historic', \Src\Action\getHistoricAction::class);
+  $app->post('/api/get_historic', \Src\Action\GetHistoricAction::class);
   $app->post('/api/report', \Src\Action\ReportUserAction::class);
   $app->get('/api/get_cities', Src\Action\GetCitiesAction::class);
 };

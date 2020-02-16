@@ -15,7 +15,43 @@ class EveryoneGetterRepository
         $this->sortList = $sortList;
     }
 
+    public function infoComplete($id) {
+        $sql = "SELECT * FROM users WHERE
+        id = '$id';";
+        $userData = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+
+        $sql = "SELECT link FROM images WHERE
+        userid = '$id' 
+        AND
+        profil = '1'";
+        if (! $profilPic = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC)) {
+          return [
+            'status' => 0,
+            'error' => 'Vous devez completer votre profile avant.'
+          ];
+        }
+
+        foreach ($userData as $key => $value) {
+          if (! $value && $key == 'firstname' ||
+              ! $value && $key == 'lastname' ||
+              ! $value && $key == 'email' ||
+              ! $value && $key == 'birth' ||
+              ! $value && $key == 'gender' ||
+              ! $value && $key == 'orientation' ||
+              ! $value && $key == 'login' ||
+              ! $value && $key == 'password' ||
+              ! $value && $key == 'bio')
+              return [
+                  'status' => 0,
+                  'error' => 'Vous devez completer votre profile avant.'
+              ];
+        }
+    }
+
     public function get($mainId, $instruc) {
+      if ($error = $this->infoComplete($mainId))
+        return $error;
+        
       $sql = "SELECT latitude, longitude FROM users WHERE
       id = '$mainId'";
       $ret = $this->connection->query($sql)->fetch(PDO::FETCH_ASSOC);
@@ -92,7 +128,6 @@ class EveryoneGetterRepository
         if ($likedBy && $myLikeTo) {
           $match = 1;
         }
-          
 
         $ret[$i]['age'] = (int)$ret[$i]['age'];
         $ret[$i]['score'] = (int)$ret[$i]['score'];
@@ -113,7 +148,10 @@ class EveryoneGetterRepository
       
       $sorted = $this->sortList->sort($ret, $instruc);
       
-      return $sorted;
+      return [
+        'status' => 1,
+        'success' => $sorted
+      ];
     }
     
     
